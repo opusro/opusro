@@ -1,2 +1,2 @@
 # opusro
-website-ul OPUS
+website-ul OPUS.ro
