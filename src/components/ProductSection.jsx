@@ -60,7 +60,7 @@ const ProductSection = ({
                 {/* Middle Section: Phone Mockup */}
                 {!hidePhone && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 1, scale: 1 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                         viewport={{ once: true, margin: "-100px" }}

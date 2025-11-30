@@ -1,8 +1,7 @@
 import React from 'react';
-import Hero from './components/Hero';
+import HeroWithOpusLoop from './components/HeroWithOpusLoop';
 import ProductSection from './components/ProductSection';
 import Footer from './components/Footer';
-import OpusLoopBackground from './components/backgrounds/OpusLoopBackground';
 import CynicalBackground from './components/backgrounds/CynicalBackground';
 import AssnBackground from './components/backgrounds/AssnBackground';
 
@@ -12,17 +11,7 @@ const Placeholder = ({ text }) => <div style={{ height: '100vh', display: 'flex'
 function App() {
   return (
     <div className="app">
-      <Hero />
-
-      <ProductSection
-        title="Opus Loop"
-        description="Your personal tool for your mindful moments. No subscription, no bloated library of content. Just your soundscapes and your mind."
-        buttonText="Buy for $5 on App Store"
-        buttonLink="#"
-        videoSrc="/samplevideo.mp4"
-        appIcon="/appIcon.png"
-        BackgroundComponent={OpusLoopBackground}
-      />
+      <HeroWithOpusLoop />
 
       <ProductSection
         title="CyniCal"
