@@ -51,7 +51,7 @@ const Galaxy = () => {
 
             // Alpha - transparent at center, opaque at edges
             const normalizedRadius = radius / parameters.radius;
-            alphas[i] = normalizedRadius * normalizedRadius; // Quadratic falloff for smoother gradient
+            alphas[i] = Math.pow(normalizedRadius, 0.5); // Square root for gentler falloff
         }
 
         return { positions, colors, alphas };

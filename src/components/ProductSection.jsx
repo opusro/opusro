@@ -45,17 +45,13 @@ const ProductSection = ({
                     viewport={{ once: true, margin: "-100px" }}
                     style={{
                         textAlign: 'center',
-                        padding: '2rem',
-                        borderRadius: '20px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        width: '100%'
+                        width: '100%',
+                        maxWidth: '800px'
                     }}
                 >
-                    {appIcon && <img src={appIcon} alt={title} style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '1rem' }} />}
-                    <h2 style={{ fontSize: '3rem', fontWeight: 600, color: '#ffffff', margin: '0 0 1rem 0' }}>{title}</h2>
-                    <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: '#e0e0e0', margin: 0 }}>
+                    {appIcon && <img src={appIcon} alt={title} style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '1rem', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }} />}
+                    <h2 style={{ fontSize: '3rem', fontWeight: 600, color: '#ffffff', margin: '0 0 1rem 0', textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 4px 40px rgba(0,0,0,0.6)' }}>{title}</h2>
+                    <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: '#e0e0e0', margin: 0, textShadow: '0 2px 16px rgba(0,0,0,0.8), 0 4px 32px rgba(0,0,0,0.6)' }}>
                         {description}
                     </p>
                 </motion.div>
