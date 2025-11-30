@@ -56,25 +56,29 @@ const Galaxy = () => {
         return { positions, colors };
     }, []);
 
+    // Store original positions for oscillation
+    const originalPositions = useMemo(() => new Float32Array(positions), [positions]);
+
     useFrame((state) => {
         if (pointsRef.current) {
             pointsRef.current.rotation.y += 0.001;
 
-            // Very subtle particle movement - much smaller offsets
+            // Very subtle particle oscillation from original positions
             const positions = pointsRef.current.geometry.attributes.position.array;
             const time = state.clock.elapsedTime;
 
             for (let i = 0; i < parameters.count; i++) {
                 const i3 = i * 3;
 
-                // Extremely subtle sine wave movement - reduced by 10x
-                const offsetX = Math.sin(time * 0.3 + i * 0.01) * 0.0015;
-                const offsetY = Math.cos(time * 0.2 + i * 0.015) * 0.0015;
-                const offsetZ = Math.sin(time * 0.25 + i * 0.02) * 0.0015;
+                // Oscillate around original position - extremely subtle
+                const offsetX = Math.sin(time * 0.3 + i * 0.01) * 0.003;
+                const offsetY = Math.cos(time * 0.2 + i * 0.015) * 0.003;
+                const offsetZ = Math.sin(time * 0.25 + i * 0.02) * 0.003;
 
-                positions[i3] += offsetX;
-                positions[i3 + 1] += offsetY;
-                positions[i3 + 2] += offsetZ;
+                // Set position as original + offset (not accumulating)
+                positions[i3] = originalPositions[i3] + offsetX;
+                positions[i3 + 1] = originalPositions[i3 + 1] + offsetY;
+                positions[i3 + 2] = originalPositions[i3 + 2] + offsetZ;
             }
 
             pointsRef.current.geometry.attributes.position.needsUpdate = true;
@@ -113,7 +117,7 @@ const Galaxy = () => {
 const OpusLoopBackground = () => {
     return (
         <div style={{ width: '100%', height: '100%', background: '#050505', position: 'relative' }}>
-            <Canvas camera={{ position: [0, 3, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, -4, 0)}>
+            <Canvas camera={{ position: [0, 3, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, 4, 0)}>
                 <Galaxy />
             </Canvas>
             {/* Vignette effect to fade edges to black */}
