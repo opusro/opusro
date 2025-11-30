@@ -117,7 +117,7 @@ const Galaxy = () => {
 const OpusLoopBackground = () => {
     return (
         <div style={{ width: '100%', height: '100%', background: '#050505', position: 'relative' }}>
-            <Canvas camera={{ position: [0, -8, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, 0, 0)}>
+            <Canvas camera={{ position: [0, -10, 10], fov: 40, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, -3, 0)}>
                 <Galaxy />
             </Canvas>
             {/* Vignette effect to fade edges to black */}

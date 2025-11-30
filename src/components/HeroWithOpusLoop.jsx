@@ -80,21 +80,6 @@ const HeroWithOpusLoop = () => {
                     >
                         Human Experience Design
                     </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, y: [0, 10, 0] }}
-                        transition={{
-                            opacity: { delay: 2, duration: 1 },
-                            y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
-                        }}
-                        style={{
-                            marginTop: '4rem',
-                            width: '2px',
-                            height: '40px',
-                            background: 'linear-gradient(to bottom, #fff, transparent)'
-                        }}
-                    />
                 </div>
 
                 {/* Opus Loop Content - Centered over spiral */}
@@ -142,6 +127,7 @@ const HeroWithOpusLoop = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                         viewport={{ once: true, margin: "-100px" }}
+                        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
                     >
                         <a
                             href="#"
@@ -150,7 +136,7 @@ const HeroWithOpusLoop = () => {
                                 padding: '12px 30px',
                                 background: '#fff',
                                 color: '#000',
-                                borderRadius: '30px',
+                                borderRadius: '8px',
                                 fontWeight: 600,
                                 fontSize: '1rem',
                                 transition: 'transform 0.2s',
@@ -159,8 +145,9 @@ const HeroWithOpusLoop = () => {
                             onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
                             onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
                         >
-                            Buy for $5 on App Store
+                            Download on the App Store
                         </a>
+                        <p style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>Just $5 once. No subscription.</p>
                     </motion.div>
                 </div>
             </div>

@@ -41,28 +41,38 @@ const Network = () => {
         mouseRef.current.set(x * 10, y * 6, 0);
 
         // Update particles
-        particles.forEach(particle => {
-            // Move towards original position to keep them somewhat grounded but floating
-            const target = particle.originalPosition.clone();
+        particles.forEach((particle, i) => {
+            // Smooth drifting movement
+            particle.position.x += particle.velocity.x;
+            particle.position.y += particle.velocity.y;
+            particle.position.z += particle.velocity.z;
 
-            // Mouse attraction (attracts instead of repels)
-            const dist = particle.position.distanceTo(mouseRef.current);
-            if (dist < 5) {
-                const dir = mouseRef.current.clone().sub(particle.position).normalize();
-                target.add(dir.multiplyScalar(2)); // Pull towards mouse
+            // Gentle oscillation
+            const time = state.clock.elapsedTime;
+            particle.position.x += Math.sin(time * 0.2 + i * 0.1) * 0.005;
+            particle.position.y += Math.cos(time * 0.15 + i * 0.15) * 0.005;
+
+            // Boundary wrapping
+            if (Math.abs(particle.position.x) > 8) particle.velocity.x *= -1;
+            if (Math.abs(particle.position.y) > 6) particle.velocity.y *= -1;
+            if (Math.abs(particle.position.z) > 3) particle.velocity.z *= -1;
+
+            // Mouse attraction (much gentler)
+            if (mouseRef.current) { // Changed from 'mouse.current' to 'mouseRef.current'
+                const dx = mouseRef.current.x * 5 - particle.position.x;
+                const dy = mouseRef.current.y * 5 - particle.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 3) {
+                    particle.position.x += dx * 0.002;
+                    particle.position.y += dy * 0.002;
+                }
             }
-
-            // Smoothly move towards target
-            particle.position.lerp(target, 0.02);
-
-            // Add some noise/wandering
-            particle.position.x += Math.sin(state.clock.elapsedTime * 0.5 + particle.originalPosition.y) * 0.002;
-            particle.position.y += Math.cos(state.clock.elapsedTime * 0.3 + particle.originalPosition.x) * 0.002;
         });
 
         // Update geometry (Nodes as circles/points)
         if (pointsRef.current) {
-            const positions = new Float32Array(count * 3);
+            const positions = new Float32Array(particleCount * 3); // Changed 'count' to 'particleCount'
             particles.forEach((p, i) => {
                 positions[i * 3] = p.position.x;
                 positions[i * 3 + 1] = p.position.y;
