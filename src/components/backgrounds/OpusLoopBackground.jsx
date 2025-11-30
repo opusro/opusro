@@ -59,6 +59,26 @@ const Galaxy = () => {
     useFrame((state) => {
         if (pointsRef.current) {
             pointsRef.current.rotation.y += 0.001;
+
+            // Subtle particle movement
+            const positions = pointsRef.current.geometry.attributes.position.array;
+            const time = state.clock.elapsedTime;
+
+            for (let i = 0; i < parameters.count; i++) {
+                const i3 = i * 3;
+
+                // Add very subtle sine wave movement to each particle
+                // Use particle index to offset the wave for variety
+                const offsetX = Math.sin(time * 0.3 + i * 0.01) * 0.015;
+                const offsetY = Math.cos(time * 0.2 + i * 0.015) * 0.015;
+                const offsetZ = Math.sin(time * 0.25 + i * 0.02) * 0.015;
+
+                positions[i3] += offsetX;
+                positions[i3 + 1] += offsetY;
+                positions[i3 + 2] += offsetZ;
+            }
+
+            pointsRef.current.geometry.attributes.position.needsUpdate = true;
         }
     });
 
