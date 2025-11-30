@@ -21,7 +21,13 @@ function App() {
         BackgroundComponent={CynicalBackground}
         comingSoonText="Coming soon"
         renderAction={() => (
-          <form name="cynical-notify" method="POST" data-netlify="true" style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}>
+          <form
+            name="cynical-notify"
+            method="POST"
+            data-netlify="true"
+            action="/success"
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}
+          >
             <input type="hidden" name="form-name" value="cynical-notify" />
             <input
               type="email"
@@ -68,7 +74,13 @@ function App() {
         comingSoonText="Coming in Q2 2026"
         hidePhone={true}
         renderAction={() => (
-          <form name="assn-notify" method="POST" data-netlify="true" style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}>
+          <form
+            name="assn-notify"
+            method="POST"
+            data-netlify="true"
+            action="/success"
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}
+          >
             <input type="hidden" name="form-name" value="assn-notify" />
             <input
               type="email"
