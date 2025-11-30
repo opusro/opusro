@@ -1,4 +1,3 @@
-```
 import React from 'react';
 import { motion } from 'framer-motion';
 import Smartphone from './Smartphone';
@@ -59,16 +58,16 @@ const ProductSection = ({
                 </motion.div>
 
                 {/* Middle Section: Phone Mockup */}
-        {!hidePhone && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <Smartphone videoSrc={videoSrc} appIcon={appIcon} appName={title} />
-          </motion.div>
-        )}
+                {!hidePhone && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                        viewport={{ once: true, margin: "-100px" }}
+                    >
+                        <Smartphone videoSrc={videoSrc} appIcon={appIcon} appName={title} />
+                    </motion.div>
+                )}
 
                 {/* Bottom Section: Coming Soon Text + Actions */}
                 <motion.div
