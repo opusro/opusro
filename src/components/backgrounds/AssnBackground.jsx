@@ -72,7 +72,7 @@ const Network = () => {
 
         // Update geometry (Nodes as circles/points)
         if (pointsRef.current) {
-            const positions = new Float32Array(particleCount * 3); // Changed 'count' to 'particleCount'
+            const positions = new Float32Array(count * 3);
             particles.forEach((p, i) => {
                 positions[i * 3] = p.position.x;
                 positions[i * 3 + 1] = p.position.y;

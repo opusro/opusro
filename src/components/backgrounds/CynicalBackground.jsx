@@ -19,47 +19,40 @@ const GiftBox = ({ position, speedMultiplier }) => {
 
     return (
         <group ref={groupRef} position={position}>
-            {/* Main box */}
+            {/* Main box - dark gray */}
             <mesh>
-                <boxGeometry args={[0.4, 0.4, 0.4]} />
+                <boxGeometry args={[0.5, 0.5, 0.5]} />
                 <meshStandardMaterial
-                    color="#e74c3c"
+                    color="#2c2c2c"
                     metalness={0.3}
+                    roughness={0.6}
+                />
+            </mesh>
+            {/* Ribbon horizontal - gold */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[0.55, 0.08, 0.08]} />
+                <meshStandardMaterial
+                    color="#d4af37"
+                    metalness={0.6}
+                    roughness={0.3}
+                />
+            </mesh>
+            {/* Ribbon vertical - gold */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[0.08, 0.55, 0.08]} />
+                <meshStandardMaterial
+                    color="#d4af37"
+                    metalness={0.6}
+                    roughness={0.3}
+                />
+            </mesh>
+            {/* Small bow on top */}
+            <mesh position={[0, 0.3, 0]}>
+                <sphereGeometry args={[0.1, 8, 8]} />
+                <meshStandardMaterial
+                    color="#c9a030"
+                    metalness={0.5}
                     roughness={0.4}
-                    emissive="#e74c3c"
-                    emissiveIntensity={0.2}
-                />
-            </mesh>
-            {/* Edge glow */}
-            <mesh>
-                <boxGeometry args={[0.42, 0.42, 0.42]} />
-                <meshBasicMaterial
-                    color="#ff6b6b"
-                    transparent={true}
-                    opacity={0.3}
-                    wireframe={true}
-                />
-            </mesh>
-            {/* Ribbon horizontal */}
-            <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[0.45, 0.08, 0.08]} />
-                <meshStandardMaterial
-                    color="#f1c40f"
-                    metalness={0.5}
-                    roughness={0.3}
-                    emissive="#f1c40f"
-                    emissiveIntensity={0.3}
-                />
-            </mesh>
-            {/* Ribbon vertical */}
-            <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[0.08, 0.45, 0.08]} />
-                <meshStandardMaterial
-                    color="#f1c40f"
-                    metalness={0.5}
-                    roughness={0.3}
-                    emissive="#f1c40f"
-                    emissiveIntensity={0.3}
                 />
             </mesh>
         </group>
