@@ -1,11 +1,66 @@
-```
 import React, { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-            <mesh position={[0, 0, 0]} scale={[0.2, 1.02, 1.02]}>
-                <boxGeometry args={[1, 1, 1]} />
-                <meshPhysicalMaterial color="#444" roughness={0.3} metalness={0.5} />
+const GiftBox = ({ position, speedMultiplier }) => {
+    const groupRef = useRef();
+    const currentSpeed = useRef(1);
+
+    useFrame((state, delta) => {
+        if (groupRef.current) {
+            // Smoothly interpolate speed
+            currentSpeed.current = THREE.MathUtils.lerp(currentSpeed.current, speedMultiplier, delta * 2);
+
+            groupRef.current.rotation.x += 0.002 * currentSpeed.current;
+            groupRef.current.rotation.y += 0.003 * currentSpeed.current;
+            groupRef.current.position.y += Math.sin(state.clock.elapsedTime + position[0]) * 0.002 * currentSpeed.current;
+        }
+    });
+
+    return (
+        <group ref={groupRef} position={position}>
+            {/* Main box */}
+            <mesh>
+                <boxGeometry args={[0.4, 0.4, 0.4]} />
+                <meshStandardMaterial
+                    color="#e74c3c"
+                    metalness={0.3}
+                    roughness={0.4}
+                    emissive="#e74c3c"
+                    emissiveIntensity={0.2}
+                />
+            </mesh>
+            {/* Edge glow */}
+            <mesh>
+                <boxGeometry args={[0.42, 0.42, 0.42]} />
+                <meshBasicMaterial
+                    color="#ff6b6b"
+                    transparent={true}
+                    opacity={0.3}
+                    wireframe={true}
+                />
+            </mesh>
+            {/* Ribbon horizontal */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[0.45, 0.08, 0.08]} />
+                <meshStandardMaterial
+                    color="#f1c40f"
+                    metalness={0.5}
+                    roughness={0.3}
+                    emissive="#f1c40f"
+                    emissiveIntensity={0.3}
+                />
+            </mesh>
+            {/* Ribbon vertical */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[0.08, 0.45, 0.08]} />
+                <meshStandardMaterial
+                    color="#f1c40f"
+                    metalness={0.5}
+                    roughness={0.3}
+                    emissive="#f1c40f"
+                    emissiveIntensity={0.3}
+                />
             </mesh>
         </group>
     );
@@ -16,9 +71,7 @@ const FloatingBoxes = ({ speedMultiplier }) => {
         const temp = [];
         for (let i = 0; i < 20; i++) {
             temp.push({
-                position: [(Math.random() - 0.5) * 15, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 5],
-                rotation: [Math.random() * Math.PI, Math.random() * Math.PI, 0],
-                scale: Math.random() * 0.5 + 0.5
+                position: [(Math.random() - 0.5) * 15, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 5]
             });
         }
         return temp;
@@ -27,7 +80,7 @@ const FloatingBoxes = ({ speedMultiplier }) => {
     return (
         <group>
             {boxes.map((box, i) => (
-                <GiftBox key={i} {...box} speedMultiplier={speedMultiplier} />
+                <GiftBox key={i} position={box.position} speedMultiplier={speedMultiplier} />
             ))}
         </group>
     );
@@ -38,7 +91,7 @@ const CynicalBackground = () => {
 
     const handleClick = () => {
         setSpeedMultiplier(5);
-        setTimeout(() => setSpeedMultiplier(1), 1000); // Reset after 1 second
+        setTimeout(() => setSpeedMultiplier(1), 1000);
     };
 
     return (
