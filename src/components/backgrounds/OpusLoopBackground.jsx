@@ -6,8 +6,8 @@ const Galaxy = () => {
     const pointsRef = useRef();
 
     const parameters = {
-        count: 5000,
-        size: 0.02,
+        count: 8000, // Increased particle count
+        size: 0.025, // Slightly larger particles
         radius: 5,
         branches: 2,
         spin: 3, // Increased for more coiling
@@ -17,10 +17,9 @@ const Galaxy = () => {
         outsideColor: '#1a2d6b'  // Less saturated
     };
 
-    const { positions, colors, alphas } = useMemo(() => {
+    const { positions, colors } = useMemo(() => {
         const positions = new Float32Array(parameters.count * 3);
         const colors = new Float32Array(parameters.count * 3);
-        const alphas = new Float32Array(parameters.count);
 
         const colorInside = new THREE.Color(parameters.insideColor);
         const colorOutside = new THREE.Color(parameters.outsideColor);
@@ -41,20 +40,20 @@ const Galaxy = () => {
             positions[i3 + 1] = randomY; // Flattened galaxy
             positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
-            // Color
-            const mixedColor = colorInside.clone();
-            mixedColor.lerp(colorOutside, radius / parameters.radius);
-
-            colors[i3] = mixedColor.r;
-            colors[i3 + 1] = mixedColor.g;
-            colors[i3 + 2] = mixedColor.b;
-
-            // Alpha - transparent at center, opaque at edges
+            // Color with opacity based on radius (brighter at edges)
             const normalizedRadius = radius / parameters.radius;
-            alphas[i] = Math.pow(normalizedRadius, 0.5); // Square root for gentler falloff
+            const mixedColor = colorInside.clone();
+            mixedColor.lerp(colorOutside, normalizedRadius);
+
+            // Make colors brighter at the edges
+            const brightnessFactor = 0.5 + (normalizedRadius * 0.5);
+
+            colors[i3] = mixedColor.r * brightnessFactor;
+            colors[i3 + 1] = mixedColor.g * brightnessFactor;
+            colors[i3 + 2] = mixedColor.b * brightnessFactor;
         }
 
-        return { positions, colors, alphas };
+        return { positions, colors };
     }, []);
 
     useFrame((state) => {
@@ -78,42 +77,15 @@ const Galaxy = () => {
                     array={colors}
                     itemSize={3}
                 />
-                <bufferAttribute
-                    attach="attributes-alpha"
-                    count={parameters.count}
-                    array={alphas}
-                    itemSize={1}
-                />
             </bufferGeometry>
-            <shaderMaterial
-                vertexShader={`
-                    attribute float alpha;
-                    attribute vec3 color;
-                    varying vec3 vColor;
-                    varying float vAlpha;
-                    
-                    void main() {
-                        vColor = color;
-                        vAlpha = alpha;
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        gl_PointSize = ${parameters.size} * (300.0 / -mvPosition.z);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `}
-                fragmentShader={`
-                    varying vec3 vColor;
-                    varying float vAlpha;
-                    
-                    void main() {
-                        float dist = length(gl_PointCoord - vec2(0.5));
-                        if (dist > 0.5) discard;
-                        gl_FragColor = vec4(vColor, vAlpha);
-                    }
-                `}
-                transparent={true}
+            <pointsMaterial
+                size={parameters.size}
+                sizeAttenuation={true}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
                 vertexColors={true}
+                transparent={true}
+                opacity={0.8}
             />
         </points>
     );
