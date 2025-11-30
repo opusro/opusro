@@ -32,7 +32,7 @@ function App() {
         BackgroundComponent={CynicalBackground}
         comingSoonText="Coming soon"
         renderAction={() => (
-          <form name="cynical-notify" method="POST" data-netlify="true" style={{ display: 'flex', gap: '10px', width: '100%', maxWidth: '400px' }}>
+          <form name="cynical-notify" method="POST" data-netlify="true" style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}>
             <input type="hidden" name="form-name" value="cynical-notify" />
             <input
               type="email"
@@ -40,19 +40,21 @@ function App() {
               placeholder="Enter your email"
               required
               style={{
-                flex: 1,
+                width: '100%',
                 padding: '12px 20px',
                 borderRadius: '30px',
                 border: 'none',
                 background: 'rgba(255,255,255,0.1)',
                 color: '#fff',
                 fontSize: '1rem',
-                outline: 'none'
+                outline: 'none',
+                boxSizing: 'border-box'
               }}
             />
             <button
               type="submit"
               style={{
+                width: '100%',
                 padding: '12px 25px',
                 borderRadius: '30px',
                 border: 'none',
@@ -60,7 +62,7 @@ function App() {
                 color: '#000',
                 fontWeight: 600,
                 cursor: 'pointer',
-                whiteSpace: 'nowrap'
+                fontSize: '1rem'
               }}
             >
               Notify me
@@ -72,26 +74,47 @@ function App() {
       <ProductSection
         title="Anti-Social Social Network"
         description="You won't make new friends here. But you'll own the ones you have."
-        videoSrc="/samplevideo.mp4"
         appIcon="/appIcon.png"
         BackgroundComponent={AssnBackground}
         comingSoonText="Coming in Q2 2026"
+        hidePhone={true}
         renderAction={() => (
-          <button
-            disabled
-            style={{
-              padding: '12px 30px',
-              background: '#333',
-              color: '#888',
-              borderRadius: '30px',
-              fontWeight: 600,
-              fontSize: '1rem',
-              cursor: 'not-allowed',
-              border: 'none'
-            }}
-          >
-            ass.network
-          </button>
+          <form name="assn-notify" method="POST" data-netlify="true" style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}>
+            <input type="hidden" name="form-name" value="assn-notify" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+              style={{
+                width: '100%',
+                padding: '12px 20px',
+                borderRadius: '30px',
+                border: 'none',
+                background: 'rgba(255,255,255,0.1)',
+                color: '#fff',
+                fontSize: '1rem',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                width: '100%',
+                padding: '12px 25px',
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fff',
+                color: '#000',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Notify me
+            </button>
+          </form>
         )}
       />
 

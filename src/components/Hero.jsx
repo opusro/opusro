@@ -4,14 +4,14 @@ import { motion } from 'framer-motion';
 const Hero = () => {
     return (
         <section style={{
-            minHeight: '100vh',
+            position: 'relative',
+            minHeight: '70vh',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            position: 'relative',
-            zIndex: 10,
-            background: 'radial-gradient(circle at center, #111 0%, #050505 100%)'
+            background: 'radial-gradient(circle at center, rgba(20,20,20,1) 0%, rgba(5,5,5,1) 70%)',
+            paddingBottom: '4rem'
         }}>
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}

@@ -1,3 +1,4 @@
+```
 import React from 'react';
 import { motion } from 'framer-motion';
 import Smartphone from './Smartphone';
@@ -11,7 +12,8 @@ const ProductSection = ({
     appIcon,
     BackgroundComponent,
     renderAction,
-    comingSoonText
+    comingSoonText,
+    hidePhone = false
 }) => {
     return (
         <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4rem 2rem' }}>
@@ -57,14 +59,16 @@ const ProductSection = ({
                 </motion.div>
 
                 {/* Middle Section: Phone Mockup */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    viewport={{ once: true, margin: "-100px" }}
-                >
-                    <Smartphone videoSrc={videoSrc} appIcon={appIcon} appName={title} />
-                </motion.div>
+        {!hidePhone && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Smartphone videoSrc={videoSrc} appIcon={appIcon} appName={title} />
+          </motion.div>
+        )}
 
                 {/* Bottom Section: Coming Soon Text + Actions */}
                 <motion.div
