@@ -60,18 +60,17 @@ const Galaxy = () => {
         if (pointsRef.current) {
             pointsRef.current.rotation.y += 0.001;
 
-            // Subtle particle movement
+            // Very subtle particle movement - much smaller offsets
             const positions = pointsRef.current.geometry.attributes.position.array;
             const time = state.clock.elapsedTime;
 
             for (let i = 0; i < parameters.count; i++) {
                 const i3 = i * 3;
 
-                // Add very subtle sine wave movement to each particle
-                // Use particle index to offset the wave for variety
-                const offsetX = Math.sin(time * 0.3 + i * 0.01) * 0.015;
-                const offsetY = Math.cos(time * 0.2 + i * 0.015) * 0.015;
-                const offsetZ = Math.sin(time * 0.25 + i * 0.02) * 0.015;
+                // Extremely subtle sine wave movement - reduced by 10x
+                const offsetX = Math.sin(time * 0.3 + i * 0.01) * 0.0015;
+                const offsetY = Math.cos(time * 0.2 + i * 0.015) * 0.0015;
+                const offsetZ = Math.sin(time * 0.25 + i * 0.02) * 0.0015;
 
                 positions[i3] += offsetX;
                 positions[i3 + 1] += offsetY;
@@ -114,7 +113,7 @@ const Galaxy = () => {
 const OpusLoopBackground = () => {
     return (
         <div style={{ width: '100%', height: '100%', background: '#050505', position: 'relative' }}>
-            <Canvas camera={{ position: [0, 3, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, -2, 0)}>
+            <Canvas camera={{ position: [0, 3, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, -4, 0)}>
                 <Galaxy />
             </Canvas>
             {/* Vignette effect to fade edges to black */}
