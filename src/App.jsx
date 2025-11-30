@@ -30,72 +30,68 @@ function App() {
         videoSrc="/samplevideo.mp4"
         appIcon="/appIcon.png"
         BackgroundComponent={CynicalBackground}
+        comingSoonText="Coming soon"
         renderAction={() => (
-          <div style={{ width: '100%', maxWidth: '400px' }}>
-            <form name="cynical-notify" method="POST" data-netlify="true" style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
-              <input type="hidden" name="form-name" value="cynical-notify" />
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                required
-                style={{
-                  flex: 1,
-                  padding: '12px 20px',
-                  borderRadius: '30px',
-                  border: 'none',
-                  background: 'rgba(255,255,255,0.1)',
-                  color: '#fff',
-                  fontSize: '1rem',
-                  outline: 'none'
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  padding: '12px 25px',
-                  borderRadius: '30px',
-                  border: 'none',
-                  background: '#fff',
-                  color: '#000',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Notify me
-              </button>
-            </form>
-            <p style={{ fontSize: '0.9rem', color: '#666' }}>Coming soon</p>
-          </div>
+          <form name="cynical-notify" method="POST" data-netlify="true" style={{ display: 'flex', gap: '10px', width: '100%', maxWidth: '400px' }}>
+            <input type="hidden" name="form-name" value="cynical-notify" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+              style={{
+                flex: 1,
+                padding: '12px 20px',
+                borderRadius: '30px',
+                border: 'none',
+                background: 'rgba(255,255,255,0.1)',
+                color: '#fff',
+                fontSize: '1rem',
+                outline: 'none'
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                padding: '12px 25px',
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fff',
+                color: '#000',
+                fontWeight: 600,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Notify me
+            </button>
+          </form>
         )}
       />
 
       <ProductSection
         title="Anti-Social Social Network"
-        description="You won’t make new friends here. But you’ll own the ones you have."
+        description="You won't make new friends here. But you'll own the ones you have."
         videoSrc="/samplevideo.mp4"
         appIcon="/appIcon.png"
         BackgroundComponent={AssnBackground}
+        comingSoonText="Coming in Q2 2026"
         renderAction={() => (
-          <div>
-            <button
-              disabled
-              style={{
-                padding: '12px 30px',
-                background: '#333',
-                color: '#888',
-                borderRadius: '30px',
-                fontWeight: 600,
-                fontSize: '1rem',
-                cursor: 'not-allowed',
-                marginBottom: '0.5rem'
-              }}
-            >
-              ass.network
-            </button>
-            <p style={{ fontSize: '0.9rem', color: '#666' }}>Coming in Q2 2026</p>
-          </div>
+          <button
+            disabled
+            style={{
+              padding: '12px 30px',
+              background: '#333',
+              color: '#888',
+              borderRadius: '30px',
+              fontWeight: 600,
+              fontSize: '1rem',
+              cursor: 'not-allowed',
+              border: 'none'
+            }}
+          >
+            ass.network
+          </button>
         )}
       />
 

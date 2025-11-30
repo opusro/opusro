@@ -11,7 +11,7 @@ const Smartphone = ({ videoSrc, appIcon, appName }) => {
             border: '4px solid #000000',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,255,255,0.08)'
         }}>
             {/* Screen Content */}
             <div style={{ width: '100%', height: '100%', position: 'relative' }}>

@@ -10,16 +10,17 @@ const Galaxy = () => {
         size: 0.02,
         radius: 5,
         branches: 2,
-        spin: 1,
+        spin: 3, // Increased for more coiling
         randomness: 0.2,
         randomnessPower: 3,
-        insideColor: '#ff6030',
-        outsideColor: '#1b3984'
+        insideColor: '#cc4020', // Less saturated
+        outsideColor: '#1a2d6b'  // Less saturated
     };
 
-    const { positions, colors } = useMemo(() => {
+    const { positions, colors, alphas } = useMemo(() => {
         const positions = new Float32Array(parameters.count * 3);
         const colors = new Float32Array(parameters.count * 3);
+        const alphas = new Float32Array(parameters.count);
 
         const colorInside = new THREE.Color(parameters.insideColor);
         const colorOutside = new THREE.Color(parameters.outsideColor);
@@ -47,9 +48,13 @@ const Galaxy = () => {
             colors[i3] = mixedColor.r;
             colors[i3 + 1] = mixedColor.g;
             colors[i3 + 2] = mixedColor.b;
+
+            // Alpha - transparent at center, opaque at edges
+            const normalizedRadius = radius / parameters.radius;
+            alphas[i] = normalizedRadius * normalizedRadius; // Quadratic falloff for smoother gradient
         }
 
-        return { positions, colors };
+        return { positions, colors, alphas };
     }, []);
 
     useFrame((state) => {
@@ -73,10 +78,39 @@ const Galaxy = () => {
                     array={colors}
                     itemSize={3}
                 />
+                <bufferAttribute
+                    attach="attributes-alpha"
+                    count={parameters.count}
+                    array={alphas}
+                    itemSize={1}
+                />
             </bufferGeometry>
-            <pointsMaterial
-                size={parameters.size}
-                sizeAttenuation={true}
+            <shaderMaterial
+                vertexShader={`
+                    attribute float alpha;
+                    attribute vec3 color;
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    void main() {
+                        vColor = color;
+                        vAlpha = alpha;
+                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = ${parameters.size} * (300.0 / -mvPosition.z);
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `}
+                fragmentShader={`
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    void main() {
+                        float dist = length(gl_PointCoord - vec2(0.5));
+                        if (dist > 0.5) discard;
+                        gl_FragColor = vec4(vColor, vAlpha);
+                    }
+                `}
+                transparent={true}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
                 vertexColors={true}
