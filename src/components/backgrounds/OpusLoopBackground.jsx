@@ -40,13 +40,13 @@ const Galaxy = () => {
             positions[i3 + 1] = randomY; // Flattened galaxy
             positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
-            // Color with opacity based on radius (brighter at edges)
+            // Color with opacity based on radius (brighter at edges, darker at center)
             const normalizedRadius = radius / parameters.radius;
             const mixedColor = colorInside.clone();
             mixedColor.lerp(colorOutside, normalizedRadius);
 
-            // Make colors brighter at the edges
-            const brightnessFactor = 0.5 + (normalizedRadius * 0.5);
+            // Make colors much darker at center, brighter at edges
+            const brightnessFactor = 0.2 + (normalizedRadius * 0.8); // Range from 0.2 to 1.0
 
             colors[i3] = mixedColor.r * brightnessFactor;
             colors[i3 + 1] = mixedColor.g * brightnessFactor;
@@ -93,10 +93,20 @@ const Galaxy = () => {
 
 const OpusLoopBackground = () => {
     return (
-        <div style={{ width: '100%', height: '100%', background: '#050505' }}>
-            <Canvas camera={{ position: [0, 5, 0], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, 0, 0)}>
+        <div style={{ width: '100%', height: '100%', background: '#050505', position: 'relative' }}>
+            <Canvas camera={{ position: [0, -2, 5], fov: 60, up: [0, 0, -1] }} onCreated={({ camera }) => camera.lookAt(0, -2, 0)}>
                 <Galaxy />
             </Canvas>
+            {/* Vignette effect to fade edges to black */}
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'radial-gradient(circle at center, transparent 0%, transparent 40%, rgba(5,5,5,0.5) 70%, #050505 100%)',
+                pointerEvents: 'none'
+            }} />
         </div>
     );
 };
