@@ -28,26 +28,26 @@ const GiftBox = ({ position, speedMultiplier }) => {
                     roughness={0.8}
                 />
             </mesh>
-            {/* Ribbon 1 - White - Wraps around Front/Back/Top/Bottom */}
+            {/* Ribbon 1 - Shiny Gray */}
             <mesh position={[0, 0, 0]}>
                 <boxGeometry args={[0.1, 0.51, 0.51]} />
                 <meshStandardMaterial
-                    color="#ffffff"
-                    metalness={0.1}
-                    roughness={0.9}
-                    emissive="#ffffff"
-                    emissiveIntensity={0.1}
+                    color="#888888"
+                    metalness={0.8}
+                    roughness={0.2}
+                    emissive="#444444"
+                    emissiveIntensity={0.2}
                 />
             </mesh>
-            {/* Ribbon 2 - White - Wraps around Left/Right/Top/Bottom */}
+            {/* Ribbon 2 - Shiny Gray */}
             <mesh position={[0, 0, 0]}>
                 <boxGeometry args={[0.51, 0.51, 0.1]} />
                 <meshStandardMaterial
-                    color="#ffffff"
-                    metalness={0.1}
-                    roughness={0.9}
-                    emissive="#ffffff"
-                    emissiveIntensity={0.1}
+                    color="#888888"
+                    metalness={0.8}
+                    roughness={0.2}
+                    emissive="#444444"
+                    emissiveIntensity={0.2}
                 />
             </mesh>
         </group>
@@ -84,7 +84,12 @@ const CynicalBackground = () => {
 
     return (
         <div
-            style={{ width: '100%', height: '100%', background: '#0a0a0a', cursor: 'pointer' }}
+            style={{
+                width: '100%',
+                height: '100%',
+                background: 'radial-gradient(circle at center, #1a1a1a 0%, #000000 70%)',
+                cursor: 'pointer'
+            }}
             onClick={handleClick}
         >
             <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
@@ -92,7 +97,7 @@ const CynicalBackground = () => {
                 <pointLight position={[10, 10, 10]} intensity={1.5} />
                 <pointLight position={[-10, -10, -10]} intensity={0.8} />
                 <FloatingBoxes speedMultiplier={speedMultiplier} />
-                <fog attach="fog" args={['#0a0a0a', 5, 20]} />
+                <fog attach="fog" args={['#000000', 5, 20]} />
             </Canvas>
         </div>
     );

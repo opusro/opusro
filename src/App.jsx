@@ -26,7 +26,7 @@ function App() {
             method="POST"
             data-netlify="true"
             action="/success"
-            style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '400px' }}
           >
             <input type="hidden" name="form-name" value="cynical-notify" />
             <input
@@ -79,7 +79,7 @@ function App() {
             method="POST"
             data-netlify="true"
             action="/success"
-            style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '400px' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '400px' }}
           >
             <input type="hidden" name="form-name" value="assn-notify" />
             <input

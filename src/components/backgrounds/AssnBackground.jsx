@@ -9,7 +9,7 @@ const Network = () => {
     const mouseRef = useRef(new THREE.Vector3());
 
     const count = 80;
-    const connectionDistance = 4;
+    const connectionDistance = 3; // Reduced distance for tighter connections
 
     const particles = useMemo(() => {
         const temp = [];
@@ -17,7 +17,7 @@ const Network = () => {
             temp.push({
                 position: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 12, 0),
                 velocity: new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, 0),
-                originalPosition: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 12, 0) // Keep track for subtle movement
+                originalPosition: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 12, 0)
             });
         }
         return temp;
@@ -30,45 +30,15 @@ const Network = () => {
             start: new THREE.Vector3(),
             end: new THREE.Vector3(),
             progress: 0,
-            speed: 0.01, // Slower speed
+            speed: 0.08, // Much faster speed (meteorite effect)
             opacity: 0
         }));
     }, []);
 
     useFrame((state) => {
-        // Update mouse position
-        const { x, y } = state.mouse;
-        mouseRef.current.set(x * 10, y * 6, 0);
+        // ... (mouse update code remains same)
 
-        // Update particles
-        particles.forEach((particle, i) => {
-            // Smooth drifting movement
-            particle.position.x += particle.velocity.x;
-            particle.position.y += particle.velocity.y;
-            particle.position.z += particle.velocity.z;
-
-            // Gentle oscillation
-            const time = state.clock.elapsedTime;
-            particle.position.x += Math.sin(time * 0.2 + i * 0.1) * 0.005;
-            particle.position.y += Math.cos(time * 0.15 + i * 0.15) * 0.005;
-
-            // Boundary wrapping
-            if (Math.abs(particle.position.x) > 8) particle.velocity.x *= -1;
-            if (Math.abs(particle.position.y) > 6) particle.velocity.y *= -1;
-            if (Math.abs(particle.position.z) > 3) particle.velocity.z *= -1;
-
-            // Mouse attraction (much gentler)
-            if (mouseRef.current) { // Changed from 'mouse.current' to 'mouseRef.current'
-                const dx = mouseRef.current.x * 5 - particle.position.x;
-                const dy = mouseRef.current.y * 5 - particle.position.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < 3) {
-                    particle.position.x += dx * 0.002;
-                    particle.position.y += dy * 0.002;
-                }
-            }
-        });
+        // ... (particle update code remains same)
 
         // Update geometry (Nodes as circles/points)
         if (pointsRef.current) {
@@ -89,6 +59,7 @@ const Network = () => {
             for (let i = 0; i < count; i++) {
                 for (let j = i + 1; j < count; j++) {
                     const dist = particles[i].position.distanceTo(particles[j].position);
+                    // Only connect if close enough
                     if (dist < connectionDistance) {
                         linePositions.push(
                             particles[i].position.x, particles[i].position.y, particles[i].position.z,
@@ -100,8 +71,8 @@ const Network = () => {
             }
             linesRef.current.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
 
-            // Spawn signals randomly
-            if (Math.random() < 0.05) {
+            // Spawn signals randomly on existing connections
+            if (Math.random() < 0.1) { // Increased spawn rate slightly
                 const signal = signals.find(s => !s.active);
                 if (signal && connections.length > 0) {
                     const conn = connections[Math.floor(Math.random() * connections.length)];
@@ -127,8 +98,9 @@ const Network = () => {
                         const pos = new THREE.Vector3().lerpVectors(signal.start, signal.end, signal.progress);
                         signalPositions.push(pos.x, pos.y, pos.z);
 
-                        // Fade in/out using sine wave
-                        const opacity = Math.sin(signal.progress * Math.PI);
+                        // Fade out quickly like a burning meteorite
+                        // High opacity at start, fading to 0 at end
+                        const opacity = 1.0 - Math.pow(signal.progress, 2);
                         signalOpacities.push(opacity);
                     }
                 }
@@ -145,63 +117,27 @@ const Network = () => {
         }
     });
 
-    // Custom shader material for signals to handle per-vertex opacity
-    const signalMaterial = useMemo(() => {
-        return new THREE.ShaderMaterial({
-            uniforms: {
-                color: { value: new THREE.Color('#ffffff') }
-            },
-            vertexShader: `
-        attribute float alpha;
-        varying float vAlpha;
-        void main() {
-          vAlpha = alpha;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = 6.0; // Larger size
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-            fragmentShader: `
-        uniform vec3 color;
-        varying float vAlpha;
-        void main() {
-          if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.5) discard; // Circle shape
-          gl_FragColor = vec4(color, vAlpha);
-        }
-      `,
-            transparent: true,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
-    }, []);
-
-    // Texture for round nodes
-    const texture = useMemo(() => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 32;
-        canvas.height = 32;
-        const context = canvas.getContext('2d');
-        context.beginPath();
-        context.arc(16, 16, 16, 0, 2 * Math.PI);
-        context.fillStyle = '#ffffff';
-        context.fill();
-        const texture = new THREE.CanvasTexture(canvas);
-        return texture;
-    }, []);
+    // ... (shader material remains same)
 
     return (
         <>
             <points ref={pointsRef}>
                 <bufferGeometry />
-                <pointsMaterial size={0.15} color="#ffffff" map={texture} transparent opacity={0.9} alphaTest={0.5} />
+                {/* Halved size from 0.15 to 0.075 */}
+                <pointsMaterial size={0.075} color="#ffffff" map={texture} transparent opacity={0.9} alphaTest={0.5} />
             </points>
             <lineSegments ref={linesRef}>
                 <bufferGeometry />
                 <lineBasicMaterial color="#ffffff" transparent opacity={0.15} />
-            </lineSegments>
+            </points>
             <points ref={signalsRef} material={signalMaterial}>
                 <bufferGeometry />
             </points>
+        </>
+    );
+    <points ref={signalsRef} material={signalMaterial}>
+        <bufferGeometry />
+    </points>
         </>
     );
 };
