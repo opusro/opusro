@@ -36,9 +36,39 @@ const Network = () => {
     }, []);
 
     useFrame((state) => {
-        // ... (mouse update code remains same)
+        // Update mouse position
+        const { x, y } = state.mouse;
+        mouseRef.current.set(x * 10, y * 6, 0);
 
-        // ... (particle update code remains same)
+        // Update particles
+        particles.forEach((particle, i) => {
+            // Smooth drifting movement
+            particle.position.x += particle.velocity.x;
+            particle.position.y += particle.velocity.y;
+            particle.position.z += particle.velocity.z;
+
+            // Gentle oscillation
+            const time = state.clock.elapsedTime;
+            particle.position.x += Math.sin(time * 0.2 + i * 0.1) * 0.005;
+            particle.position.y += Math.cos(time * 0.15 + i * 0.15) * 0.005;
+
+            // Boundary wrapping
+            if (Math.abs(particle.position.x) > 8) particle.velocity.x *= -1;
+            if (Math.abs(particle.position.y) > 6) particle.velocity.y *= -1;
+            if (Math.abs(particle.position.z) > 3) particle.velocity.z *= -1;
+
+            // Mouse attraction (much gentler)
+            if (mouseRef.current) {
+                const dx = mouseRef.current.x * 5 - particle.position.x;
+                const dy = mouseRef.current.y * 5 - particle.position.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 3) {
+                    particle.position.x += dx * 0.002;
+                    particle.position.y += dy * 0.002;
+                }
+            }
+        });
 
         // Update geometry (Nodes as circles/points)
         if (pointsRef.current) {
@@ -117,7 +147,49 @@ const Network = () => {
         }
     });
 
-    // ... (shader material remains same)
+    // Custom shader material for signals to handle per-vertex opacity
+    const signalMaterial = useMemo(() => {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                color: { value: new THREE.Color('#ffffff') }
+            },
+            vertexShader: `
+        attribute float alpha;
+        varying float vAlpha;
+        void main() {
+          vAlpha = alpha;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = 6.0; // Larger size
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+            fragmentShader: `
+        uniform vec3 color;
+        varying float vAlpha;
+        void main() {
+          if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.5) discard; // Circle shape
+          gl_FragColor = vec4(color, vAlpha);
+        }
+      `,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    }, []);
+
+    // Texture for round nodes
+    const texture = useMemo(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const context = canvas.getContext('2d');
+        context.beginPath();
+        context.arc(16, 16, 16, 0, 2 * Math.PI);
+        context.fillStyle = '#ffffff';
+        context.fill();
+        const texture = new THREE.CanvasTexture(canvas);
+        return texture;
+    }, []);
 
     return (
         <>
@@ -129,15 +201,10 @@ const Network = () => {
             <lineSegments ref={linesRef}>
                 <bufferGeometry />
                 <lineBasicMaterial color="#ffffff" transparent opacity={0.15} />
-            </points>
+            </lineSegments>
             <points ref={signalsRef} material={signalMaterial}>
                 <bufferGeometry />
             </points>
-        </>
-    );
-    <points ref={signalsRef} material={signalMaterial}>
-        <bufferGeometry />
-    </points>
         </>
     );
 };

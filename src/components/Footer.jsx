@@ -21,9 +21,15 @@ const Footer = () => {
 
                 {/* Social Links */}
                 <div style={{ display: 'flex', gap: '2rem', fontSize: '1.5rem' }}>
-                    <a href="#" style={{ color: '#fff', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#ccc'} onMouseLeave={e => e.target.style.color = '#fff'}><FaInstagram /></a>
-                    <a href="#" style={{ color: '#fff', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#ccc'} onMouseLeave={e => e.target.style.color = '#fff'}><FaYoutube /></a>
-                    <a href="mailto:hello@opus.ro" style={{ color: '#fff', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#ccc'} onMouseLeave={e => e.target.style.color = '#fff'}><MdEmail /></a>
+                    <a href="https://www.instagram.com/opus.ro" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', fontSize: '1.5rem', transition: 'color 0.3s' }}>
+                        <FaInstagram />
+                    </a>
+                    <a href="https://www.youtube.com/@opusro" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', fontSize: '1.5rem', transition: 'color 0.3s' }}>
+                        <FaYoutube />
+                    </a>
+                    <a href="mailto:hello@opus.ro" style={{ color: '#fff', fontSize: '1.5rem', transition: 'color 0.3s' }}>
+                        <MdEmail />
+                    </a>
                 </div>
 
                 {/* Made with Love */}

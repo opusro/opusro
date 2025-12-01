@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import HeroWithOpusLoop from './components/HeroWithOpusLoop';
 import ProductSection from './components/ProductSection';
 import Footer from './components/Footer';
-import CynicalBackground from './components/backgrounds/CynicalBackground';
-import AssnBackground from './components/backgrounds/AssnBackground';
+
+// Lazy load heavy background components
+const CynicalBackground = lazy(() => import('./components/backgrounds/CynicalBackground'));
+const AssnBackground = lazy(() => import('./components/backgrounds/AssnBackground'));
+
+// Loading fallback
+const LoadingBackground = () => <div style={{ width: '100%', height: '100%', background: '#000' }} />;
 
 // Placeholder components until they are implemented
 const Placeholder = ({ text }) => <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #333' }}>{text}</div>;
@@ -13,13 +18,18 @@ function App() {
     <div className="app">
       <HeroWithOpusLoop />
 
+      {/* CyniCal Section */}
       <ProductSection
         title="CyniCal"
         description="The brain was not designed to hold onto gift ideas for more than 48 hours. Yours especially."
-        videoSrc="/samplevideo.mp4"
-        appIcon="/appIcon.png"
-        BackgroundComponent={CynicalBackground}
+        iconSrc="/cynicalIcon.png"
+        BackgroundComponent={() => (
+          <Suspense fallback={<LoadingBackground />}>
+            <CynicalBackground />
+          </Suspense>
+        )}
         comingSoonText="Coming soon"
+        hidePhone={true}
         renderAction={() => (
           <form
             name="cynical-notify"
@@ -35,30 +45,33 @@ function App() {
               placeholder="Enter your email"
               required
               style={{
-                width: '100%',
                 padding: '12px 20px',
-                borderRadius: '30px',
-                border: 'none',
-                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                border: '1px solid #333',
+                background: 'rgba(255, 255, 255, 0.1)',
                 color: '#fff',
                 fontSize: '1rem',
                 outline: 'none',
+                width: '100%',
                 boxSizing: 'border-box'
               }}
             />
             <button
               type="submit"
               style={{
-                width: '100%',
-                padding: '12px 25px',
-                borderRadius: '30px',
-                border: 'none',
+                padding: '12px 30px',
                 background: '#fff',
                 color: '#000',
+                borderRadius: '8px',
                 fontWeight: 600,
+                fontSize: '1rem',
+                border: 'none',
                 cursor: 'pointer',
-                fontSize: '1rem'
+                transition: 'transform 0.2s',
+                width: '100%'
               }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
               Notify me
             </button>
@@ -66,11 +79,16 @@ function App() {
         )}
       />
 
+      {/* ASSN Section */}
       <ProductSection
-        title="Anti-Social Social Network"
-        description="You won't make new friends here. But you'll own the ones you have."
-        appIcon="/appIcon.png"
-        BackgroundComponent={AssnBackground}
+        title="ass.network"
+        description="anti-social social network"
+        iconSrc="/assnIcon.png"
+        BackgroundComponent={() => (
+          <Suspense fallback={<LoadingBackground />}>
+            <AssnBackground />
+          </Suspense>
+        )}
         comingSoonText="Coming in Q2 2026"
         hidePhone={true}
         renderAction={() => (

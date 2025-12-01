@@ -104,7 +104,24 @@ const HeroWithOpusLoop = () => {
                             maxWidth: '800px'
                         }}
                     >
-                        <img src="/appIcon.png" alt="Opus Loop" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '1rem', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }} />
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            style={{ marginBottom: '2rem' }}
+                        >
+                            <img
+                                src="/loopIcon.png"
+                                alt="Opus Loop Icon"
+                                style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '18px',
+                                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                                }}
+                            />
+                        </motion.div>
                         <h2 style={{ fontSize: '3rem', fontWeight: 600, color: '#ffffff', margin: '0 0 1rem 0', textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 4px 40px rgba(0,0,0,0.6)' }}>Opus Loop</h2>
                         <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: '#e0e0e0', margin: 0, textShadow: '0 2px 16px rgba(0,0,0,0.8), 0 4px 32px rgba(0,0,0,0.6)' }}>
                             Your personal tool for your mindful moments. No subscription, no bloated library of content. Just your soundscapes and your mind.
@@ -112,13 +129,22 @@ const HeroWithOpusLoop = () => {
                     </motion.div>
 
                     {/* Phone Mockup - Centered */}
+                    {/* Phone Mockup */}
                     <motion.div
                         initial={{ opacity: 1, scale: 1 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true }}
+                        style={{
+                            width: '100%',
+                            maxWidth: '300px', // Reduced from 320px
+                            margin: '0 auto'
+                        }}
                     >
-                        <Smartphone videoSrc="/samplevideo.mp4" appIcon="/appIcon.png" appName="Opus Loop" />
+                        <Smartphone
+                            videoSrc="/opusloop.mp4"
+                            appIcon="/loopIcon.png"
+                            appName="Opus Loop"
+                        />
                     </motion.div>
 
                     {/* Button */}
