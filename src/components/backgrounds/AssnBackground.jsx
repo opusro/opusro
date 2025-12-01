@@ -193,11 +193,11 @@ const Network = () => {
         <>
             <points ref={pointsRef}>
                 <bufferGeometry />
-                <pointsMaterial size={0.15} color="#ffffff" map={texture} transparent opacity={0.8} alphaTest={0.5} />
+                <pointsMaterial size={0.15} color="#ffffff" map={texture} transparent opacity={0.9} alphaTest={0.5} />
             </points>
             <lineSegments ref={linesRef}>
                 <bufferGeometry />
-                <lineBasicMaterial color="#ffffff" transparent opacity={0.05} />
+                <lineBasicMaterial color="#ffffff" transparent opacity={0.15} />
             </lineSegments>
             <points ref={signalsRef} material={signalMaterial}>
                 <bufferGeometry />

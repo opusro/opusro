@@ -19,40 +19,35 @@ const GiftBox = ({ position, speedMultiplier }) => {
 
     return (
         <group ref={groupRef} position={position}>
-            {/* Main box - dark gray */}
+            {/* Main box - Black */}
             <mesh>
                 <boxGeometry args={[0.5, 0.5, 0.5]} />
                 <meshStandardMaterial
-                    color="#2c2c2c"
-                    metalness={0.3}
-                    roughness={0.6}
+                    color="#111111"
+                    metalness={0.2}
+                    roughness={0.8}
                 />
             </mesh>
-            {/* Ribbon horizontal - gold */}
+            {/* Ribbon 1 - White - Wraps around Front/Back/Top/Bottom */}
             <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[0.55, 0.08, 0.08]} />
+                <boxGeometry args={[0.1, 0.51, 0.51]} />
                 <meshStandardMaterial
-                    color="#d4af37"
-                    metalness={0.6}
-                    roughness={0.3}
+                    color="#ffffff"
+                    metalness={0.1}
+                    roughness={0.9}
+                    emissive="#ffffff"
+                    emissiveIntensity={0.1}
                 />
             </mesh>
-            {/* Ribbon vertical - gold */}
+            {/* Ribbon 2 - White - Wraps around Left/Right/Top/Bottom */}
             <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[0.08, 0.55, 0.08]} />
+                <boxGeometry args={[0.51, 0.51, 0.1]} />
                 <meshStandardMaterial
-                    color="#d4af37"
-                    metalness={0.6}
-                    roughness={0.3}
-                />
-            </mesh>
-            {/* Small bow on top */}
-            <mesh position={[0, 0.3, 0]}>
-                <sphereGeometry args={[0.1, 8, 8]} />
-                <meshStandardMaterial
-                    color="#c9a030"
-                    metalness={0.5}
-                    roughness={0.4}
+                    color="#ffffff"
+                    metalness={0.1}
+                    roughness={0.9}
+                    emissive="#ffffff"
+                    emissiveIntensity={0.1}
                 />
             </mesh>
         </group>
