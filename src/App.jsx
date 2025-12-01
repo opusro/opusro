@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import HeroWithOpusLoop from './components/HeroWithOpusLoop';
 import ProductSection from './components/ProductSection';
 import Footer from './components/Footer';
+import EmailSignupForm from './components/EmailSignupForm';
 import cynicalIcon from './assets/cynicalIcon.png';
 import assnIcon from './assets/assnIcon.png';
 
@@ -32,53 +33,7 @@ function App() {
         )}
         comingSoonText="Coming soon"
         hidePhone={true}
-        renderAction={() => (
-          <form
-            name="cynical-notify"
-            method="POST"
-            data-netlify="true"
-            action="/success"
-            style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '400px' }}
-          >
-            <input type="hidden" name="form-name" value="cynical-notify" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-              style={{
-                padding: '12px 20px',
-                borderRadius: '8px',
-                border: '1px solid #333',
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: '#fff',
-                fontSize: '1rem',
-                outline: 'none',
-                width: '100%',
-                boxSizing: 'border-box'
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                padding: '12px 30px',
-                background: '#fff',
-                color: '#000',
-                borderRadius: '8px',
-                fontWeight: 600,
-                fontSize: '1rem',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-                width: '100%'
-              }}
-              onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
-              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-            >
-              Notify me
-            </button>
-          </form>
-        )}
+        renderAction={() => <EmailSignupForm appName="cynical" />}
       />
 
       {/* ASSN Section */}
@@ -93,50 +48,7 @@ function App() {
         )}
         comingSoonText="Coming in Q2 2026"
         hidePhone={true}
-        renderAction={() => (
-          <form
-            name="assn-notify"
-            method="POST"
-            data-netlify="true"
-            action="/success"
-            style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '400px' }}
-          >
-            <input type="hidden" name="form-name" value="assn-notify" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-              style={{
-                width: '100%',
-                padding: '12px 20px',
-                borderRadius: '30px',
-                border: 'none',
-                background: 'rgba(255,255,255,0.1)',
-                color: '#fff',
-                fontSize: '1rem',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '12px 25px',
-                borderRadius: '30px',
-                border: 'none',
-                background: '#fff',
-                color: '#000',
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontSize: '1rem'
-              }}
-            >
-              Notify me
-            </button>
-          </form>
-        )}
+        renderAction={() => <EmailSignupForm appName="assn" />}
       />
 
       <Footer />

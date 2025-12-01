@@ -1,4 +1,3 @@
-```javascript
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import OpusLoopBackground from './backgrounds/OpusLoopBackground';
