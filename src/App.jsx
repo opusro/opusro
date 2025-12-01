@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import HeroWithOpusLoop from './components/HeroWithOpusLoop';
 import ProductSection from './components/ProductSection';
 import Footer from './components/Footer';
+import cynicalIcon from './assets/cynicalIcon.png';
+import assnIcon from './assets/assnIcon.png';
 
 // Lazy load heavy background components
 const CynicalBackground = lazy(() => import('./components/backgrounds/CynicalBackground'));
@@ -22,7 +24,7 @@ function App() {
       <ProductSection
         title="CyniCal"
         description="The brain was not designed to hold onto gift ideas for more than 48 hours. Yours especially."
-        iconSrc="/cynicalIcon.png"
+        iconSrc={cynicalIcon}
         BackgroundComponent={() => (
           <Suspense fallback={<LoadingBackground />}>
             <CynicalBackground />
@@ -83,7 +85,7 @@ function App() {
       <ProductSection
         title="ass.network"
         description="anti-social social network"
-        iconSrc="/assnIcon.png"
+        iconSrc={assnIcon}
         BackgroundComponent={() => (
           <Suspense fallback={<LoadingBackground />}>
             <AssnBackground />

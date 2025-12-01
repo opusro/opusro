@@ -1,7 +1,9 @@
+```javascript
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import OpusLoopBackground from './backgrounds/OpusLoopBackground';
 import Smartphone from './Smartphone';
+import loopIcon from '../assets/loopIcon.png';
 
 const HeroWithOpusLoop = () => {
     return (
@@ -112,7 +114,7 @@ const HeroWithOpusLoop = () => {
                             style={{ marginBottom: '2rem' }}
                         >
                             <img
-                                src="/loopIcon.png"
+                                src={loopIcon}
                                 alt="Opus Loop Icon"
                                 style={{
                                     width: '80px',
@@ -142,7 +144,7 @@ const HeroWithOpusLoop = () => {
                     >
                         <Smartphone
                             videoSrc="/opusloop.mp4"
-                            appIcon="/loopIcon.png"
+                            appIcon={loopIcon}
                             appName="Opus Loop"
                         />
                     </motion.div>
