@@ -130,11 +130,11 @@
   text-decoration: none;
   color: inherit;
   padding: var(--blog-space-lg) 0;
-  border-top: 2px solid var(--blog-border-accent);
+  border-top: 1px solid var(--blog-border);
 }
 
 .article-preview:last-child {
-  border-bottom: 2px solid var(--blog-border-accent);
+  border-bottom: 1px solid var(--blog-border);
 }
 
 .article-preview:hover .article-preview__title {
