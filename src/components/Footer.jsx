@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaInstagram, FaYoutube } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
@@ -18,6 +19,19 @@ const Footer = () => {
                     <h3 style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '0.5rem' }}>OPUS</h3>
                     <p style={{ fontSize: '0.9rem' }}>Human Experience Design</p>
                 </div>
+
+                {/* Blog Link */}
+                <Link to="/blog" style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '0.8125rem',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: '#999',
+                    textDecoration: 'none',
+                    transition: 'color 0.3s'
+                }}>
+                    Blog
+                </Link>
 
                 {/* Social Links */}
                 <div style={{ display: 'flex', gap: '2rem', fontSize: '1.5rem' }}>
