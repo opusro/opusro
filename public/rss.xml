@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OPUS Blog</title>
+    <link>https://opus.ro/blog</link>
+    <description>Human Experience Design - thoughts on building tools for people, not users.</description>
+    <language>en</language>
+    <atom:link href="https://opus.ro/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <!--
+      To add a new post, copy an <item> block and fill in:
+        title, link, guid (same as link), pubDate (RFC 2822), description
+    -->
+
+    <item>
+      <title>Ten Principles</title>
+      <link>https://opus.ro/blog/ten-principles</link>
+      <guid isPermaLink="true">https://opus.ro/blog/ten-principles</guid>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Respect attention. Ship less. Charge honestly. Stay small. These are not rules - they are decisions we made before the pressure arrived.</description>
+    </item>
+
+  </channel>
+</rss>

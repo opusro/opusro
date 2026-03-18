@@ -68,6 +68,8 @@ const DockIcon = ({
   mouseClientY,
   tilt,
   onClick,
+  disabled,
+  tooltip,
 }) => {
   const iconRef = useRef(null);
   const surfaceRef = useRef(null);
@@ -130,11 +132,13 @@ const DockIcon = ({
   return (
     <MotionButton
       type="button"
-      className="dock-icon"
-      onClick={onClick}
+      className={`dock-icon${disabled ? " dock-icon--disabled" : ""}`}
+      onClick={disabled ? undefined : onClick}
       style={{ scale }}
       ref={iconRef}
       aria-label={label}
+      aria-disabled={disabled || undefined}
+      title={disabled ? tooltip : undefined}
     >
       <MotionDiv
         className="dock-icon__surface"
@@ -145,7 +149,7 @@ const DockIcon = ({
           <IconGlyph type={type} />
         </span>
       </MotionDiv>
-      <span className="dock-icon__label">{label}</span>
+      <span className="dock-icon__label">{disabled && tooltip ? tooltip : label}</span>
     </MotionButton>
   );
 };

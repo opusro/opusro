@@ -58,6 +58,21 @@
   filter: brightness(1.05);
 }
 
+.dock-icon--disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.dock-icon--disabled:hover .dock-icon__surface {
+  border-color: #171717;
+  filter: none;
+}
+
+.dock-icon--disabled .dock-icon__label {
+  font-size: 9px;
+  white-space: nowrap;
+}
+
 .dock-icon__glyph {
   width: 30px;
   height: 30px;

@@ -14,10 +14,10 @@ const Dock = ({ onOpenProduct, onOpenBlog, onOpenContact }) => {
     () => [
       { id: "loop", type: "loop", label: "Loop", action: () => onOpenProduct("loop") },
       { id: "first", type: "first", label: "1st°", action: () => onOpenProduct("first") },
-      { id: "blog", type: "blog", label: "Blog", action: onOpenBlog },
+      { id: "blog", type: "blog", label: "Blog", disabled: true, tooltip: "Coming April 2026" },
       { id: "contact", type: "contact", label: "Contact", action: onOpenContact },
     ],
-    [onOpenBlog, onOpenContact, onOpenProduct],
+    [onOpenContact, onOpenProduct],
   );
 
   useEffect(() => {
@@ -93,6 +93,8 @@ const Dock = ({ onOpenProduct, onOpenBlog, onOpenContact }) => {
             mouseClientY={mouseClientY}
             tilt={tilt}
             onClick={item.action}
+            disabled={item.disabled}
+            tooltip={item.tooltip}
           />
         ))}
       </div>
