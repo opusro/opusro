@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OPUS Blog</title>
+    <link>https://opus.ro/blog</link>
+    <description>Human Experience Design — thoughts on building tools for people, not users.</description>
+    <language>en</language>
+    <atom:link href="https://opus.ro/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <!--
+      To add a new post, copy an <item> block and fill in:
+        title, link, guid (same as link), pubDate (RFC 2822), description
+    -->
+
+    <item>
+      <title>The Color of Nothing</title>
+      <link>https://opus.ro/blog/the-color-of-nothing</link>
+      <guid isPermaLink="true">https://opus.ro/blog/the-color-of-nothing</guid>
+      <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
+      <description>We spent three weeks choosing a background color. Pure black is a lie, four greys are all you need, and font weight is your real color palette.</description>
+    </item>
+
+    <item>
+      <title>Silence as a Feature</title>
+      <link>https://opus.ro/blog/silence-as-a-feature</link>
+      <guid isPermaLink="true">https://opus.ro/blog/silence-as-a-feature</guid>
+      <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Most apps are designed to prevent silence from ever arriving. We design for it.</description>
+    </item>
+
+    <item>
+      <title>The Stack Is the Statement</title>
+      <link>https://opus.ro/blog/the-stack-is-the-statement</link>
+      <guid isPermaLink="true">https://opus.ro/blog/the-stack-is-the-statement</guid>
+      <pubDate>Wed, 04 Feb 2026 00:00:00 GMT</pubDate>
+      <description>React, vanilla CSS, Three.js, static hosting. Every dependency is a bet — and we prefer to keep the odds in our favor.</description>
+    </item>
+
+    <item>
+      <title>Ten Principles</title>
+      <link>https://opus.ro/blog/ten-principles</link>
+      <guid isPermaLink="true">https://opus.ro/blog/ten-principles</guid>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Respect attention. Ship less. Charge honestly. Stay small. These are not rules — they are decisions we made before the pressure arrived.</description>
+    </item>
+
+    <item>
+      <title>Building for the Human Experience</title>
+      <link>https://opus.ro/blog/building-for-the-human-experience</link>
+      <guid isPermaLink="true">https://opus.ro/blog/building-for-the-human-experience</guid>
+      <pubDate>Fri, 02 Jan 2026 00:00:00 GMT</pubDate>
+      <description>The attention economy has failed us. Every app fights for your time. We decided to build differently.</description>
+    </item>
+
+  </channel>
+</rss>
