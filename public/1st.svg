@@ -1,0 +1,17 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="65" y="77" width="12" height="33" fill="white"/>
+<rect x="87" y="65" width="12" height="45" fill="white"/>
+<rect x="43" y="55" width="12" height="32" fill="white"/>
+<rect x="43" y="10" width="12" height="33" fill="white"/>
+<rect x="21" y="10" width="12" height="100" fill="white"/>
+<rect x="99" y="10" width="11" height="33" fill="white"/>
+<rect x="43" y="110" width="11" height="34" transform="rotate(-90 43 110)" fill="white"/>
+<rect x="43" y="87" width="10" height="34" transform="rotate(-90 43 87)" fill="white"/>
+<rect x="10" y="110" width="11" height="33" transform="rotate(-90 10 110)" fill="white"/>
+<rect x="10" y="110" width="11" height="33" transform="rotate(-90 10 110)" fill="white"/>
+<rect x="10" y="21" width="11" height="23" transform="rotate(-90 10 21)" fill="white"/>
+<rect x="43" y="65" width="10" height="34" transform="rotate(-90 43 65)" fill="white"/>
+<rect x="77" y="65" width="10" height="33" transform="rotate(-90 77 65)" fill="white"/>
+<rect x="43" y="43" width="10" height="67" transform="rotate(-90 43 43)" fill="white"/>
+<rect x="43" y="21" width="11" height="67" transform="rotate(-90 43 21)" fill="white"/>
+</svg>

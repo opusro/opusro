@@ -1,0 +1,92 @@
+import Figure from '../Figure'
+
+<Figure
+  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80"
+  alt="Code on a dark screen"
+  caption="Every dependency is a decision. Every decision is a statement."
+  full
+/>
+
+We get asked a lot about our tech stack. People expect a complicated answer — microservices, Kubernetes, a dozen SaaS integrations. They don't expect what we actually use.
+
+## The Boring Stack
+
+Here's what runs OPUS:
+
+- **React** for the frontend. Not Next.js, not Remix. Just React with Vite.
+- **Vanilla CSS** with custom properties. No Tailwind, no styled-components.
+- **Three.js** for the 3D backgrounds. Because some things deserve to be beautiful.
+- **Static hosting** on Netlify. No servers to manage.
+
+That's it. No state management library. No component library. No design system framework. We write our own components, our own styles, our own everything.
+
+## Why Less Is More
+
+Every dependency you add is a bet. You're betting that:
+
+1. The maintainers won't abandon it
+2. The API won't change in breaking ways
+3. The bundle size is worth the convenience
+4. The abstraction matches your mental model
+
+Most of the time, these bets work out. But they accumulate. A project with 200 dependencies has made 200 bets, and the odds of *all* of them paying off decrease with each one.
+
+> The best code is the code you understand completely. The second best is code you can delete without consequence.
+
+## An Example
+
+Here's how we handle animations. Most teams would reach for a library. We use Framer Motion — one of our few dependencies — because animation is *hard* and the API is genuinely good:
+
+```jsx
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, ease: "easeOut" }}
+  viewport={{ once: true }}
+>
+  {children}
+</motion.div>
+```
+
+But for styling? We write inline styles and CSS custom properties. Here's a real button from our codebase:
+
+```css
+:root {
+  --bg-color: #050505;
+  --text-color: #ffffff;
+  --accent-color: #ffffff;
+}
+```
+
+```jsx
+<a
+  style={{
+    padding: '12px 30px',
+    background: '#fff',
+    color: '#000',
+    borderRadius: '8px',
+    fontWeight: 600,
+  }}
+>
+  Download on the App Store
+</a>
+```
+
+No utility classes. No `className` juggling. Just styles, right there, where you can see them. Is it "scalable"? Probably not to 500 engineers. But we're not 500 engineers. We're a small team building focused products.
+
+## The Point
+
+Your stack is not your product. Your product is the experience someone has when they use what you built. If your stack helps you build that experience faster and with more clarity, it's the right stack — regardless of what Hacker News thinks.
+
+<Figure
+  src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1200&q=80"
+  alt="Minimal desk setup with laptop"
+  caption="A clean desk, a clean stack, a clear mind."
+  full
+/>
+
+We optimize for understanding. Every engineer on our team can read every line of our codebase and know exactly what it does. That's not a limitation — it's a superpower.
+
+---
+
+Ship less. Understand more. Build things that last.
