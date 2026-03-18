@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const LETTERS = ["O", "P", "U", "S"];
-const LETTER_STAGGER = 0.06;
+const LETTER_STAGGER = 0.1;
 
 const BrandMark = () => {
   const [expanded, setExpanded] = useState(false);
@@ -62,7 +62,7 @@ const BrandMark = () => {
                     },
                   }}
                   transition={{
-                    duration: 0.28,
+                    duration: 0.44,
                     delay: i * LETTER_STAGGER,
                     ease: [0.22, 1, 0.36, 1],
                   }}

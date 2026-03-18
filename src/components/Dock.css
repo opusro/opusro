@@ -89,23 +89,23 @@
   }
 
   .dock__tray {
-    gap: 8px;
-    padding: 8px 10px 10px;
-    border-radius: 24px;
+    gap: 10px;
+    padding: 10px 14px 12px;
+    border-radius: 26px;
   }
 
   .dock-icon {
-    width: 64px;
+    width: 72px;
     gap: 6px;
   }
 
   .dock-icon__surface {
-    width: 54px;
-    height: 54px;
+    width: 60px;
+    height: 60px;
   }
 
   .dock-icon__glyph {
-    width: 27px;
-    height: 27px;
+    width: 30px;
+    height: 30px;
   }
 }
