@@ -168,6 +168,14 @@
   margin: 6px 0 0;
   font-size: 0.82rem;
   color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.app-modal__heart {
+  width: 14px;
+  height: 14px;
 }
 
 .app-modal__legal {
