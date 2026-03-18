@@ -118,11 +118,13 @@ const AppModal = ({ appId, onClose }) => {
         >
           <MotionDiv
             className={`app-modal${app.id === "contact" ? " app-modal--contact" : ""}`}
-            initial={{ opacity: 0, scaleX: 0.12, scaleY: 0.12 }}
+            initial={{
+              opacity: 0,
+              clipPath: "inset(0 100% 100% 0 round 20px)",
+            }}
             animate={{
               opacity: 1,
-              scaleX: 1,
-              scaleY: 1,
+              clipPath: "inset(0 0% 0% 0 round 20px)",
               transition: {
                 delay: BOX_EXPAND_DELAY,
                 duration: 0.42,
@@ -131,37 +133,38 @@ const AppModal = ({ appId, onClose }) => {
             }}
             exit={{
               opacity: 0,
-              scaleX: 0.82,
-              scaleY: 0.82,
+              clipPath: "inset(0 25% 25% 0 round 20px)",
               transition: {
                 duration: 0.24,
                 ease: [0.4, 0, 1, 1],
               },
             }}
-            style={{ transformOrigin: "top left" }}
+            style={{ willChange: "clip-path, opacity" }}
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label={`${app.name} details`}
           >
             <div className="app-modal__left">
-              <MotionDiv
-                className="app-modal__icon"
-                layoutId={`dock-icon-${app.id}`}
-                transition={{
-                  layout: {
-                    duration: ICON_SETTLE_DURATION,
-                    ease: [0.22, 1, 0.36, 1],
-                  },
-                }}
-              >
-                <span className="app-modal__icon-glyph">
-                  <ModalGlyph type={app.id} />
-                </span>
-              </MotionDiv>
-              <div className="app-modal__info">
-                <h2>{app.name}</h2>
-                <p className="app-modal__subtitle">{app.subtitle}</p>
+              <div className="app-modal__head">
+                <MotionDiv
+                  className="app-modal__icon"
+                  layoutId={`dock-icon-${app.id}`}
+                  transition={{
+                    layout: {
+                      duration: ICON_SETTLE_DURATION,
+                      ease: [0.22, 1, 0.36, 1],
+                    },
+                  }}
+                >
+                  <span className="app-modal__icon-glyph">
+                    <ModalGlyph type={app.id} />
+                  </span>
+                </MotionDiv>
+                <div className="app-modal__info">
+                  <h2>{app.name}</h2>
+                  <p className="app-modal__subtitle">{app.subtitle}</p>
+                </div>
               </div>
 
               {app.state === "contact" ? (

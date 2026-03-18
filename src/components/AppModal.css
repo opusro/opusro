@@ -32,12 +32,26 @@
   text-align: center;
 }
 
+.app-modal--contact .app-modal__head {
+  justify-content: center;
+}
+
+.app-modal--contact .app-modal__info {
+  text-align: left;
+}
+
 .app-modal__left {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 18px;
   padding: 32px;
+}
+
+.app-modal__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .app-modal__icon {
