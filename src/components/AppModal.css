@@ -156,6 +156,14 @@
   color: var(--color-text-secondary);
 }
 
+.app-modal__legal {
+  margin: 2px 0 0;
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
 .app-modal__right {
   border-left: 1px solid var(--color-stroke-subtle);
   display: grid;

@@ -194,6 +194,7 @@ const AppModal = ({ appId, onClose }) => {
                     </a>
                   </div>
                   <p className="app-modal__origin">With ❤️ from Romania</p>
+                  <p className="app-modal__legal">Copyright © 2026 OPUSCULUM SRL. All rights reserved.</p>
                 </>
               ) : (
                 <>
