@@ -23,7 +23,7 @@ const HomePage = () => {
       onClick={() => setBrandExpanded((v) => !v)}
     >
       <div className="home-page__grain" aria-hidden="true" />
-      <div className="home-page__brand">
+      <div className={`home-page__brand${brandExpanded ? " home-page__brand--expanded" : ""}`}>
         <BrandMark expanded={brandExpanded} onExpandedChange={setBrandExpanded} />
       </div>
 

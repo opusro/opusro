@@ -36,6 +36,11 @@
   display: flex;
   justify-content: center;
   z-index: 20;
+  transition: justify-content 0s, padding 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-page__brand--expanded {
+  justify-content: flex-start;
 }
 
 .brand-mark {
@@ -44,6 +49,11 @@
   align-items: center;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition: align-items 0s;
+}
+
+.brand-mark.brand-mark--expanded {
+  align-items: flex-start;
 }
 
 .brand-mark__identity {
@@ -92,6 +102,11 @@
   color: var(--color-text-secondary);
   text-align: center;
   width: 100%;
+  transition: text-align 0s;
+}
+
+.brand-mark--expanded .brand-mark__tagline {
+  text-align: left;
 }
 
 .brand-mark__definition {
@@ -154,6 +169,10 @@
     padding-top: max(36px, env(safe-area-inset-top, 0px) + 28px);
     padding-left: 24px;
     padding-right: 24px;
+  }
+
+  .home-page__brand--expanded {
+    padding-left: 24px;
   }
 
   .brand-mark__logo {

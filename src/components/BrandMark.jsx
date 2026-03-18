@@ -19,13 +19,15 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
   }, []);
 
   return (
-    <div
-      className="brand-mark"
+    <MotionDiv
+      className={`brand-mark${expanded ? " brand-mark--expanded" : ""}`}
       onMouseEnter={!isCoarsePointer ? () => onExpandedChange(true) : undefined}
       onMouseLeave={!isCoarsePointer ? () => onExpandedChange(false) : undefined}
+      layout
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="brand-mark__identity">
-        <img src="/opusLogo.svg" alt="OPUS logo" className="brand-mark__logo" />
+      <MotionDiv className="brand-mark__identity" layout transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.img src="/opusLogo.svg" alt="OPUS logo" className="brand-mark__logo" layout transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} />
         <AnimatePresence>
           {expanded && (
             <MotionDiv
@@ -58,7 +60,7 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
             </MotionDiv>
           )}
         </AnimatePresence>
-      </div>
+      </MotionDiv>
 
       <div className="brand-mark__subtitle-area">
         <AnimatePresence mode="wait">
@@ -102,7 +104,7 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </MotionDiv>
   );
 };
 
