@@ -44,13 +44,13 @@
   align-items: flex-start;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transform: translateX(calc(50vw - 32px - 33px));
+  transform: translateX(0);
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
 .brand-mark--expanded {
-  transform: translateX(0);
+  transform: translateX(calc(-50vw + 33px + 32px));
 }
 
 .brand-mark__identity {
@@ -98,8 +98,12 @@
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  text-align: left;
+  text-align: center;
   width: 100%;
+}
+
+.brand-mark--expanded .brand-mark__tagline {
+  text-align: left;
 }
 
 .brand-mark__definition {
@@ -164,12 +168,8 @@
     padding-right: 24px;
   }
 
-  .brand-mark {
-    transform: translateX(calc(50vw - 24px - 27px));
-  }
-
   .brand-mark--expanded {
-    transform: translateX(0);
+    transform: translateX(calc(-50vw + 27px + 24px));
   }
 
   .brand-mark__logo {
