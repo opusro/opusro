@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const LETTERS = ["O", "P", "U", "S"];
 const LETTER_STAGGER = 0.1;
 const EASE = [0.22, 1, 0.36, 1];
+const EASE_SOFT = [0.4, 0, 0.2, 1];
 
 const BrandMark = ({ expanded, onExpandedChange }) => {
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
@@ -67,10 +68,10 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
             <MotionDiv
               key="definition"
               className="brand-mark__definition"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.4, ease: EASE, delay: 0.08 }}
+              initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(2px)" }}
+              transition={{ duration: 0.55, ease: EASE_SOFT, delay: 0.06 }}
             >
               <div className="brand-mark__entry">
                 <div className="brand-mark__entry-head">
@@ -93,10 +94,10 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
             <MotionP
               key="tagline"
               className="brand-mark__tagline"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.4, ease: EASE }}
+              initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(2px)" }}
+              transition={{ duration: 0.55, ease: EASE_SOFT }}
             >
               human experience design
             </MotionP>
