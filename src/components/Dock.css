@@ -2,7 +2,12 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  bottom: calc(
+    env(safe-area-inset-bottom, 0px) +
+    var(--bottom-stack-gap) +
+    var(--copyright-line-height) +
+    var(--bottom-stack-gap)
+  );
   display: flex;
   justify-content: center;
   pointer-events: none;
@@ -84,10 +89,6 @@
 }
 
 @media (max-width: 768px) {
-  .dock {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-  }
-
   .dock__tray {
     gap: 10px;
     padding: 10px 14px 12px;
