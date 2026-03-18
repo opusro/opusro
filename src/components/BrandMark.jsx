@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const LETTERS = ["O", "P", "U", "S"];
 const LETTER_STAGGER = 0.1;
+const EASE = [0.22, 1, 0.36, 1];
 
 const BrandMark = ({ expanded, onExpandedChange }) => {
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
@@ -19,15 +20,13 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
   }, []);
 
   return (
-    <MotionDiv
+    <div
       className={`brand-mark${expanded ? " brand-mark--expanded" : ""}`}
       onMouseEnter={!isCoarsePointer ? () => onExpandedChange(true) : undefined}
       onMouseLeave={!isCoarsePointer ? () => onExpandedChange(false) : undefined}
-      layout
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <MotionDiv className="brand-mark__identity" layout transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-        <motion.img src="/opusLogo.svg" alt="OPUS logo" className="brand-mark__logo" layout transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} />
+      <div className="brand-mark__identity">
+        <img src="/opusLogo.svg" alt="OPUS logo" className="brand-mark__logo" />
         <AnimatePresence>
           {expanded && (
             <MotionDiv
@@ -41,17 +40,17 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
                   key={letter}
                   className="brand-mark__letter"
                   variants={{
-                    hidden: { opacity: 0, width: 0, marginRight: 0 },
+                    hidden: { opacity: 0, maxWidth: 0, marginRight: 0 },
                     visible: {
                       opacity: 1,
-                      width: "auto",
+                      maxWidth: 40,
                       marginRight: i < LETTERS.length - 1 ? 2 : 0,
                     },
                   }}
                   transition={{
-                    duration: 0.44,
+                    duration: 0.5,
                     delay: i * LETTER_STAGGER,
-                    ease: [0.22, 1, 0.36, 1],
+                    ease: EASE,
                   }}
                 >
                   {letter}
@@ -60,7 +59,7 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
             </MotionDiv>
           )}
         </AnimatePresence>
-      </MotionDiv>
+      </div>
 
       <div className="brand-mark__subtitle-area">
         <AnimatePresence mode="wait">
@@ -71,7 +70,7 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+              transition={{ duration: 0.4, ease: EASE, delay: 0.08 }}
             >
               <div className="brand-mark__entry">
                 <div className="brand-mark__entry-head">
@@ -97,14 +96,14 @@ const BrandMark = ({ expanded, onExpandedChange }) => {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, ease: EASE }}
             >
               human experience design
             </MotionP>
           )}
         </AnimatePresence>
       </div>
-    </MotionDiv>
+    </div>
   );
 };
 
