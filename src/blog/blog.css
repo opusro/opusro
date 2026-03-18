@@ -29,11 +29,11 @@
   --blog-font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
 
   /* Colors — strict B&W + greys */
-  --blog-bg: #050505;
-  --blog-text: #ffffff;
-  --blog-text-secondary: #999999;
-  --blog-text-tertiary: #666666;
-  --blog-border: #222222;
+  --blog-bg: var(--color-bg, #050505);
+  --blog-text: var(--color-text-primary, #ffffff);
+  --blog-text-secondary: var(--color-text-secondary, #888888);
+  --blog-text-tertiary: var(--color-text-tertiary, #555555);
+  --blog-border: var(--color-stroke-subtle, #1a1a1a);
   --blog-border-accent: #ffffff;
   --blog-code-bg: #111111;
   --blog-hover: #e0e0e0;
@@ -56,6 +56,7 @@
 /* --- Blog Layout --- */
 .blog-layout {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--blog-bg);
   color: var(--blog-text);
   font-family: var(--blog-font-sans);
@@ -82,10 +83,24 @@
   text-transform: uppercase;
   color: var(--blog-text);
   text-decoration: none;
+  transition: color 0.18s ease;
 }
 
 .blog-nav__brand:hover {
   color: var(--blog-hover);
+}
+
+.blog-nav__brand-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.blog-nav__subtitle {
+  font-size: var(--blog-font-small);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blog-text-secondary);
 }
 
 .blog-nav__link {
@@ -107,6 +122,7 @@
   max-width: var(--blog-prose-width);
   margin: 0 auto;
   padding: var(--blog-space-xl) var(--blog-gutter) var(--blog-space-2xl);
+  animation: blogFadeIn 360ms var(--transition-ease, ease-out) both;
 }
 
 .blog-index__title {
@@ -173,12 +189,14 @@
   max-width: var(--blog-prose-width);
   margin: 0 auto;
   padding: var(--blog-space-lg) var(--blog-gutter) var(--blog-space-2xl);
+  animation: blogFadeIn 360ms var(--transition-ease, ease-out) both;
 }
 
 
 /* --- Article Header --- */
 .article-header {
   margin-bottom: var(--blog-space-xl);
+  animation: blogFadeIn 360ms var(--transition-ease, ease-out) both;
 }
 
 .article-header__meta {
@@ -220,6 +238,8 @@
   font-size: var(--blog-font-body);
   line-height: var(--blog-lh-body);
   color: var(--blog-text);
+  animation: blogFadeIn 420ms var(--transition-ease, ease-out) both;
+  animation-delay: 60ms;
 }
 
 /* Headings */
@@ -439,5 +459,17 @@
 @media (min-width: 1024px) {
   .blog-index {
     padding-top: var(--blog-space-2xl);
+  }
+}
+
+@keyframes blogFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -1,0 +1,171 @@
+.home-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.home-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(140% 120% at 50% 40%, rgba(255, 255, 255, 0.025), transparent 48%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015), transparent 32%);
+  pointer-events: none;
+}
+
+.home-page__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 3px 3px;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.home-page__brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+}
+
+.brand-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate(-50%, 0);
+  margin-top: -30px;
+}
+
+.brand-mark__identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+}
+
+.brand-mark__logo {
+  width: 44px;
+  height: 44px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.brand-mark__name-letters {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 14px;
+}
+
+.brand-mark__letter {
+  display: inline-block;
+  font-size: 1.6rem;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.brand-mark__subtitle-area {
+  margin-top: 22px;
+  position: relative;
+  width: 100%;
+  min-width: 220px;
+}
+
+.brand-mark__tagline {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  text-align: center;
+  width: 100%;
+}
+
+.brand-mark__definition {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.brand-mark__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-mark__entry-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.brand-mark__word {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+}
+
+.brand-mark__pos {
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+.brand-mark__lang {
+  font-family: var(--font-family-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  opacity: 0.7;
+}
+
+.brand-mark__meaning {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.01em;
+  padding-left: 1px;
+}
+
+@media (max-width: 768px) {
+  .brand-mark__logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-mark__name-letters {
+    margin-left: 12px;
+  }
+
+  .brand-mark__letter {
+    font-size: 1.35rem;
+  }
+
+  .brand-mark__subtitle-area {
+    margin-top: 18px;
+  }
+
+  .brand-mark__tagline {
+    font-size: 0.72rem;
+  }
+}
