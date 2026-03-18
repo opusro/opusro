@@ -20,7 +20,16 @@ const APP_CONTENT = {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer iaculis placerat elit, vitae pulvinar sem volutpat a. Launching soon.",
     state: "coming-soon",
   },
+  contact: {
+    id: "contact",
+    name: "Contact",
+    subtitle: "OPUS",
+    state: "contact",
+  },
 };
+
+const ICON_SETTLE_DURATION = 0.55;
+const BOX_EXPAND_DELAY = 0.35;
 
 const ModalGlyph = ({ type }) => {
   if (type === "loop") {
@@ -40,20 +49,54 @@ const ModalGlyph = ({ type }) => {
 
   return (
     <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <rect x="65" y="77" width="12" height="33" fill="currentColor" />
-      <rect x="87" y="65" width="12" height="45" fill="currentColor" />
-      <rect x="43" y="55" width="12" height="32" fill="currentColor" />
-      <rect x="43" y="10" width="12" height="33" fill="currentColor" />
-      <rect x="21" y="10" width="12" height="100" fill="currentColor" />
-      <rect x="99" y="10" width="11" height="33" fill="currentColor" />
-      <rect x="43" y="110" width="11" height="34" transform="rotate(-90 43 110)" fill="currentColor" />
-      <rect x="43" y="87" width="10" height="34" transform="rotate(-90 43 87)" fill="currentColor" />
-      <rect x="10" y="110" width="11" height="33" transform="rotate(-90 10 110)" fill="currentColor" />
-      <rect x="10" y="21" width="11" height="23" transform="rotate(-90 10 21)" fill="currentColor" />
-      <rect x="43" y="65" width="10" height="34" transform="rotate(-90 43 65)" fill="currentColor" />
-      <rect x="77" y="65" width="10" height="33" transform="rotate(-90 77 65)" fill="currentColor" />
-      <rect x="43" y="43" width="10" height="67" transform="rotate(-90 43 43)" fill="currentColor" />
-      <rect x="43" y="21" width="11" height="67" transform="rotate(-90 43 21)" fill="currentColor" />
+      {type === "first" ? (
+        <>
+          <rect x="65" y="77" width="12" height="33" fill="currentColor" />
+          <rect x="87" y="65" width="12" height="45" fill="currentColor" />
+          <rect x="43" y="55" width="12" height="32" fill="currentColor" />
+          <rect x="43" y="10" width="12" height="33" fill="currentColor" />
+          <rect x="21" y="10" width="12" height="100" fill="currentColor" />
+          <rect x="99" y="10" width="11" height="33" fill="currentColor" />
+          <rect x="43" y="110" width="11" height="34" transform="rotate(-90 43 110)" fill="currentColor" />
+          <rect x="43" y="87" width="10" height="34" transform="rotate(-90 43 87)" fill="currentColor" />
+          <rect x="10" y="110" width="11" height="33" transform="rotate(-90 10 110)" fill="currentColor" />
+          <rect x="10" y="21" width="11" height="23" transform="rotate(-90 10 21)" fill="currentColor" />
+          <rect x="43" y="65" width="10" height="34" transform="rotate(-90 43 65)" fill="currentColor" />
+          <rect x="77" y="65" width="10" height="33" transform="rotate(-90 77 65)" fill="currentColor" />
+          <rect x="43" y="43" width="10" height="67" transform="rotate(-90 43 43)" fill="currentColor" />
+          <rect x="43" y="21" width="11" height="67" transform="rotate(-90 43 21)" fill="currentColor" />
+        </>
+      ) : (
+        <text x="60" y="78" textAnchor="middle" fontSize="76" fontWeight="400" fill="currentColor" fontFamily="Inter, sans-serif">@</text>
+      )}
+    </svg>
+  );
+};
+
+const ContactLinkIcon = ({ type }) => {
+  if (type === "instagram") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="4" y="4" width="16" height="16" rx="5" ry="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (type === "youtube") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3.5" y="6" width="17" height="12" rx="3.5" ry="3.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M10 9.2l5.2 2.8L10 14.8V9.2z" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="6.5" width="17" height="11" rx="2.5" ry="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4.5 8l7.5 5.2L19.5 8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };
@@ -74,18 +117,44 @@ const AppModal = ({ appId, onClose }) => {
           onClick={onClose}
         >
           <MotionDiv
-            className="app-modal"
-            initial={{ opacity: 0, scale: 0.4, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.6, y: 20 }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            className={`app-modal${app.id === "contact" ? " app-modal--contact" : ""}`}
+            initial={{ opacity: 0, scaleX: 0.12, scaleY: 0.12 }}
+            animate={{
+              opacity: 1,
+              scaleX: 1,
+              scaleY: 1,
+              transition: {
+                delay: BOX_EXPAND_DELAY,
+                duration: 0.42,
+                ease: [0.22, 1, 0.36, 1],
+              },
+            }}
+            exit={{
+              opacity: 0,
+              scaleX: 0.82,
+              scaleY: 0.82,
+              transition: {
+                duration: 0.24,
+                ease: [0.4, 0, 1, 1],
+              },
+            }}
+            style={{ transformOrigin: "top left" }}
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label={`${app.name} details`}
           >
             <div className="app-modal__left">
-              <MotionDiv className="app-modal__icon" layoutId={`dock-icon-${app.id}`}>
+              <MotionDiv
+                className="app-modal__icon"
+                layoutId={`dock-icon-${app.id}`}
+                transition={{
+                  layout: {
+                    duration: ICON_SETTLE_DURATION,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
+                }}
+              >
                 <span className="app-modal__icon-glyph">
                   <ModalGlyph type={app.id} />
                 </span>
@@ -94,35 +163,73 @@ const AppModal = ({ appId, onClose }) => {
                 <h2>{app.name}</h2>
                 <p className="app-modal__subtitle">{app.subtitle}</p>
               </div>
-              <p className="app-modal__desc">{app.description}</p>
-              {app.state === "available" ? (
-                <div className="app-modal__actions">
-                  <a href={app.appStoreUrl} target="_blank" rel="noreferrer">
-                    App Store
-                  </a>
-                  <a href={app.websiteUrl} target="_blank" rel="noreferrer">
-                    Website
-                  </a>
-                </div>
+
+              {app.state === "contact" ? (
+                <>
+                  <div className="app-modal__contact-links">
+                    <a
+                      href="https://www.instagram.com/opus.ro"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Instagram"
+                      title="Instagram"
+                    >
+                      <ContactLinkIcon type="instagram" />
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@opusro"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="YouTube"
+                      title="YouTube"
+                    >
+                      <ContactLinkIcon type="youtube" />
+                    </a>
+                    <a
+                      href="mailto:hello@opus.ro"
+                      aria-label="Email"
+                      title="Email"
+                    >
+                      <ContactLinkIcon type="email" />
+                    </a>
+                  </div>
+                  <p className="app-modal__origin">With ❤️ from Romania</p>
+                </>
               ) : (
-                <span className="app-modal__coming-soon">Launching soon</span>
+                <>
+                  <p className="app-modal__desc">{app.description}</p>
+                  {app.state === "available" ? (
+                    <div className="app-modal__actions">
+                      <a href={app.appStoreUrl} target="_blank" rel="noreferrer">
+                        App Store
+                      </a>
+                      <a href={app.websiteUrl} target="_blank" rel="noreferrer">
+                        Website
+                      </a>
+                    </div>
+                  ) : (
+                    <span className="app-modal__coming-soon">Launching soon</span>
+                  )}
+                </>
               )}
             </div>
 
-            <div className="app-modal__right" aria-hidden="true">
-              {app.id === "loop" ? (
-                <video
-                  className="app-modal__video"
-                  src="/opusloop.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
-              ) : (
-                <div className="app-modal__placeholder">Coming soon</div>
-              )}
-            </div>
+            {app.id !== "contact" && (
+              <div className="app-modal__right" aria-hidden="true">
+                {app.id === "loop" ? (
+                  <video
+                    className="app-modal__video"
+                    src="/opusloop.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <div className="app-modal__placeholder">Coming soon</div>
+                )}
+              </div>
+            )}
           </MotionDiv>
         </MotionDiv>
       ) : null}

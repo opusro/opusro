@@ -8,6 +8,7 @@ import "./HomePage.css";
 const HomePage = () => {
   const navigate = useNavigate();
   const [activeApp, setActiveApp] = useState(null);
+  const [brandExpanded, setBrandExpanded] = useState(false);
 
   useEffect(() => {
     document.body.classList.add("body-home-lock");
@@ -17,21 +18,30 @@ const HomePage = () => {
   }, []);
 
   return (
-    <main className="home-page">
+    <main
+      className="home-page"
+      onClick={() => setBrandExpanded((v) => !v)}
+    >
       <div className="home-page__grain" aria-hidden="true" />
       <div className="home-page__brand">
-        <BrandMark />
+        <BrandMark expanded={brandExpanded} onExpandedChange={setBrandExpanded} />
       </div>
 
-      <Dock
-        onOpenProduct={(id) => setActiveApp(id)}
-        onOpenBlog={() => navigate("/blog")}
-        onOpenContact={() => {
-          window.location.href = "mailto:hi@opus.ro";
-        }}
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <Dock
+          onOpenProduct={(id) => setActiveApp(id)}
+          onOpenBlog={() => navigate("/blog")}
+          onOpenContact={() => setActiveApp("contact")}
+        />
+      </div>
 
-      <AppModal appId={activeApp} onClose={() => setActiveApp(null)} />
+      <p className="home-page__copyright">
+        Copyright © 2026 OPUSCULUM SRL. All rights reserved.
+      </p>
+
+      <div onClick={(e) => e.stopPropagation()}>
+        <AppModal appId={activeApp} onClose={() => setActiveApp(null)} />
+      </div>
     </main>
   );
 };

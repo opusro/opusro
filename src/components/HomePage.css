@@ -27,6 +27,19 @@
   pointer-events: none;
 }
 
+.home-page__copyright {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 3px);
+  margin: 0;
+  text-align: center;
+  font-size: 0.4rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
 .home-page__brand {
   position: absolute;
   top: 0;
@@ -150,6 +163,10 @@
 }
 
 @media (max-width: 768px) {
+  .home-page__copyright {
+    font-size: 0.54rem;
+  }
+
   .home-page__brand {
     padding-top: max(36px, env(safe-area-inset-top, 0px) + 28px);
     padding-left: 24px;

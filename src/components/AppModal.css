@@ -20,6 +20,18 @@
   overflow: hidden;
 }
 
+.app-modal--contact {
+  width: min(560px, 100%);
+  grid-template-columns: 1fr;
+  height: auto;
+  min-height: 340px;
+}
+
+.app-modal--contact .app-modal__left {
+  align-items: center;
+  text-align: center;
+}
+
 .app-modal__left {
   display: flex;
   flex-direction: column;
@@ -106,6 +118,42 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #c7c7c7;
+}
+
+.app-modal__contact-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.app-modal__contact-links a {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #292929;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #f6f6f6;
+  transition:
+    background-color var(--transition-duration-fast) var(--transition-ease),
+    border-color var(--transition-duration-fast) var(--transition-ease);
+}
+
+.app-modal__contact-links a svg {
+  width: 20px;
+  height: 20px;
+}
+
+.app-modal__contact-links a:hover {
+  background-color: #111111;
+  border-color: #3a3a3a;
+}
+
+.app-modal__origin {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
 }
 
 .app-modal__right {

@@ -4,8 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const LETTERS = ["O", "P", "U", "S"];
 const LETTER_STAGGER = 0.1;
 
-const BrandMark = () => {
-  const [expanded, setExpanded] = useState(false);
+const BrandMark = ({ expanded, onExpandedChange }) => {
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
   const MotionDiv = motion.div;
   const MotionP = motion.p;
@@ -22,22 +21,8 @@ const BrandMark = () => {
   return (
     <div
       className="brand-mark"
-      onMouseEnter={!isCoarsePointer ? () => setExpanded(true) : undefined}
-      onMouseLeave={!isCoarsePointer ? () => setExpanded(false) : undefined}
-      onClick={isCoarsePointer ? () => setExpanded((v) => !v) : undefined}
-      role={isCoarsePointer ? "button" : undefined}
-      aria-label={isCoarsePointer ? "Toggle OPUS definition" : undefined}
-      tabIndex={isCoarsePointer ? 0 : undefined}
-      onKeyDown={
-        isCoarsePointer
-          ? (event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                setExpanded((v) => !v);
-              }
-            }
-          : undefined
-      }
+      onMouseEnter={!isCoarsePointer ? () => onExpandedChange(true) : undefined}
+      onMouseLeave={!isCoarsePointer ? () => onExpandedChange(false) : undefined}
     >
       <div className="brand-mark__identity">
         <img src="/opusLogo.svg" alt="OPUS logo" className="brand-mark__logo" />
