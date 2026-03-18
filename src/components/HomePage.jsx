@@ -35,10 +35,6 @@ const HomePage = () => {
         />
       </div>
 
-      <p className="home-page__copyright">
-        Copyright © 2026 OPUSCULUM SRL. All rights reserved.
-      </p>
-
       <div onClick={(e) => e.stopPropagation()}>
         <AppModal appId={activeApp} onClose={() => setActiveApp(null)} />
       </div>
