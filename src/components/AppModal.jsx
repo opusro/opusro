@@ -10,7 +10,7 @@ const APP_CONTENT = {
       "A meditation timer you own forever. Set a duration. Choose a sound or silence. Tap play. One-time purchase, all features included.",
     state: "available",
     websiteUrl: "https://opusloop.co",
-    appStoreUrl: "https://apps.apple.com/app/opus-loop-meditation-timer/id6740513432",
+    appStoreUrl: "https://apps.apple.com/ro/app/loop-meditation-focus/id6756740657",
   },
   first: {
     id: "first",
