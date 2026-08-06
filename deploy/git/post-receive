@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+#
+# post-receive hook for the bare repo at /opt/web/git/opus.ro.git
+#
+#   git push vps main  ->  builds and publishes to opus.ro
+#   git push vps dev   ->  builds and publishes to dev.opus.ro
+#
+# Any other ref is ignored, so feature branches can be pushed to the box freely
+# without triggering a deploy.
+#
+# The build runs inside a throwaway node container so the host keeps no Node
+# toolchain, matching how this box already works. Nothing is published unless
+# the build succeeds: on failure the previous release stays live and the hook
+# exits non-zero, which git surfaces on the pushing machine.
+
+set -euo pipefail
+
+REPO_DIR="$(pwd -P)"
+# git sets these for hooks; they would follow us into the work tree below.
+unset GIT_DIR GIT_WORK_TREE GIT_QUARANTINE_PATH
+
+SITES_ROOT="${OPUS_SITES_ROOT:-/opt/web/sites}"
+ENV_FILE="${OPUS_ENV_FILE:-/opt/web/env/opus.env}"
+NODE_IMAGE="${OPUS_NODE_IMAGE:-node:22-alpine}"
+NPM_CACHE_VOLUME="${OPUS_NPM_CACHE_VOLUME:-opus-npm-cache}"
+KEEP_RELEASES="${OPUS_KEEP_RELEASES:-5}"
+NULL_REV=0000000000000000000000000000000000000000
+
+TMPDIRS=()
+cleanup() {
+	if [ "${#TMPDIRS[@]}" -gt 0 ]; then
+		rm -rf -- "${TMPDIRS[@]}"
+	fi
+}
+trap cleanup EXIT
+
+log() { printf '     %s\n' "$*"; }
+fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
+
+project_for_ref() {
+	case "$1" in
+	refs/heads/main) printf 'opus' ;;
+	refs/heads/dev) printf 'opus-dev' ;;
+	*) return 1 ;;
+	esac
+}
+
+preflight() {
+	command -v docker >/dev/null 2>&1 ||
+		fail "docker not found in PATH"
+	docker info >/dev/null 2>&1 ||
+		fail "cannot reach the docker daemon — is $(id -un) in the 'docker' group?"
+	[ -d "$SITES_ROOT" ] ||
+		fail "missing $SITES_ROOT"
+	# Not fatal: no variable in the current source is required at build time.
+	# See deploy/README.md ("Build-time environment").
+	[ -f "$ENV_FILE" ] ||
+		log "note: $ENV_FILE not found, building with no extra environment"
+}
+
+# Drop every release except the newest $KEEP_RELEASES, and never the live one.
+prune_releases() {
+	local site="$1" live name
+	[ "$KEEP_RELEASES" -gt 0 ] 2>/dev/null || return 0
+
+	live="$(readlink "$site/current" 2>/dev/null || true)"
+	live="${live#releases/}"
+
+	while read -r name; do
+		[ -n "$name" ] || continue
+		[ "$name" = "$live" ] && continue
+		log "pruning old release $name"
+		rm -rf -- "${site:?}/releases/${name:?}"
+	done < <(ls -1 "$site/releases" 2>/dev/null | sort | head -n "-$KEEP_RELEASES")
+}
+
+deploy() {
+	local ref="$1" rev="$2" project="$3"
+	local site="$SITES_ROOT/$project"
+	local release work
+	release="$(date -u +%Y%m%d-%H%M%S)-${rev:0:7}"
+
+	log "$ref -> $project  (release $release)"
+
+	# Staged under SITES_ROOT rather than /tmp so that publishing the build is a
+	# same-filesystem rename instead of a cross-device copy.
+	mkdir -p "$SITES_ROOT/.tmp" "$site/releases"
+	work="$(mktemp -d "$SITES_ROOT/.tmp/$project-XXXXXXXX")"
+	TMPDIRS+=("$work")
+
+	mkdir -p "$work/src"
+	git --git-dir="$REPO_DIR" archive "$rev" | tar -x -C "$work/src"
+
+	log "building in $NODE_IMAGE ..."
+	local env_args=()
+	[ -f "$ENV_FILE" ] && env_args=(--env-file "$ENV_FILE")
+
+	# --user keeps build output owned by the deploy user instead of root.
+	# HOME and npm_config_cache are redirected because that user has no home
+	# inside the container.
+	docker run --rm \
+		--user "$(id -u):$(id -g)" \
+		-e HOME=/tmp \
+		-e npm_config_cache=/npm-cache \
+		"${env_args[@]}" \
+		-v "$work/src:/app" \
+		-v "$NPM_CACHE_VOLUME:/npm-cache" \
+		-w /app \
+		"$NODE_IMAGE" \
+		sh -euc 'npm ci --no-audit --no-fund --loglevel=error && npm run build'
+
+	[ -f "$work/src/dist/index.html" ] ||
+		fail "build for $ref produced no dist/index.html — refusing to publish"
+
+	mv "$work/src/dist" "$site/releases/$release"
+
+	# Atomic publish. The symlink target is RELATIVE so it resolves correctly
+	# inside the Caddy container, which sees this tree at /srv. `mv -T` replaces
+	# the symlink itself via rename(2); a plain `mv` would move the new link
+	# *into* the directory the old one points at.
+	ln -sfn "releases/$release" "$site/.current.tmp"
+	mv -T "$site/.current.tmp" "$site/current"
+
+	log "published $project -> releases/$release"
+	prune_releases "$site"
+}
+
+preflight
+
+deployed=0
+while read -r _old new ref; do
+	if ! project="$(project_for_ref "$ref")"; then
+		log "ignoring $ref (not a deploy branch)"
+		continue
+	fi
+	if [ "$new" = "$NULL_REV" ]; then
+		log "ignoring $ref (branch deleted)"
+		continue
+	fi
+	deploy "$ref" "$new" "$project"
+	deployed=$((deployed + 1))
+done
+
+if [ "$deployed" -gt 0 ]; then
+	# No Caddy reload: /opt/web/sites is bind-mounted as a directory and the
+	# `current` symlink is relative, so the flip is visible to the running
+	# container immediately. Only conf.d changes need a reload.
+	log "done"
+fi

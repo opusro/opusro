@@ -1,0 +1,22 @@
+# dev.opus.ro — staging. Install this FIRST, before the live site.
+#
+# Requires opus-common.caddy to be present in the same conf.d directory.
+#
+# dev.opus.ro already has an A record pointing at this box, so Caddy can obtain
+# a certificate as soon as the IRD delegation is visible to Let's Encrypt. If
+# the delegation has not propagated yet, issuance fails and Caddy retries with
+# backoff on its own — that is expected and needs no intervention.
+
+dev.opus.ro {
+	root * /srv/opus-dev/current
+	import opus-site
+
+	header X-Robots-Tag "noindex, nofollow"
+
+	# Optional: gate staging behind a password. Generate the hash on the box with
+	#   docker exec web-caddy caddy hash-password --plaintext '<password>'
+	# then uncomment, replacing the hash below.
+	# basic_auth {
+	# 	opus <PASTE-BCRYPT-HASH-HERE>
+	# }
+}

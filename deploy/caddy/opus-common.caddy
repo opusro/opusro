@@ -1,0 +1,87 @@
+# opus.ro — shared Caddy snippets.
+#
+# ORDERING MATTERS. Caddy resolves `import <snippet>` at parse time, so this
+# file must be parsed before any file that uses these snippets. The main
+# Caddyfile ends with `import /etc/caddy/conf.d/*.caddy`, and that glob expands
+# in alphabetical order: opus-common < opus-dev < opus-live. Do not rename this
+# file to anything that sorts later, or Caddy fails to load the whole config
+# with "File to import not found: opus-site".
+#
+# Snippet names are project-prefixed because conf.d is shared with eratic.ro.
+
+(opus-hardening) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+		-Server
+		-X-Powered-By
+	}
+
+	# No Content-Security-Policy here on purpose. eratic.ro's
+	# `default-src 'self'; script-src 'self'` would break opus.ro twice over:
+	# index.html loads Google Analytics from www.googletagmanager.com and runs an
+	# inline gtag() block. See deploy/README.md ("Content-Security-Policy") for
+	# the policy to use if you want one — it needs a hash that changes whenever
+	# that inline block is edited, so it is opt-in rather than shipped blind.
+}
+
+(opus-caching) {
+	# Vite fingerprints everything it emits into /assets/, so those URLs can
+	# never change content. Cache them forever.
+	@immutable path /assets/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Files copied verbatim from public/ keep their names across deploys
+	# (favicon.ico, opusloop.mp4, opusLogo.svg …), so they can change content
+	# under a stable URL. One day is a reasonable ceiling. The `not path
+	# /assets/*` guard keeps this from also matching a future fingerprinted
+	# image, which would otherwise be hit by two conflicting header rules.
+	@static {
+		not path /assets/*
+		path *.png *.jpg *.jpeg *.webp *.gif *.svg *.ico *.mp4 *.webm *.woff *.woff2
+	}
+	header @static Cache-Control "public, max-age=86400"
+
+	@feed path /rss.xml
+	header @feed Cache-Control "public, max-age=600"
+
+	# Everything else: the HTML shell, and every SPA route that falls back to it.
+	# Written as "not the above" rather than "*.html and /" so that a fallback
+	# route like /blog/ten-principles is covered no matter whether Caddy applies
+	# header matchers before or after try_files rewrites the path. A stale shell
+	# is the one genuinely bad cache outcome — it keeps referencing asset hashes
+	# that no longer exist after a deploy.
+	@revalidate {
+		not path /assets/* /rss.xml
+		not path *.png *.jpg *.jpeg *.webp *.gif *.svg *.ico *.mp4 *.webm *.woff *.woff2
+	}
+	header @revalidate Cache-Control "public, max-age=0, must-revalidate"
+}
+
+(opus-site) {
+	encode zstd gzip
+	import opus-hardening
+	import opus-caching
+
+	# Assets are served without the SPA fallback. If a hashed asset is missing we
+	# want an honest 404, not index.html returned with a 200 and a JavaScript
+	# MIME-type error in the console.
+	handle /assets/* {
+		file_server
+	}
+
+	# SPA fallback. This is what fixes /blog/<slug> 404ing on a hard refresh —
+	# GitHub Pages ignores netlify.toml, so that is broken on the current host.
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Matches eratic.ro's privacy stance: no request logs, no IPs recorded.
+	log {
+		output discard
+	}
+}

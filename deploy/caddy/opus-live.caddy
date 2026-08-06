@@ -1,0 +1,23 @@
+# opus.ro + www.opus.ro — production.
+#
+# DO NOT install this file until the apex A record actually points at this box.
+#
+# Caddy tries to obtain a certificate for every hostname in its config as soon
+# as the config loads. While opus.ro still resolves to GitHub Pages' IPs, those
+# ACME challenges are answered by GitHub, not by this server, so every attempt
+# fails. Beyond the log noise that burns Let's Encrypt's failed-validation rate
+# limit, which can lock out issuance for the real cutover.
+#
+# Correct order (see deploy/README.md):
+#   1. opus-common.caddy + opus-dev.caddy, verify dev.opus.ro over real HTTPS
+#   2. repoint the apex at this box in IRD DNS
+#   3. only then drop this file in and reload
+
+opus.ro {
+	root * /srv/opus/current
+	import opus-site
+}
+
+www.opus.ro {
+	redir https://opus.ro{uri} 308
+}
