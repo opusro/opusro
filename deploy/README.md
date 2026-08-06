@@ -49,15 +49,17 @@ The Caddy config here does the fallback properly.
 
 ## Stage 1 — install the pipeline (staging only)
 
-Get this repo onto the box once, so `bootstrap.sh` and the config files are
-available locally:
+Get the `deploy/` directory onto the box once. Copying it from your laptop is
+the method to use — it needs no GitHub credentials on the server, so it keeps
+working after the repo goes private:
 
 ```sh
-ssh web
-git clone https://github.com/opusro/opusro.git /tmp/opusro-bootstrap
-cd /tmp/opusro-bootstrap
-./deploy/bootstrap.sh
+scp -rp deploy web:/tmp/opus-deploy
+ssh web bash /tmp/opus-deploy/bootstrap.sh
 ```
+
+`bootstrap.sh` locates its own directory, so it finds `caddy/` and `git/`
+alongside it wherever you put them.
 
 `bootstrap.sh` is idempotent. It creates:
 
@@ -120,8 +122,7 @@ The apex A TTL is already 300s, so a rollback propagates in about five minutes.
 ## Stage 4 — enable the live site
 
 ```sh
-ssh web
-cd /tmp/opusro-bootstrap && ./deploy/bootstrap.sh --live
+ssh web bash /tmp/opus-deploy/bootstrap.sh --live
 ```
 
 This installs `opus-live.caddy` (`opus.ro` + `www.opus.ro` → 308 redirect),
@@ -151,11 +152,31 @@ lock out issuance exactly when you need it for the real cutover.
 
 Keep GitHub Pages deployable as a rollback for a few days first. When ready:
 
+- **make the repository private** — see the ordering constraint below
 - disable or delete `.github/workflows/deploy.yml`
 - delete `public/CNAME` (and the vestigial `CNAME` at the repo root)
 - delete the Cloudflare zone, which is the DNS-level rollback
 - consider enabling DNSSEC — `ird dns dnssec opus.ro on` — but **only** after
   the delegation is visible on public resolvers
+
+### Making the repository private
+
+**Do this only after `opus.ro` is confirmed serving from the VPS.** GitHub Pages
+on a private repository requires a paid plan; on GitHub Free, Pages is available
+for public repositories only, so flipping visibility takes the Pages site down
+the moment you save. That is harmless once DNS no longer points at GitHub, and
+an outage if you do it first.
+
+Nothing in this pipeline depends on the repository being public — the box is
+pushed to directly over SSH and never talks to GitHub.
+
+Two knock-on effects once private:
+
+- **Actions minutes become metered.** They are unlimited for public repositories
+  but draw on a monthly quota for private ones. Deleting the Pages workflow
+  rather than merely disabling it avoids surprises.
+- **`git clone` on the server needs credentials.** Nothing here does that — the
+  `scp` in Stage 1 is why — but keep it in mind for any future tooling.
 
 ### Rollback
 
