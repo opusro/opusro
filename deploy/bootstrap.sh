@@ -71,7 +71,7 @@ EOF
 fi
 
 if ! grep -q '^VITE_GOOGLE_SCRIPT_URL=.\+' "$ENV_FILE"; then
-	warn "VITE_GOOGLE_SCRIPT_URL is empty in $ENV_FILE — the signup form will not work until you set it"
+	say "note: VITE_GOOGLE_SCRIPT_URL is empty — nothing in the current source reads it, so this is fine"
 fi
 
 # ----------------------------------------------------------------- bare repo --
@@ -128,6 +128,19 @@ $(say "bootstrap complete")
   live root   $SITES_ROOT/opus/current
   staging     $SITES_ROOT/opus-dev/current
   env file    $ENV_FILE
+EOF
+
+if [ "$WITH_LIVE" -eq 1 ]; then
+	cat <<EOF
+
+Production is enabled. Publish the live site from your laptop:
+
+  git push vps main
+
+Then check https://opus.ro/ and https://opus.ro/blog/ten-principles.
+EOF
+else
+	cat <<EOF
 
 On your laptop, add the remote and push staging first:
 
@@ -137,3 +150,4 @@ On your laptop, add the remote and push staging first:
 Then check https://dev.opus.ro/ — including a hard refresh of a deep link such
 as https://dev.opus.ro/blog/ten-principles — before touching production DNS.
 EOF
+fi
