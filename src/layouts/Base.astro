@@ -5,7 +5,7 @@
 import Head from '../components/Head.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE } from '../config';
+import { SITE, IS_HOLDING } from '../config';
 
 interface Props {
 	title?: string;
@@ -36,10 +36,13 @@ const { current, header = true, accent, flush = false, ...head } = Astro.props;
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>
-		{header && <Header current={current} />}
+		{/* In holding mode there is nowhere to navigate, so there is no
+		    navigation: the header and footer would link to pages that this
+		    build does not contain. */}
+		{header && !IS_HOLDING && <Header current={current} />}
 		<main id="main" class:list={[flush && 'main--flush']}>
 			<slot />
 		</main>
-		<Footer />
+		{!IS_HOLDING && <Footer />}
 	</body>
 </html>

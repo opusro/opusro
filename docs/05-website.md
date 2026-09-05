@@ -207,6 +207,35 @@ PWA needs a delight pass. Order:
 4. **Move (phase 3).** PWA to `loop.opus.ro`, page to `opus.ro/loop`,
    redirects, AASA served from all three hosts (04 · System §2).
 
+## 10. Two modes: holding and full
+
+The site builds in one of two shapes, chosen by `SITE_MODE` (src/config.ts).
+
+**holding** is what the public gets while the writing is being done: the mark
+with the dictionary, Loop on the App Store, an email and two links, the legal
+line. No story, no notes, no product pages, no claims about anything. Only that
+page is in the build, so there is nothing else to find: `scripts/prune-holding.mjs`
+deletes every other route from `dist` and refuses to finish if one survives.
+The header, the footer, the feeds and the sitemap are absent too, because in
+that mode there is nowhere for them to point.
+
+**full** is the whole site: homescreen, story, tools, notes, the rest.
+
+| Command | Mode | For |
+|---|---|---|
+| `npm run dev` | full | Writing. Everything visible at :4321, drafts included |
+| `npm run build:full` | full | Checking the whole site builds |
+| `npm run build` | holding | What the publish workflow ships |
+| `npm run dev:holding` | holding | Checking the holding page itself |
+
+Publishing follows the same switch. A push to `main` publishes the mode named
+by the `SITE_MODE` repository variable, defaulting to holding. Running the
+workflow by hand can publish a full build to `dev.opus.ro` instead, which is
+where a draft goes to be read before it is anyone else's business. Going public
+with the full site is one variable: set `SITE_MODE` to `full`.
+
+The copy inventory, every string and the file it lives in, is 08 · Copy.
+
 ## 8. Copy deck
 
 Fixed text. Change here first, then everywhere. Warm, factual, no manifesto.

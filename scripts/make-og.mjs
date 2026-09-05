@@ -20,9 +20,11 @@ const svg = `
   </g>
   <text x="216" y="164" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="500" letter-spacing="7" fill="#ffffff">OPUS</text>
   <text x="216" y="198" font-family="Menlo, monospace" font-size="15" letter-spacing="3" fill="#888888">HUMAN EXPERIENCE DESIGN</text>
-  <text x="96" y="420" font-family="Georgia, 'Times New Roman', serif" font-size="64" fill="#ffffff">We make tools for people,</text>
-  <text x="96" y="500" font-family="Georgia, 'Times New Roman', serif" font-size="64" fill="#ffffff">not for users.</text>
-  <text x="96" y="566" font-family="Menlo, monospace" font-size="16" letter-spacing="3" fill="#555555">OPUS.RO</text>
+  <text x="96" y="470" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic" fill="#ffffff">opus</text>
+  <text x="222" y="470" font-family="Menlo, monospace" font-size="18" fill="#888888">n. LATIN   a body of work</text>
+  <text x="96" y="524" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic" fill="#ffffff">opus</text>
+  <text x="222" y="524" font-family="Menlo, monospace" font-size="18" fill="#888888">adj. ROMANIAN   opposite</text>
+  <text x="96" y="586" font-family="Menlo, monospace" font-size="16" letter-spacing="3" fill="#555555">OPUS.RO</text>
 </svg>`;
 
 const png = await sharp(Buffer.from(svg)).png().toBuffer();

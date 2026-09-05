@@ -5,6 +5,23 @@
  * things here and nowhere else. See docs/04-system.md §5 for the choices.
  */
 
+/**
+ * Which version of the site this build is.
+ *
+ *   holding — what the public sees while the writing is being done: the mark,
+ *             the dictionary, Loop on the App Store, and how to reach us.
+ *             Nothing else is built, so there is nothing else to find.
+ *   full    — the whole site: homescreen, story, tools, notes, the rest.
+ *
+ * `npm run dev` and `npm run build:full` are full; `npm run build` is holding,
+ * which is what the publish workflow ships. See docs/05-website.md §10.
+ */
+export type SiteMode = 'holding' | 'full';
+export const MODE: SiteMode =
+	(import.meta.env.SITE_MODE as SiteMode | undefined) ??
+	(import.meta.env.DEV ? 'full' : 'holding');
+export const IS_HOLDING = MODE === 'holding';
+
 export const SITE = {
 	name: 'OPUS',
 	/** Under the mark. A descriptor, not a tagline. */
@@ -13,6 +30,8 @@ export const SITE = {
 	thesis: 'We make tools for people, not for users.',
 	description:
 		'OPUS is a small design studio in Romania making calm tools for people: Loop, a free timer for practice, and more in the works.',
+	/** What a holding build says about itself. Deliberately bare. */
+	holdingDescription: 'OPUS, a design studio in Cluj-Napoca, Romania.',
 	url: 'https://opus.ro',
 	/** The one door. support@ is an alias. */
 	email: 'hello@opus.ro',

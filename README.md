@@ -1,28 +1,68 @@
 # opus.ro
 
-The website of OPUS, a small design studio in Cluj-Napoca, Romania, that makes
-tools for people, not for users.
+The website of OPUS, a small design studio in Cluj-Napoca, Romania.
 
-A static Astro site. Client JavaScript only for the homescreen's feel, no
-third-party requests except the ones named on `/privacy`, fonts served from
-here. Hosted on ird's IPFS infrastructure: a push to `main` builds, pins the
-site and points the `opus.ro` IPNS name at it.
+A static Astro site, hosted on ird's IPFS infrastructure. No third-party
+requests except the ones named on `/privacy`, fonts served from here.
+
+## Two modes
+
+**The public site is the holding page**: the mark, the dictionary, Loop on the
+App Store, a contact card. Nothing else is in the build, so nothing else is
+findable.
+
+**The full site** (homescreen, story, tools, notes) is written locally and goes
+public when the copy is ready. See [`docs/08-copy.md`](docs/08-copy.md) for the
+inventory of every string and where it lives.
+
+```bash
+npm install
+npm run dev          # the FULL site at :4321, everything visible, drafts too
+npm run build:full   # build the full site into dist/
+npm run preview      # look at whatever is in dist/
+
+npm run build        # the HOLDING site, which is what the public gets
+npm run dev:holding  # the holding page at :4321
+
+npm run check        # type-check
+npm run og           # regenerate the link-preview card after changing its words
+```
+
+## Publishing
+
+A push to `main` publishes to opus.ro. Which site it publishes is the
+`SITE_MODE` repository variable, `holding` by default. Set it to `full` when
+the writing is done, under Settings, Secrets and variables, Actions.
+
+To read a full draft on a real address first, run the workflow by hand from the
+Actions tab and publish `full` to `dev.opus.ro`.
+
+By hand, with the ird CLI signed in:
+
+```bash
+npm run build:full                       # or npm run build for the holding page
+ird ipfs add ./dist                      # prints the CID
+ird ipfs ipns publish opus.ro <cid>      # or dev.opus.ro
+```
+
+The workflow needs one secret, `IRD_API_KEY`, made with `ird keys create`.
 
 ## Where things are
 
 | | |
 |---|---|
 | `docs/` | The brand and system reference. **Start with [`docs/README.md`](docs/README.md).** |
-| `src/config.ts` | Identity, the one email, doorways, the support provider, the traffic counter. Change things here and nowhere else. |
-| `src/content/tools/` | One Markdown file per tool. `listed: false` builds the page without linking it. |
-| `src/content/notes/<year>/` | Notes. Plain Markdown so the whole note travels in the feeds. |
+| `src/config.ts` | Identity, the mode switch, the counter, the support provider. Change things here and nowhere else. |
+| `src/components/Holding.astro` | The public holding page. |
+| `src/components/Homescreen.astro` | The full site's front door. |
+| `src/content/tools/` | One Markdown file per tool. `listed: false` builds a page without linking it. |
+| `src/content/notes/<year>/` | Notes. Plain Markdown, so the whole note travels in the feeds. |
 | `src/styles/tokens.css` | Every value the design depends on. |
 | `scripts/check-output.mjs` | Runs after every build: no mention of eratic, no em dashes, no unexpected scripts. |
+| `scripts/prune-holding.mjs` | Reduces a holding build to the one page and refuses to finish if anything else survives. |
 | `_inspiration/` | 2025 synthesis of the founder's notes. History, not law. Not deployed. |
 
-## Publishing a note
-
-Add a file:
+## Adding a note
 
 ```
 src/content/notes/2026/<slug>.md
@@ -40,29 +80,4 @@ draft: false
 ---
 ```
 
-Drafts and future-dated notes show in `npm run dev` and never deploy. Push to
-`main` and the workflow publishes. By hand, with the ird CLI signed in:
-
-```bash
-npm run build
-ird ipfs add ./dist                      # prints the CID
-ird ipfs ipns publish opus.ro <cid>      # live within minutes
-```
-
-## Commands
-
-```bash
-npm install
-npm run dev       # local preview at :4321
-npm run check     # type-check
-npm run build     # build to dist/ and run the output check
-npm run og        # regenerate public/og.png after changing the words on it
-```
-
-## Two switches in `src/config.ts`
-
-- `COUNTER.enabled`: the cookieless traffic counter. Off until the account
-  exists. Turning it on adds the script, its CSP allowance and the sentence on
-  `/privacy` together.
-- `SUPPORT.provider` and `SUPPORT.url`: the patronage provider behind
-  `/support`. Until set, the page offers the email.
+Drafts and future-dated notes show in `npm run dev` and never reach a build.

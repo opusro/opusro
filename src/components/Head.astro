@@ -8,7 +8,7 @@
  * an accidental third-party script fails visibly instead of quietly tracking
  * anyone. It is a <meta> tag because GitHub Pages sets no headers.
  */
-import { SITE, COUNTER, absoluteUrl } from '../config';
+import { SITE, COUNTER, IS_HOLDING, absoluteUrl } from '../config';
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -29,7 +29,7 @@ interface Props {
 
 const {
 	title,
-	description = SITE.description,
+	description = IS_HOLDING ? SITE.holdingDescription : SITE.description,
 	path = '/',
 	type = 'website',
 	publishedTime,
@@ -38,7 +38,7 @@ const {
 	extraOrigins = [],
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.descriptor}`;
+const pageTitle = title && !IS_HOLDING ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.descriptor}`;
 const canonical = absoluteUrl(path);
 const ogImage = absoluteUrl('/og.png');
 
@@ -72,9 +72,16 @@ const csp = [
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="/favicon.ico" sizes="32x32" />
-<link rel="alternate" type="application/rss+xml" title={`${SITE.name} · notes · RSS`} href={absoluteUrl('/rss.xml')} />
-<link rel="alternate" type="application/feed+json" title={`${SITE.name} · notes · JSON Feed`} href={absoluteUrl('/feed.json')} />
-<link rel="sitemap" href="/sitemap-index.xml" />
+{
+	/* A holding build has no notes and no sitemap to point at. */
+	!IS_HOLDING && (
+		<>
+			<link rel="alternate" type="application/rss+xml" title={`${SITE.name} · notes · RSS`} href={absoluteUrl('/rss.xml')} />
+			<link rel="alternate" type="application/feed+json" title={`${SITE.name} · notes · JSON Feed`} href={absoluteUrl('/feed.json')} />
+			<link rel="sitemap" href="/sitemap-index.xml" />
+		</>
+	)
+}
 
 <meta property="og:type" content={type} />
 <meta property="og:title" content={pageTitle} />
