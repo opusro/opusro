@@ -170,7 +170,7 @@ notes, not in the apps.
 | Need | Choice | Why |
 |---|---|---|
 | Site generator | Astro, static output | The eratic pattern; content collections with typed frontmatter; feeds built in |
-| Hosting for opus.ro | GitHub Pages (already configured) | Zero operations. CSP goes in a `<meta>` tag since Pages sets no headers |
+| Hosting for opus.ro | **ird IPFS hosting** (owner ruling 2026-09-05). The built site is pinned on the OPUS ird account and the `opus.ro` IPNS name is pointed at the new CID; the domain's `_dnslink` record resolves through ird's gateway. A push to `main` does this through GitHub Actions with the ird API key as a repository secret; by hand it is `npm run build && ird ipfs add ./dist && ird ipfs ipns publish opus.ro <cid>`. | The owner's own infrastructure, the same place eratic.ro and makefuture.ro live. CSP goes in a `<meta>` tag since the gateway sets no per-site headers |
 | Fonts | Self-hosted Fontsource packages | No Google Fonts request |
 | Traffic counts | A cookieless, privacy-first counter that needs no consent banner. Recommendation: **Plausible** (EU-hosted, cookieless, no personal data, about €9 a month, one small script). Free alternative: **GoatCounter** (open source, hosted free for personal-scale sites). Both are stated on `/privacy` and allowed in the CSP. | The owner wants a feel for traffic, no personal data, and nothing that needs a banner. Both fit. Self-hosting Umami would need a server, and the only spare one is eratic's, which the boundary forbids |
 | Email for the letter | Buttondown (RSS-to-email, Markdown, tracking off) or nothing at first | RSS first; email when anyone asks |

@@ -3,9 +3,10 @@
 The website of OPUS, a small design studio in Cluj-Napoca, Romania, that makes
 tools for people, not for users.
 
-A static Astro site. No client JavaScript except the brand mark's open and
-close, no third-party requests except the ones named on `/privacy`, fonts served
-from here. Deploys to GitHub Pages from `main`.
+A static Astro site. Client JavaScript only for the homescreen's feel, no
+third-party requests except the ones named on `/privacy`, fonts served from
+here. Hosted on ird's IPFS infrastructure: a push to `main` builds, pins the
+site and points the `opus.ro` IPNS name at it.
 
 ## Where things are
 
@@ -40,7 +41,13 @@ draft: false
 ```
 
 Drafts and future-dated notes show in `npm run dev` and never deploy. Push to
-`main` and GitHub Pages publishes.
+`main` and the workflow publishes. By hand, with the ird CLI signed in:
+
+```bash
+npm run build
+ird ipfs add ./dist                      # prints the CID
+ird ipfs ipns publish opus.ro <cid>      # live within minutes
+```
 
 ## Commands
 
