@@ -1,4 +1,13 @@
-name: Deploy to GitHub Pages
+name: Publish opus.ro
+
+# opus.ro is served through ird's IPFS gateway: the domain's _dnslink record
+# points at an IPNS name on the OPUS ird account, and publishing means pinning
+# the built site and pointing that name at the new CID. Every push to main does
+# exactly that, with the ird API key stored as the repository secret
+# IRD_API_KEY (create one with `ird keys create <name>`; revoke it there too).
+#
+# Before publishing, the build type-checks and runs scripts/check-output.mjs:
+# no mention of eratic, no em dashes, no script from an unexpected origin.
 
 on:
   push:
@@ -7,15 +16,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
+  group: "publish"
   cancel-in-progress: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,23 +40,20 @@ jobs:
       - name: Type-check
         run: npm run check
 
-      # Builds, then runs scripts/check-output.mjs: no mention of eratic, no
-      # em dashes, no script from an origin the config did not allow.
       - name: Build
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+      - name: Install the ird CLI
+        run: curl -fsSL https://ird.ro/downloads/cli/install.sh | sh
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish to ird IPFS
+        env:
+          IRD_API_KEY: ${{ secrets.IRD_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$IRD_API_KEY" || { echo "IRD_API_KEY secret is not set"; exit 1; }
+          export PATH="$HOME/.local/bin:$PATH"
+          cid=$(ird ipfs add ./dist --name "opus.ro $(git rev-parse --short HEAD)" --json -y | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(s.indexOf("{")));console.log(j.root_cid||j.pin.cid)})')
+          echo "pinned $cid"
+          ird ipfs ipns publish opus.ro "$cid" -y
+          echo "opus.ro now points at $cid"
