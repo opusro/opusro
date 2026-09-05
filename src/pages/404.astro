@@ -1,11 +1,20 @@
 ---
 import Page from '../layouts/Page.astro';
+import { IS_HOLDING } from '../config';
 ---
 
 <Page title="Not here" eyebrow="404" lede="There is nothing at this address." path="/404/" noindex>
 	<div class="prose">
-		<p>
-			The <a href="/">front page</a> has everything that is. The <a href="/notes/">notes</a> are there too.
-		</p>
+		{
+			IS_HOLDING ? (
+				<p>
+					<a href="/">Back to the front page</a>.
+				</p>
+			) : (
+				<p>
+					The <a href="/">front page</a> has everything that is. The <a href="/notes/">notes</a> are there too.
+				</p>
+			)
+		}
 	</div>
 </Page>

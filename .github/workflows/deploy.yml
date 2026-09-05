@@ -2,17 +2,33 @@ name: Publish opus.ro
 
 # opus.ro is served through ird's IPFS gateway: the domain's _dnslink record
 # points at an IPNS name on the OPUS ird account, and publishing means pinning
-# the built site and pointing that name at the new CID. Every push to main does
-# exactly that, with the ird API key stored as the repository secret
-# IRD_API_KEY (create one with `ird keys create <name>`; revoke it there too).
+# the built site and pointing that name at the new CID. The ird API key is the
+# repository secret IRD_API_KEY (`ird keys create <name>`; revoke it there too).
 #
-# Before publishing, the build type-checks and runs scripts/check-output.mjs:
-# no mention of eratic, no em dashes, no script from an unexpected origin.
+# Which site gets published is the repository variable SITE_MODE:
+#   holding (default) — the one-page holding site
+#   full              — the whole site, once the writing is done
+# Set it under Settings, Secrets and variables, Actions, Variables.
+#
+# Run this by hand (Actions, Run workflow) to publish a full build to
+# dev.opus.ro instead, which is where a draft goes to be read before it is
+# anyone else's business.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Which site to build'
+        type: choice
+        options: [holding, full]
+        default: full
+      target:
+        description: 'Where to publish it'
+        type: choice
+        options: [dev.opus.ro, opus.ro]
+        default: dev.opus.ro
 
 permissions:
   contents: read
@@ -24,6 +40,9 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      MODE: ${{ inputs.mode || vars.SITE_MODE || 'holding' }}
+      TARGET: ${{ inputs.target || 'opus.ro' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,20 +59,22 @@ jobs:
       - name: Type-check
         run: npm run check
 
-      - name: Build
-        run: npm run build
+      - name: Build the ${{ env.MODE }} site
+        run: |
+          if [ "$MODE" = "full" ]; then npm run build:full; else npm run build; fi
 
       - name: Install the ird CLI
         run: curl -fsSL https://ird.ro/downloads/cli/install.sh | sh
 
-      - name: Publish to ird IPFS
+      - name: Publish to ${{ env.TARGET }}
         env:
           IRD_API_KEY: ${{ secrets.IRD_API_KEY }}
         run: |
           set -euo pipefail
           test -n "$IRD_API_KEY" || { echo "IRD_API_KEY secret is not set"; exit 1; }
           export PATH="$HOME/.local/bin:$PATH"
-          cid=$(ird ipfs add ./dist --name "opus.ro $(git rev-parse --short HEAD)" --json -y | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(s.indexOf("{")));console.log(j.root_cid||j.pin.cid)})')
+          cid=$(ird ipfs add ./dist --name "$TARGET $MODE $(git rev-parse --short HEAD)" --json -y \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(s.indexOf("{")));console.log(j.root_cid||j.pin.cid)})')
           echo "pinned $cid"
-          ird ipfs ipns publish opus.ro "$cid" -y
-          echo "opus.ro now points at $cid"
+          ird ipfs ipns publish "$TARGET" "$cid" -y
+          echo "$TARGET now serves the $MODE site at $cid"

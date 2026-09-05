@@ -18,6 +18,7 @@ true, change the document in the same commit as the change that made it false.
 | [05 · Website](05-website.md) | Audit of opus.ro as it is today, the specification for what replaces it, and the copy deck. |
 | [06 · Decisions](06-decisions.md) | What the owner has settled, what is still open (each with a recommendation and a default), and the phased plan. |
 | [07 · Working](07-working.md) | How the owner engages with the system day to day: touchpoints, the accounts only they can create, what a normal month, quarter and year look like. |
+| [08 · Copy](08-copy.md) | Every user-facing string and the file it lives in, as a checklist for rewriting the drafted text in the owner's own voice. |
 
 ## How to use these
 

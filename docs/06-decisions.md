@@ -23,6 +23,7 @@ same commit as the change.
 | D21 | **Loop's web home moves under opus.ro** (page at `/loop`, PWA at `loop.opus.ro`); opusloop.co redirects after the associated-domains release. The PWA gets a polish pass. |
 | D23 | **The home page is a homescreen.** Apps in a dock, content as widgets, the metaphor of a phone or Mac first screen, as the previous site had. Simple and clean by default, interactive enough to invite exploring, every path to content using a pattern people get instantly. A reading-page home was tried and rejected (2026-09-05). |
 | D3a | **Plausible**, account created 2026-09-05; on in `src/config.ts`, named on `/privacy`. |
+| D25 | **The public site is a holding page until the copy is the owner's own.** Mark, dictionary, Loop on the App Store, a contact card. Nothing else is built, so nothing else is findable. The full site is written locally (`npm run dev`) and previewed at `dev.opus.ro`; it goes public by setting `SITE_MODE` to `full`. The drafted copy is scaffolding, not a proposal: see 08 · Copy. |
 | D24 | **Hosting is ird infrastructure: IPFS pins and IPNS names, through the ird CLI.** GitHub Pages is not used; the domain already resolved through ird's gateway. Publishing is a push to `main` (the workflow pins and re-points the name) or two CLI commands by hand. First publish 2026-09-05. |
 
 ## 2. Still open, for the owner
