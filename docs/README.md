@@ -19,6 +19,7 @@ true, change the document in the same commit as the change that made it false.
 | [06 · Decisions](06-decisions.md) | What the owner has settled, what is still open (each with a recommendation and a default), and the phased plan. |
 | [07 · Working](07-working.md) | How the owner engages with the system day to day: touchpoints, the accounts only they can create, what a normal month, quarter and year look like. |
 | [08 · Copy](08-copy.md) | Every user-facing string and the file it lives in, as a checklist for rewriting the drafted text in the owner's own voice. |
+| [09 · Local](09-local.md) | Running the full site on your own machine, the `/map/` page, what to open for what, and how to point at things. |
 
 ## How to use these
 
