@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "dev:lan": "astro dev --host",
     "dev:holding": "SITE_MODE=holding astro dev",
     "build": "SITE_MODE=holding astro build && node scripts/prune-holding.mjs dist && node scripts/check-output.mjs dist",
     "build:full": "SITE_MODE=full astro build && node scripts/check-output.mjs dist",

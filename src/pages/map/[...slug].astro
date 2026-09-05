@@ -1,0 +1,179 @@
+---
+/**
+ * /map/ — every page, tool and note, with the file each one comes from.
+ *
+ * Exists only while `npm run dev` is running: getStaticPaths returns nothing
+ * in a build, so it can never be published by accident. It is here so you can
+ * click through the whole site while you rewrite it, and so pointing at
+ * something is exact: send the path, or the file, and there is no ambiguity
+ * about which words you mean.
+ */
+import Base from '../../layouts/Base.astro';
+import { allTools, allNotes, notePath, toolPath, STATUS_LABEL, KIND_LABEL } from '../../lib/notes';
+import { formatDateShort } from '../../lib/format';
+
+export async function getStaticPaths() {
+	if (!import.meta.env.DEV) return [];
+	return [{ params: { slug: undefined } }];
+}
+
+const tools = await allTools();
+const notes = await allNotes();
+
+const pages = [
+	{ path: '/', name: 'Home', file: 'src/components/Homescreen.astro', note: 'the homescreen; in a public build this is src/components/Holding.astro' },
+	{ path: '/story/', name: 'Story', file: 'src/pages/story.astro' },
+	{ path: '/wip/', name: 'In the works', file: 'src/pages/wip.astro' },
+	{ path: '/notes/', name: 'Notes index', file: 'src/pages/notes/index.astro' },
+	{ path: '/support/', name: 'Support', file: 'src/pages/support.astro' },
+	{ path: '/work/', name: 'Work', file: 'src/pages/work.astro' },
+	{ path: '/contact/', name: 'Contact', file: 'src/pages/contact.astro' },
+	{ path: '/privacy/', name: 'Privacy', file: 'src/pages/privacy.astro' },
+	{ path: '/404/', name: '404', file: 'src/pages/404.astro' },
+];
+
+const shared = [
+	{ what: 'Name, descriptor, dictionary, email, doorways, the mode switch', file: 'src/config.ts' },
+	{ what: 'The mark opening into the dictionary', file: 'src/components/BrandMark.astro' },
+	{ what: 'The holding page the public sees', file: 'src/components/Holding.astro' },
+	{ what: 'Header and footer', file: 'src/components/Header.astro, Footer.astro' },
+	{ what: 'Colour, type, spacing: every design value', file: 'src/styles/tokens.css' },
+	{ what: 'Reading typography for notes', file: 'src/styles/prose.css' },
+	{ what: 'Homescreen behaviour: dock, pages, light', file: 'public/home.js' },
+	{ what: 'The link-preview card', file: 'scripts/make-og.mjs, then npm run og' },
+];
+---
+
+<Base title="Map" path="/map/" noindex header={false}>
+	<div class="wrap map">
+		<header class="map__head">
+			<p class="eyebrow">Development only</p>
+			<h1 class="voice">Everything, and where it lives</h1>
+			<p class="lede">
+				This page exists while <code>npm run dev</code> is running and in no build, so it cannot reach the
+				public site. Click through, and when something needs changing, name the path or the file.
+			</p>
+		</header>
+
+		<section class="map__section">
+			<h2 class="voice">Pages</h2>
+			<ul class="rows">
+				{
+					pages.map((page) => (
+						<li class="row">
+							<a href={page.path}>{page.name}</a>
+							<code>{page.file}</code>
+							{page.note && <span class="row__note">{page.note}</span>}
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="map__section">
+			<h2 class="voice">Tools</h2>
+			<ul class="rows">
+				{
+					tools.map((tool) => (
+						<li class="row">
+							<a href={toolPath(tool)}>{tool.data.name}</a>
+							<code>src/content/tools/{tool.id}.md</code>
+							<span class="row__note">
+								{STATUS_LABEL[tool.data.status]}
+								{tool.data.listed ? ' · listed' : ' · not listed, so nothing links to it'}
+							</span>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="map__section">
+			<h2 class="voice">Notes</h2>
+			<ul class="rows">
+				{
+					notes.map((note) => (
+						<li class="row">
+							<a href={notePath(note)}>{note.data.title}</a>
+							<code>src/content/notes/{note.id}.md</code>
+							<span class="row__note">
+								{KIND_LABEL[note.data.kind]}
+								{note.data.tool ? ` · ${note.data.tool}` : ''} · {formatDateShort(note.data.pubDate)}
+								{note.data.draft ? ' · draft, never published' : ''}
+							</span>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="map__section">
+			<h2 class="voice">Shared pieces</h2>
+			<ul class="rows">
+				{
+					shared.map((item) => (
+						<li class="row">
+							<span>{item.what}</span>
+							<code>{item.file}</code>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="map__section">
+			<h2 class="voice">Feeds</h2>
+			<ul class="rows">
+				<li class="row"><a href="/rss.xml">/rss.xml</a><code>src/pages/rss.xml.ts</code></li>
+				<li class="row"><a href="/feed.json">/feed.json</a><code>src/pages/feed.json.ts</code></li>
+			</ul>
+		</section>
+	</div>
+</Base>
+
+<style>
+	.map {
+		display: grid;
+		gap: var(--space-xl);
+		padding-block-end: var(--space-2xl);
+	}
+	.map__head {
+		display: grid;
+		gap: var(--space-s);
+		max-width: var(--measure);
+	}
+	.map__head code {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+	}
+	.map__section {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.row {
+		display: grid;
+		grid-template-columns: minmax(12rem, 1fr) minmax(0, 1.4fr);
+		gap: 0.5rem var(--space-m);
+		align-items: baseline;
+	}
+	.row > a,
+	.row > span:first-child {
+		font-size: var(--step-0);
+	}
+	.row code {
+		font-family: var(--font-mono);
+		font-size: var(--step--1);
+		color: var(--ink-2);
+		word-break: break-all;
+	}
+	.row__note {
+		grid-column: 1 / -1;
+		font-size: var(--step--1);
+		color: var(--ink-3);
+	}
+	@media (max-width: 640px) {
+		.row {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

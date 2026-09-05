@@ -15,9 +15,14 @@ findable.
 public when the copy is ready. See [`docs/08-copy.md`](docs/08-copy.md) for the
 inventory of every string and where it lives.
 
+Working on it locally, start to finish: [`docs/09-local.md`](docs/09-local.md).
+While `npm run dev` is running, **http://localhost:4321/map/** lists every
+page, tool and note with the file it comes from.
+
 ```bash
 npm install
 npm run dev          # the FULL site at :4321, everything visible, drafts too
+npm run dev:lan      # the same, reachable from your phone on the same wifi
 npm run build:full   # build the full site into dist/
 npm run preview      # look at whatever is in dist/
 
