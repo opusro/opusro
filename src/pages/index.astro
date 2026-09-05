@@ -39,7 +39,7 @@ const cheri = tools.find((t) => t.id === 'cheri');
 
 		<div class="pager" data-pager tabindex="0" aria-roledescription="carousel" aria-label="Home pages">
 			<section class="page page--first" aria-label="Page 1 of 2">
-				<p class="voice page__thesis">{SITE.thesis}</p>
+				{/* Deliberately empty: the mark and its descriptor say it. */}
 			</section>
 
 			<section class="page" aria-label="Page 2 of 2">
@@ -65,7 +65,7 @@ const cheri = tools.find((t) => t.id === 'cheri');
 						)
 					}
 
-					<a class="widget widget--square widget--story" href="/story/" data-tilt aria-label="Story: three circles, one for each tool">
+					<a class="widget widget--small widget--story" href="/story/" data-tilt aria-label="Story: three circles, one for each tool">
 						<Circles
 							compact
 							rings={[
@@ -76,28 +76,28 @@ const cheri = tools.find((t) => t.id === 'cheri');
 						/>
 						<span class="widget__foot">
 							<span class="widget__title">Story</span>
-							<span class="widget__meta">{SITE.thesis}</span>
+							<span class="widget__meta">why we make things</span>
 						</span>
 					</a>
 
-					<a class="widget widget--square widget--support" href="/support/" data-tilt>
-						<span class="widget__head">
-							<span class="widget__title">Support</span>
-						</span>
-						<svg class="support__heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<a class="widget widget--small widget--support" href="/support/" data-tilt>
+						<svg class="widget__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 							<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
 						</svg>
 						<span class="widget__foot">
-							<span class="widget__meta">Kept going by the people who use what we make.</span>
+							<span class="widget__title">Support</span>
+							<span class="widget__meta">keep this going</span>
 						</span>
 					</a>
 
-					<a class="widget widget--wide widget--work" href="/work/" data-tilt>
-						<span class="widget__head">
+					<a class="widget widget--small widget--work" href="/work/" data-tilt>
+						<svg class="widget__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+							<path d="M13.5 6.5l3 3" />
+						</svg>
+						<span class="widget__foot">
 							<span class="widget__title">Work</span>
-						</span>
-						<span class="work__line">
-							Mobile products for a few startups, made the way we make our own.
+							<span class="widget__meta">with your startup</span>
 						</span>
 					</a>
 				</div>
@@ -159,7 +159,9 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		position: relative;
 		height: 100svh;
 		display: grid;
-		grid-template-rows: auto minmax(0, 1fr) auto;
+		/* mark · pages · dots · dock. The dock is in the layout rather than
+		   floating over it, so nothing can ever sit under it. */
+		grid-template-rows: auto minmax(0, 1fr) auto auto;
 		padding-top: max(2rem, env(safe-area-inset-top, 0px) + 1.5rem);
 		overflow: hidden;
 		background:
@@ -211,24 +213,11 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 		display: grid;
+		grid-template-rows: minmax(0, 1fr);
 		justify-items: center;
-		align-content: start;
+		align-content: stretch;
 		padding: var(--space-s) var(--gutter) var(--space-m);
-		overflow-y: auto;
-		scrollbar-width: none;
-	}
-	.page::-webkit-scrollbar {
-		display: none;
-	}
-	.page--first {
-		align-content: center;
-	}
-	.page__thesis {
-		font-size: var(--step-2);
-		color: var(--ink-2);
-		text-align: center;
-		max-width: 20ch;
-		margin-block-end: 10vh;
+		min-height: 0;
 	}
 
 	/* -- Dots ---------------------------------------------------------------- */
@@ -238,7 +227,7 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		display: flex;
 		justify-content: center;
 		gap: 10px;
-		padding-block: var(--space-2xs) calc(env(safe-area-inset-bottom, 0px) + 7.25rem);
+		padding-block: var(--space-s) var(--space-xs);
 	}
 	.dot {
 		width: 7px;
@@ -265,12 +254,18 @@ const cheri = tools.find((t) => t.id === 'cheri');
 	}
 
 	/* -- Widget grid -------------------------------------------------------- */
+	/* The widgets fill the page rather than running past it: a homescreen page
+	   does not scroll. Rows share the height that is there, so the same four
+	   widgets sit correctly on a short laptop and a tall phone alike. */
+	/* One wide widget and a row of three small ones. It fits the page at every
+	   size worth designing for, which is what makes it read as a homescreen
+	   rather than a document. */
 	.grid {
 		width: min(30rem, 100%);
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.85rem;
-		align-content: start;
+		align-content: center;
 	}
 	.widget {
 		position: relative;
@@ -290,6 +285,8 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
 		transform: scale(var(--press, 1));
 		will-change: transform;
+		overflow: hidden;
+		min-height: 0;
 	}
 	.widget:hover {
 		border-color: var(--hairline-strong);
@@ -300,9 +297,21 @@ const cheri = tools.find((t) => t.id === 'cheri');
 	.widget--wide {
 		grid-column: 1 / -1;
 	}
-	.widget--square {
-		aspect-ratio: 1.12;
+	.widget--small {
+		aspect-ratio: 1;
 		align-content: space-between;
+		padding: 0.9rem;
+		gap: 0.4rem;
+	}
+	.widget__glyph {
+		width: auto;
+		height: 100%;
+		max-height: 2.6rem;
+		max-width: 2.6rem;
+		margin-inline: auto;
+		min-height: 0;
+		color: var(--ink);
+		opacity: 0.9;
 	}
 	.widget__head,
 	.widget__foot {
@@ -329,13 +338,12 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		letter-spacing: 0.04em;
 		color: var(--ink-3);
 	}
-	.widget--story .widget__meta,
-	.widget--support .widget__meta {
-		font-family: var(--font-voice);
-		font-optical-sizing: auto;
-		font-size: var(--step--1);
+	.widget--small .widget__meta {
+		font-family: var(--font-ui);
+		font-size: var(--step--2);
 		letter-spacing: 0;
-		color: var(--ink-2);
+		text-transform: none;
+		color: var(--ink-3);
 		line-height: 1.3;
 	}
 
@@ -383,43 +391,21 @@ const cheri = tools.find((t) => t.id === 'cheri');
 	}
 
 	/* Story widget: the rings alone, like a set of activity rings. */
-	.widget--story {
-		padding-block-start: 1rem;
-	}
 	.widget--story :global(.circles) {
-		width: 100%;
-		max-width: min(7.5rem, 62%);
+		width: auto;
+		height: 100%;
+		max-height: 3.8rem;
+		max-width: 3.8rem;
 		margin-inline: auto;
-	}
-
-	/* Support widget */
-	.support__heart {
-		width: min(4rem, 32%);
-		height: auto;
-		margin-inline: auto;
-		color: var(--ink);
-		opacity: 0.9;
-	}
-
-	/* Work widget */
-	.work__line {
-		font-family: var(--font-voice);
-		font-optical-sizing: auto;
-		font-size: var(--step-0);
-		line-height: 1.4;
-		color: var(--ink);
-		text-wrap: pretty;
+		min-height: 0;
 	}
 
 	/* -- Dock --------------------------------------------------------------- */
 	.dock {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
 		display: flex;
 		justify-content: center;
-		pointer-events: none;
+		padding-block-end: calc(env(safe-area-inset-bottom, 0px) + 18px);
+		position: relative;
 		z-index: 5;
 	}
 	.dock__tray {
@@ -432,7 +418,6 @@ const cheri = tools.find((t) => t.id === 'cheri');
 		background: rgba(10, 10, 10, 0.72);
 		backdrop-filter: blur(14px);
 		-webkit-backdrop-filter: blur(14px);
-		pointer-events: auto;
 	}
 	.app {
 		width: 72px;
@@ -508,17 +493,8 @@ const cheri = tools.find((t) => t.id === 'cheri');
 			padding: 1rem;
 			border-radius: 20px;
 		}
-		.widget--square {
-			aspect-ratio: 1;
-		}
-		.widget--story .widget__meta,
-		.widget--support .widget__meta {
-			font-size: var(--step--2);
-			font-family: var(--font-ui);
-			line-height: 1.35;
-		}
-		.work__line {
-			font-size: var(--step--1);
+		.widget--small {
+			padding: 0.75rem;
 		}
 		.dock__tray {
 			gap: 6px;
