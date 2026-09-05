@@ -1,0 +1,105 @@
+---
+/**
+ * Everything inside <head>.
+ *
+ * What is absent matters: no tag manager, no font host, no social pixel. The
+ * page talks to opus.ro and, when COUNTER.enabled, to the cookieless counter
+ * named on /privacy. The Content-Security-Policy below enforces that list, so
+ * an accidental third-party script fails visibly instead of quietly tracking
+ * anyone. It is a <meta> tag because GitHub Pages sets no headers.
+ */
+import { SITE, COUNTER, absoluteUrl } from '../config';
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/prose.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	path?: string;
+	type?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	/** Unlisted pages ask crawlers to leave them out. */
+	noindex?: boolean;
+	/** Per-page CSP additions, e.g. a payment provider on /support. */
+	extraOrigins?: string[];
+}
+
+const {
+	title,
+	description = SITE.description,
+	path = '/',
+	type = 'website',
+	publishedTime,
+	modifiedTime,
+	noindex = false,
+	extraOrigins = [],
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.descriptor}`;
+const canonical = absoluteUrl(path);
+const ogImage = absoluteUrl('/og.png');
+
+const scriptOrigins = ["'self'", ...(COUNTER.enabled ? [COUNTER.origin] : []), ...extraOrigins];
+const connectOrigins = ["'self'", ...(COUNTER.enabled ? [COUNTER.origin] : []), ...extraOrigins];
+const csp = [
+	`default-src 'self'`,
+	`img-src 'self' data:`,
+	`media-src 'self'`,
+	`font-src 'self'`,
+	`style-src 'self' 'unsafe-inline'`,
+	`script-src ${scriptOrigins.join(' ')}`,
+	`connect-src ${connectOrigins.join(' ')}`,
+	`frame-src ${extraOrigins.length ? extraOrigins.join(' ') : "'none'"}`,
+	`base-uri 'self'`,
+	`form-action 'self'`,
+].join('; ');
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content={csp} />
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex" />}
+
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#050505" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE.name} · notes · RSS`} href={absoluteUrl('/rss.xml')} />
+<link rel="alternate" type="application/feed+json" title={`${SITE.name} · notes · JSON Feed`} href={absoluteUrl('/feed.json')} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+<meta name="twitter:card" content="summary_large_image" />
+
+<meta name="author" content={SITE.name} />
+<meta name="generator" content={Astro.generator} />
+
+{
+	/* Plausible's snippet is an async script plus an inline init. Inline is
+	   blocked by the CSP, so the init ships as /counter.js from our own origin,
+	   loaded in order right after the script tag, which is the same behaviour. */
+	COUNTER.enabled && (
+		<>
+			<script is:inline async src={COUNTER.scriptSrc}></script>
+			<script is:inline src="/counter.js"></script>
+		</>
+	)
+}

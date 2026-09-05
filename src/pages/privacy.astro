@@ -1,0 +1,43 @@
+---
+/**
+ * What this site does and does not do, in plain words. The text follows the
+ * config: if the counter is off, it says so; if it is on, it names it.
+ */
+import Page from '../layouts/Page.astro';
+import { SITE, COUNTER, SUPPORT } from '../config';
+---
+
+<Page title="Privacy" eyebrow="Privacy" path="/privacy/" description="What this site does and does not do with your visit.">
+	<div class="prose">
+		<p>
+			This site is a set of static pages served from opus.ro. It sets no cookies and has no consent banner,
+			because there is nothing to consent to.
+		</p>
+		{
+			COUNTER.enabled ? (
+				<p>
+					It counts visits with {COUNTER.provider}, which loads one small script from {COUNTER.origin}. The
+					count is cookieless and collects no personal data: no identifiers, no fingerprinting, nothing that
+					follows you anywhere else. It tells us how many people came, from where, and to which page.
+				</p>
+			) : (
+				<p>It keeps no visitor statistics of any kind.</p>
+			)
+		}
+		{
+			SUPPORT.url ? (
+				<p>
+					The support page loads a button from {SUPPORT.provider === 'patreon' ? 'Patreon' : SUPPORT.provider}
+					so that payments work. That is the only other page where your browser talks to anyone but us.
+				</p>
+			) : (
+				<p>Your browser talks to opus.ro and to nobody else. Fonts, images and video are all served from here.</p>
+			)
+		}
+		<p>
+			The tools OPUS makes have their own statements, on their own pages, because they are different things with
+			different facts.
+		</p>
+		<p>Questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+	</div>
+</Page>

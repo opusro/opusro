@@ -1,0 +1,113 @@
+---
+/** The story. Warm, short, no manifesto. docs/05-website.md §8. */
+import Base from '../layouts/Base.astro';
+import Dictionary from '../components/Dictionary.astro';
+import Circles from '../components/Circles.astro';
+import { SITE } from '../config';
+import { allTools } from '../lib/notes';
+
+const tools = await allTools();
+const loop = tools.find((t) => t.id === 'loop');
+const cheri = tools.find((t) => t.id === 'cheri');
+---
+
+<Base
+	title="Story"
+	description="Why OPUS exists, what the name means, the three circles the tools serve, and how the studio stays alive."
+	path="/story/"
+	current="story"
+>
+	<article class="wrap wrap--narrow story">
+		<header class="story__head">
+			<p class="eyebrow">Story</p>
+			<h1 class="voice">{SITE.thesis}</h1>
+			<p class="lede">
+				OPUS is a small studio in Cluj-Napoca. We make a few tools, slowly, for the parts of life that deserve
+				care. Each one starts with a real need, gets made until it is complete, and is then left to do its job
+				quietly.
+			</p>
+		</header>
+
+		<section class="story__section">
+			<h2 class="voice">The name</h2>
+			<Dictionary size="large" />
+			<p>Both are meant. The work, done the other way round.</p>
+		</section>
+
+		<section class="story__section">
+			<h2 class="voice">Three circles</h2>
+			<Circles
+				rings={[
+					{ label: loop?.data.name ?? 'Loop', circle: 'you with yourself', accent: loop?.data.accent },
+					{ label: cheri?.data.name ?? 'Chéri', circle: 'you with your people', accent: cheri?.data.accent },
+					{ label: 'the city', circle: 'you with everyone', dashed: true },
+				]}
+			/>
+			<ul class="story__circles">
+				<li><strong>Loop</strong> is for you with yourself: time, sound, silence.</li>
+				<li><strong>Chéri</strong> is for you with your people: friends, and the things between them.</li>
+				<li>A third tool, about the city, is in the works.</li>
+			</ul>
+		</section>
+
+		<section class="story__section">
+			<h2 class="voice">Where it comes from</h2>
+			<p>
+				For nearly two decades the founder designed mobile products for other companies. In 2026 OPUS made its
+				first tool of its own, and the studio stopped being a plan. Every tool since has come from something we
+				needed and could not find made the way we wanted it.
+			</p>
+		</section>
+
+		<section class="story__section">
+			<h2 class="voice">How it stays alive</h2>
+			<p>
+				Loop is free with one preset, and a small price once for as many as you like. Chéri will be paid for
+				once. Nothing we make asks you for money every month, and nothing we make needs an account.
+			</p>
+			<p>
+				The studio is kept going by the people who find the work valuable, and by design work we do for a small
+				number of startups. <a href="/support/">Here is how supporting it works</a>, and <a href="/work/">here
+				is how we work with others</a>.
+			</p>
+		</section>
+
+		<section class="story__section">
+			<h2 class="voice">Who</h2>
+			<p>
+				OPUS is C., a designer with nearly twenty years of mobile work behind him, and the people he makes
+				things with. It is {SITE.legal} on paper.
+			</p>
+		</section>
+	</article>
+</Base>
+
+<style>
+	.story {
+		display: grid;
+		gap: var(--space-2xl);
+	}
+	.story__head {
+		display: grid;
+		gap: var(--space-m);
+	}
+	.story__section {
+		display: grid;
+		gap: var(--space-m);
+	}
+	.story__section p,
+	.story__circles {
+		font-size: var(--step-0);
+		color: var(--ink);
+		max-width: var(--measure);
+	}
+	.story__circles {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: var(--space-2xs);
+	}
+	.story__circles strong {
+		font-weight: 600;
+	}
+</style>

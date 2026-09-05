@@ -1,0 +1,137 @@
+/*
+ * Prose: rendered note bodies. Scoped under .prose so it never leaks into
+ * navigation or listings. Vertical rhythm via the owl selector so any element
+ * dropped into the flow spaces itself.
+ */
+
+.prose {
+	font-family: var(--font-voice);
+	font-optical-sizing: auto;
+	font-size: var(--step-1);
+	line-height: var(--leading-prose);
+	color: var(--ink);
+	font-variant-numeric: oldstyle-nums proportional-nums;
+	text-wrap: pretty;
+	max-width: var(--measure);
+}
+
+.prose > * + * {
+	margin-block-start: var(--space-m);
+}
+
+.prose h2,
+.prose h3 {
+	font-family: var(--font-voice);
+	font-variant-numeric: lining-nums;
+	line-height: var(--leading-tight);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+
+.prose h2 {
+	font-size: var(--step-2);
+	margin-block-start: var(--space-xl);
+}
+
+.prose h3 {
+	font-size: var(--step-1);
+	margin-block-start: var(--space-l);
+}
+
+.prose p,
+.prose li {
+	color: var(--ink);
+}
+
+.prose a {
+	text-decoration-color: var(--ink-3);
+}
+
+.prose a:hover {
+	text-decoration-color: var(--ink);
+}
+
+.prose strong {
+	font-weight: 600;
+}
+
+.prose em {
+	font-style: italic;
+}
+
+.prose ul,
+.prose ol {
+	padding-inline-start: 1.4em;
+}
+
+.prose li + li {
+	margin-block-start: var(--space-2xs);
+}
+
+.prose li::marker {
+	color: var(--ink-3);
+}
+
+.prose blockquote {
+	border-inline-start: 2px solid var(--ink);
+	padding-inline-start: var(--space-m);
+	color: var(--ink-2);
+}
+
+.prose blockquote > * + * {
+	margin-block-start: var(--space-s);
+}
+
+.prose hr {
+	border: 0;
+	border-top: 1px solid var(--hairline);
+	margin-block: var(--space-xl);
+}
+
+.prose code {
+	font-family: var(--font-mono);
+	font-size: 0.85em;
+	background: var(--surface-raised);
+	border: 1px solid var(--hairline);
+	padding: 0.1em 0.35em;
+	border-radius: var(--radius);
+}
+
+.prose pre {
+	background: var(--surface-raised);
+	border: 1px solid var(--hairline);
+	padding: var(--space-s) var(--space-m);
+	overflow-x: auto;
+	font-size: var(--step--1);
+	line-height: 1.6;
+}
+
+.prose pre code {
+	background: none;
+	border: 0;
+	padding: 0;
+	font-size: inherit;
+}
+
+.prose img,
+.prose video {
+	width: 100%;
+	border-radius: var(--radius);
+}
+
+.prose figcaption {
+	font-family: var(--font-ui);
+	font-size: var(--step--1);
+	color: var(--ink-3);
+	margin-block-start: var(--space-2xs);
+}
+
+/* A dated preface at the top of an archived piece. */
+.prose .preface {
+	font-family: var(--font-ui);
+	font-size: var(--step--1);
+	color: var(--ink-2);
+	border-block-end: 1px solid var(--hairline);
+	padding-block-end: var(--space-m);
+}

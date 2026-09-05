@@ -1,0 +1,73 @@
+---
+/**
+ * The three circles: self, your people, everyone. Loop at the centre, Chéri
+ * around it, and the outermost ring for the third tool. A ring whose tool has
+ * no public name yet is labelled by its circle and drawn dashed.
+ */
+interface Ring {
+	label: string;
+	circle: string;
+	accent?: string;
+	dashed?: boolean;
+}
+interface Props {
+	rings: [Ring, Ring, Ring];
+	class?: string;
+	/** Widget size: names only, no circle captions. */
+	compact?: boolean;
+}
+const { rings, class: className, compact = false } = Astro.props;
+const [inner, middle, outer] = rings;
+---
+
+<svg
+	class:list={['circles', compact && 'circles--compact', className]}
+	viewBox="0 0 320 320"
+	role="img"
+	aria-label={`Three concentric circles. ${inner.label}: ${inner.circle}. ${middle.label}: ${middle.circle}. ${outer.label}: ${outer.circle}.`}
+>
+	<circle cx="160" cy="160" r="148" fill="none" stroke={outer.accent ?? 'var(--ink-3)'} stroke-width="1.5" stroke-dasharray={outer.dashed ? '4 5' : undefined} />
+	<circle cx="160" cy="160" r="98" fill="none" stroke={middle.accent ?? 'var(--ink-2)'} stroke-width="1.5" stroke-dasharray={middle.dashed ? '4 5' : undefined} />
+	<circle cx="160" cy="160" r="48" fill="none" stroke={inner.accent ?? 'var(--ink)'} stroke-width="1.5" stroke-dasharray={inner.dashed ? '4 5' : undefined} />
+	<circle cx="160" cy="160" r="3" fill="var(--ink)" />
+
+	<text class="circles__name" x="160" y="130" text-anchor="middle">{inner.label}</text>
+	<text class="circles__circle" x="160" y="188" text-anchor="middle">{inner.circle}</text>
+
+	<text class="circles__name" x="160" y="78" text-anchor="middle">{middle.label}</text>
+	<text class="circles__circle" x="160" y="242" text-anchor="middle">{middle.circle}</text>
+
+	<text class="circles__name circles__name--quiet" x="160" y="30" text-anchor="middle">{outer.label}</text>
+	<text class="circles__circle" x="160" y="292" text-anchor="middle">{outer.circle}</text>
+</svg>
+
+<style>
+	.circles {
+		width: min(20rem, 100%);
+		height: auto;
+		margin-inline: auto;
+	}
+	.circles__name {
+		font-family: var(--font-voice);
+		font-size: 16px;
+		fill: var(--ink);
+	}
+	.circles__name--quiet {
+		fill: var(--ink-2);
+	}
+	.circles__circle {
+		font-family: var(--font-mono);
+		font-size: 8.5px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		fill: var(--ink-3);
+	}
+	/* Compact: the rings alone. Names and captions live where there is room. */
+	.circles--compact .circles__circle,
+	.circles--compact .circles__name {
+		display: none;
+	}
+	.circles--compact circle {
+		stroke-width: 2.5;
+	}
+</style>

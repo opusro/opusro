@@ -1,0 +1,98 @@
+---
+/** A plain page: eyebrow, title, optional lede, then the content column. */
+import Base from './Base.astro';
+
+interface Props {
+	title: string;
+	eyebrow?: string;
+	lede?: string;
+	description?: string;
+	path: string;
+	current?: string;
+	noindex?: boolean;
+	extraOrigins?: string[];
+	/** Matches the dock icon on home, so the icon morphs into this header. */
+	tile?: 'work' | 'support' | 'contact' | 'notes' | 'wip';
+}
+const { title, eyebrow, lede, description, path, current, noindex, extraOrigins, tile } = Astro.props;
+---
+
+<Base title={title} description={description ?? lede} path={path} current={current} noindex={noindex} extraOrigins={extraOrigins}>
+	<div class="wrap wrap--narrow page">
+		<header class="page__head">
+			{
+				tile && (
+					<span class:list={['tile', 'page__tile', tile === 'wip' && 'page__tile--dashed']} aria-hidden="true" style={`view-transition-name: tile-${tile}`}>
+						{tile === 'work' && (
+							<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+								<path d="M13.5 6.5l3 3" />
+							</svg>
+						)}
+						{tile === 'support' && (
+							<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+							</svg>
+						)}
+						{tile === 'contact' && <span class="page__at">@</span>}
+						{tile === 'notes' && (
+							<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+								<path d="M5 7h14M5 12h11M5 17h8" />
+							</svg>
+						)}
+						{tile === 'wip' && (
+							<span class="page__dots">
+								<i></i>
+								<i></i>
+								<i></i>
+							</span>
+						)}
+					</span>
+				)
+			}
+			{eyebrow && <p class="eyebrow">{eyebrow}</p>}
+			<h1 class="voice">{title}</h1>
+			{lede && <p class="lede">{lede}</p>}
+		</header>
+		<slot />
+	</div>
+</Base>
+
+<style>
+	.page {
+		display: grid;
+		gap: var(--space-l);
+	}
+	.page__head {
+		display: grid;
+		gap: var(--space-s);
+		padding-block-end: var(--space-m);
+		border-bottom: 1px solid var(--hairline);
+	}
+	.page__tile {
+		margin-block-end: var(--space-2xs);
+	}
+	.page__tile svg {
+		width: 26px;
+		height: 26px;
+	}
+	.page__at {
+		font-size: 1.9rem;
+		line-height: 1;
+	}
+	.page__tile--dashed {
+		background: rgba(255, 255, 255, 0.015);
+		box-shadow: none;
+		border: 1.5px dashed var(--hairline-strong);
+	}
+	.page__dots {
+		display: flex;
+		gap: 5px;
+	}
+	.page__dots i {
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--ink-2);
+	}
+</style>

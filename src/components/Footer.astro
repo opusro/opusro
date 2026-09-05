@@ -1,0 +1,41 @@
+---
+/** The footer: legal line, the one email, feeds, privacy. Same everywhere. */
+import { SITE } from '../config';
+const year = new Date().getFullYear();
+const span = year > SITE.since ? `${SITE.since} to ${year}` : `${SITE.since}`;
+---
+
+<footer class="footer">
+	<div class="wrap footer__inner">
+		<p class="footer__legal">
+			{SITE.name} is {SITE.legal}, a small studio in {SITE.city}.{' '}
+			<a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+		</p>
+		<p class="meta footer__links">
+			<a href="/notes/">notes</a>{' · '}<a href="/rss.xml">RSS</a>{' · '}<a href="/feed.json">JSON</a>{' · '}
+			<a href="/privacy/">privacy</a>{' · '}<span>{span}</span>
+		</p>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		border-top: 1px solid var(--hairline);
+		padding-block: var(--space-l) var(--space-xl);
+	}
+	.footer__inner {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.footer__legal {
+		font-size: var(--step--1);
+		color: var(--ink-2);
+		max-width: var(--measure);
+	}
+	.footer__legal a {
+		color: var(--ink-2);
+	}
+	.footer__legal a:hover {
+		color: var(--ink);
+	}
+</style>

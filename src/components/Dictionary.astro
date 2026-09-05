@@ -1,0 +1,81 @@
+---
+/**
+ * A dictionary entry: word, part of speech, language, meaning. The brand
+ * explaining itself without a slogan. Used small under the mark and full size
+ * on the story page.
+ */
+import { DICTIONARY } from '../config';
+
+interface Props {
+	entries?: ReadonlyArray<{ word: string; pos: string; lang: string; meaning: string }>;
+	size?: 'small' | 'large';
+	class?: string;
+}
+const { entries = DICTIONARY, size = 'small', class: className } = Astro.props;
+---
+
+<dl class:list={['dict', `dict--${size}`, className]}>
+	{
+		entries.map((entry) => (
+			<div class="dict__entry">
+				<dt class="dict__head">
+					<span class="dict__word">{entry.word}</span>
+					<span class="dict__pos">{entry.pos}</span>
+					<span class="dict__lang">{entry.lang}</span>
+				</dt>
+				<dd class="dict__meaning">{entry.meaning}</dd>
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.dict {
+		display: grid;
+		gap: var(--space-xs);
+		margin: 0;
+	}
+	.dict__entry {
+		display: grid;
+		gap: 0.15rem;
+	}
+	.dict__head {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+	}
+	.dict__word {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-style: italic;
+		color: var(--ink);
+		line-height: 1;
+	}
+	.dict__pos,
+	.dict__lang {
+		font-family: var(--font-mono);
+		color: var(--ink-3);
+	}
+	.dict__pos {
+		font-style: italic;
+	}
+	.dict__lang {
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.dict__meaning {
+		color: var(--ink-2);
+		margin: 0;
+	}
+
+	.dict--small .dict__word { font-size: 1rem; }
+	.dict--small .dict__pos { font-size: 0.66rem; }
+	.dict--small .dict__lang { font-size: 0.6rem; }
+	.dict--small .dict__meaning { font-size: var(--step--1); line-height: 1.5; }
+
+	.dict--large { gap: var(--space-m); }
+	.dict--large .dict__word { font-size: var(--step-3); }
+	.dict--large .dict__pos { font-size: var(--step--1); }
+	.dict--large .dict__lang { font-size: var(--step--2); }
+	.dict--large .dict__meaning { font-size: var(--step-0); }
+</style>

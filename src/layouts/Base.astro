@@ -1,0 +1,45 @@
+---
+/**
+ * The page shell. Head, skip link, header (except on home), the slot, footer.
+ */
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../config';
+
+interface Props {
+	title?: string;
+	description?: string;
+	path?: string;
+	type?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	noindex?: boolean;
+	extraOrigins?: string[];
+	/** Which nav item is current, by label. */
+	current?: string;
+	/** Home has no header; the brand mark is the header. */
+	header?: boolean;
+	/** A tool page sets its accent on <html>. */
+	accent?: string;
+	/** Home lays itself out edge to edge; no main padding. */
+	flush?: boolean;
+}
+
+const { current, header = true, accent, flush = false, ...head } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.locale} style={accent ? `--accent:${accent}` : undefined}>
+	<head>
+		<Head {...head} />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		{header && <Header current={current} />}
+		<main id="main" class:list={[flush && 'main--flush']}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

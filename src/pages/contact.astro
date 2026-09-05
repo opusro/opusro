@@ -1,0 +1,21 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE, DOORWAYS } from '../config';
+---
+
+<Page title="Contact" eyebrow="Contact" path="/contact/" tile="contact" description={`Write to OPUS at ${SITE.email}.`}>
+	<div class="prose">
+		<p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+		<p>We read everything and reply to most of it.</p>
+		<p>
+			Elsewhere:{' '}
+			{DOORWAYS.map((d, i) => (
+				<>
+					{i > 0 && ' · '}
+					<a href={d.url}>{d.label}</a>
+				</>
+			))}
+		</p>
+		<p>{SITE.name} is {SITE.legal}, a small studio in {SITE.city}.</p>
+	</div>
+</Page>

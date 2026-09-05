@@ -1,0 +1,546 @@
+---
+/**
+ * Home: a homescreen.
+ *
+ * Reads like the first screen of a phone or a Mac: the brand mark where the
+ * clock would be, two pages you swipe or drag between with iOS-style dots, and
+ * a dock. The first page is simple and clean. The second holds the widgets.
+ * Every piece of content is reachable through the pattern people already know
+ * for that kind of thing, and nothing is a dead end.
+ *
+ * Interaction lives in /home.js (a file, so the CSP allows it). Swiping works
+ * natively through scroll snapping even without it; the script adds mouse drag,
+ * the dots, keyboard arrows, the dock magnification and the light on tiles.
+ * Icons morph into their pages through native view transitions, no script.
+ */
+import Base from '../layouts/Base.astro';
+import BrandMark from '../components/BrandMark.astro';
+import Circles from '../components/Circles.astro';
+import { SITE } from '../config';
+import { allNotes, allTools, listedTools, toolPath, KIND_LABEL } from '../lib/notes';
+import { formatDateShort, isoDate } from '../lib/format';
+
+const tools = await allTools();
+const listed = await listedTools();
+const notes = (await allNotes()).slice(0, 3);
+const [latest, ...rest] = notes;
+
+const loop = tools.find((t) => t.id === 'loop');
+const cheri = tools.find((t) => t.id === 'cheri');
+---
+
+<Base path="/" header={false} flush>
+	<div class="screen">
+		<div class="screen__grain" aria-hidden="true"></div>
+
+		<header class="screen__top">
+			<BrandMark />
+		</header>
+
+		<div class="pager" data-pager tabindex="0" aria-roledescription="carousel" aria-label="Home pages">
+			<section class="page page--first" aria-label="Page 1 of 2">
+				<p class="voice page__thesis">{SITE.thesis}</p>
+			</section>
+
+			<section class="page" aria-label="Page 2 of 2">
+				<div class="grid">
+					{
+						latest && (
+							<a class="widget widget--wide" href="/notes/" data-tilt>
+								<span class="widget__head">
+									<span class="widget__title">Notes</span>
+									<span class="widget__meta">
+										<time datetime={isoDate(latest.data.pubDate)}>{formatDateShort(latest.data.pubDate)}</time>
+									</span>
+								</span>
+								<span class="notes__latest">{latest.data.title}</span>
+								<span class="notes__summary">{latest.data.summary}</span>
+								{rest.length > 0 && (
+									<span class="notes__more">
+										<span class="notes__kind">{KIND_LABEL[rest[0].data.kind]}</span>
+										<span class="notes__row-title">{rest[0].data.title}</span>
+									</span>
+								)}
+							</a>
+						)
+					}
+
+					<a class="widget widget--square widget--story" href="/story/" data-tilt aria-label="Story: three circles, one for each tool">
+						<Circles
+							compact
+							rings={[
+								{ label: loop?.data.name ?? 'Loop', circle: 'you with yourself', accent: loop?.data.accent },
+								{ label: cheri?.data.name ?? 'Chéri', circle: 'you with your people', accent: cheri?.data.accent },
+								{ label: 'the city', circle: 'you with everyone', dashed: true },
+							]}
+						/>
+						<span class="widget__foot">
+							<span class="widget__title">Story</span>
+							<span class="widget__meta">{SITE.thesis}</span>
+						</span>
+					</a>
+
+					<a class="widget widget--square widget--support" href="/support/" data-tilt>
+						<span class="widget__head">
+							<span class="widget__title">Support</span>
+						</span>
+						<svg class="support__heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+						</svg>
+						<span class="widget__foot">
+							<span class="widget__meta">Kept going by the people who use what we make.</span>
+						</span>
+					</a>
+
+					<a class="widget widget--wide widget--work" href="/work/" data-tilt>
+						<span class="widget__head">
+							<span class="widget__title">Work</span>
+						</span>
+						<span class="work__line">
+							Mobile products for a few startups, made the way we make our own.
+						</span>
+					</a>
+				</div>
+			</section>
+		</div>
+
+		<div class="dots" role="tablist" aria-label="Pages">
+			<button class="dot" type="button" data-dot="0" aria-label="Page 1" aria-current="true"></button>
+			<button class="dot" type="button" data-dot="1" aria-label="Page 2" aria-current="false"></button>
+		</div>
+
+		<nav class="dock" aria-label="Apps">
+			<div class="dock__tray" data-dock>
+				{
+					listed.map((tool) => (
+						<a class="app" href={toolPath(tool)} data-app>
+							<span class="tile app__tile" style={`view-transition-name: tile-${tool.id}`}>
+								{tool.data.glyph ? (
+									<img src={tool.data.glyph} alt="" width="30" height="30" />
+								) : (
+									<span class="tile__initial">{tool.data.name.charAt(0).toLowerCase()}</span>
+								)}
+							</span>
+							<span class="app__label">{tool.data.name}</span>
+						</a>
+					))
+				}
+				<a class="app" href="/wip/" data-app>
+					<span class="tile app__tile tile--dashed" style="view-transition-name: tile-wip">
+						<span class="app__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+					</span>
+					<span class="app__label">In the works</span>
+				</a>
+				<a class="app" href="/notes/" data-app>
+					<span class="tile app__tile" style="view-transition-name: tile-notes">
+						<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+							<path d="M5 7h14M5 12h11M5 17h8" />
+						</svg>
+					</span>
+					<span class="app__label">Notes</span>
+				</a>
+				<a class="app" href="/contact/" data-app>
+					<span class="tile app__tile" style="view-transition-name: tile-contact">
+						<span class="app__at" aria-hidden="true">@</span>
+					</span>
+					<span class="app__label">Contact</span>
+				</a>
+			</div>
+		</nav>
+	</div>
+
+	{/* A file, not an inline script: the CSP allows 'self' and nothing inline. */}
+	<script is:inline src="/home.js" defer></script>
+</Base>
+
+<style>
+	/* -- The screen ------------------------------------------------------- */
+	.screen {
+		position: relative;
+		height: 100svh;
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr) auto;
+		padding-top: max(2rem, env(safe-area-inset-top, 0px) + 1.5rem);
+		overflow: hidden;
+		background:
+			radial-gradient(140% 120% at 50% 30%, rgba(255, 255, 255, 0.025), transparent 48%),
+			linear-gradient(to bottom, rgba(255, 255, 255, 0.015), transparent 32%);
+	}
+	.screen__grain {
+		position: absolute;
+		inset: 0;
+		opacity: 0.14;
+		background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+		background-size: 3px 3px;
+		mix-blend-mode: soft-light;
+		pointer-events: none;
+	}
+	.screen__top {
+		position: relative;
+		z-index: 2;
+		padding-inline: var(--gutter);
+	}
+
+	/* -- Pages ------------------------------------------------------------- */
+	.pager {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior-x: contain;
+		cursor: grab;
+		outline-offset: -3px;
+	}
+	.pager::-webkit-scrollbar {
+		display: none;
+	}
+	.pager.is-dragging {
+		cursor: grabbing;
+		scroll-snap-type: none;
+		user-select: none;
+	}
+	.pager.is-dragging a {
+		pointer-events: none;
+	}
+	.page {
+		flex: 0 0 100%;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		padding: var(--space-s) var(--gutter) var(--space-m);
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+	.page::-webkit-scrollbar {
+		display: none;
+	}
+	.page--first {
+		align-content: center;
+	}
+	.page__thesis {
+		font-size: var(--step-2);
+		color: var(--ink-2);
+		text-align: center;
+		max-width: 20ch;
+		margin-block-end: 10vh;
+	}
+
+	/* -- Dots ---------------------------------------------------------------- */
+	.dots {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		justify-content: center;
+		gap: 10px;
+		padding-block: var(--space-2xs) calc(env(safe-area-inset-bottom, 0px) + 7.25rem);
+	}
+	.dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--ink-3);
+		opacity: 0.6;
+		transition: background var(--duration) var(--ease), opacity var(--duration) var(--ease), transform var(--duration) var(--ease);
+		padding: 0;
+	}
+	.dot::before {
+		/* A larger touch target than the dot itself. */
+		content: '';
+		position: absolute;
+		inset: -10px;
+	}
+	.dot {
+		position: relative;
+	}
+	.dot[aria-current='true'] {
+		background: var(--ink);
+		opacity: 1;
+		transform: scale(1.15);
+	}
+
+	/* -- Widget grid -------------------------------------------------------- */
+	.grid {
+		width: min(30rem, 100%);
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.85rem;
+		align-content: start;
+	}
+	.widget {
+		position: relative;
+		display: grid;
+		gap: var(--space-2xs);
+		padding: 1.1rem 1.2rem;
+		border-radius: 22px;
+		border: 1px solid var(--hairline);
+		background:
+			radial-gradient(120% 100% at var(--hx, 50%) var(--hy, 0%), var(--highlight), transparent 70%),
+			linear-gradient(to bottom, #0e0e0e, #090909);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.04),
+			0 14px 30px rgba(0, 0, 0, 0.45);
+		color: var(--ink);
+		text-decoration: none;
+		transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
+		transform: scale(var(--press, 1));
+		will-change: transform;
+	}
+	.widget:hover {
+		border-color: var(--hairline-strong);
+	}
+	.widget:active {
+		--press: 0.975;
+	}
+	.widget--wide {
+		grid-column: 1 / -1;
+	}
+	.widget--square {
+		aspect-ratio: 1.12;
+		align-content: space-between;
+	}
+	.widget__head,
+	.widget__foot {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: var(--space-s);
+	}
+	.widget__foot {
+		flex-direction: column;
+		align-items: start;
+		gap: 0.15rem;
+	}
+	.widget__title {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-2);
+	}
+	.widget__meta {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.04em;
+		color: var(--ink-3);
+	}
+	.widget--story .widget__meta,
+	.widget--support .widget__meta {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step--1);
+		letter-spacing: 0;
+		color: var(--ink-2);
+		line-height: 1.3;
+	}
+
+	/* Notes widget */
+	.notes__latest {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-1);
+		line-height: var(--leading-tight);
+		text-wrap: balance;
+		margin-top: 0.2rem;
+	}
+	.notes__summary {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+		line-height: 1.5;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.notes__more {
+		display: flex;
+		gap: 0.6rem;
+		align-items: baseline;
+		font-size: var(--step--1);
+		min-width: 0;
+		margin-top: var(--space-2xs);
+		padding-top: var(--space-2xs);
+		border-top: 1px solid var(--hairline);
+	}
+	.notes__kind {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-3);
+		flex: 0 0 auto;
+	}
+	.notes__row-title {
+		color: var(--ink-2);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* Story widget: the rings alone, like a set of activity rings. */
+	.widget--story {
+		padding-block-start: 1rem;
+	}
+	.widget--story :global(.circles) {
+		width: 100%;
+		max-width: min(7.5rem, 62%);
+		margin-inline: auto;
+	}
+
+	/* Support widget */
+	.support__heart {
+		width: min(4rem, 32%);
+		height: auto;
+		margin-inline: auto;
+		color: var(--ink);
+		opacity: 0.9;
+	}
+
+	/* Work widget */
+	.work__line {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-0);
+		line-height: 1.4;
+		color: var(--ink);
+		text-wrap: pretty;
+	}
+
+	/* -- Dock --------------------------------------------------------------- */
+	.dock {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+		display: flex;
+		justify-content: center;
+		pointer-events: none;
+		z-index: 5;
+	}
+	.dock__tray {
+		display: flex;
+		align-items: flex-end;
+		gap: 12px;
+		padding: 10px 14px 12px;
+		border: 1px solid var(--hairline);
+		border-radius: 28px;
+		background: rgba(10, 10, 10, 0.72);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		pointer-events: auto;
+	}
+	.app {
+		width: 72px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 7px;
+		text-decoration: none;
+		color: var(--ink);
+		transform-origin: center bottom;
+		transform: scale(var(--scale, 1));
+		transition: transform 160ms var(--ease);
+		will-change: transform;
+	}
+	.app:active .app__tile {
+		transform: scale(0.94);
+	}
+	.app__tile {
+		width: 58px;
+		height: 58px;
+		flex-basis: 58px;
+		background:
+			radial-gradient(90% 90% at var(--hx, 50%) var(--hy, 50%), var(--highlight), transparent 72%),
+			linear-gradient(to bottom, #0f0f0f, #090909);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.05),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+			0 10px 16px rgba(0, 0, 0, 0.45);
+		transition: transform 120ms var(--ease), border-color var(--duration) var(--ease);
+	}
+	.app:hover .app__tile {
+		border-color: var(--hairline-strong);
+	}
+	.app__tile.tile--dashed {
+		background: rgba(255, 255, 255, 0.015);
+		box-shadow: none;
+		border: 1.5px dashed var(--hairline-strong);
+	}
+	.app__tile img,
+	.app__tile svg {
+		width: 30px;
+		height: 30px;
+	}
+	.app__at {
+		font-size: 1.9rem;
+		line-height: 1;
+		font-weight: 400;
+		transform: translateY(-1px);
+	}
+	.app__dots {
+		display: flex;
+		gap: 5px;
+	}
+	.app__dots i {
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--ink-2);
+	}
+	.app__label {
+		font-size: 11px;
+		line-height: 1;
+		color: var(--ink-2);
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 480px) {
+		.grid {
+			gap: 0.85rem;
+		}
+		.widget {
+			padding: 1rem;
+			border-radius: 20px;
+		}
+		.widget--square {
+			aspect-ratio: 1;
+		}
+		.widget--story .widget__meta,
+		.widget--support .widget__meta {
+			font-size: var(--step--2);
+			font-family: var(--font-ui);
+			line-height: 1.35;
+		}
+		.work__line {
+			font-size: var(--step--1);
+		}
+		.dock__tray {
+			gap: 6px;
+			padding: 10px 10px 12px;
+		}
+		.app {
+			width: 68px;
+		}
+		.app__label {
+			font-size: 10px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.widget,
+		.app,
+		.app__tile,
+		.dot {
+			transition: none;
+		}
+		.pager {
+			scroll-behavior: auto;
+		}
+	}
+</style>
