@@ -102,9 +102,13 @@ Each with a recommendation and the default that applies if nothing is said.
 
 ## 3. Plan
 
-### Phase 1 · The new opus.ro (one working session)
+### Phase 1 · The new opus.ro (one working session) · built 2026-09-05
 
-Rebuild on Astro and deploy to the existing GitHub Pages workflow.
+Rebuilt on Astro on the branch `claude/opus-brand-website-strategy-rhza61`;
+deploys through the existing GitHub Pages workflow once merged to `main`.
+Still to do from the owner's side: the counter account (D3a), then
+`COUNTER.enabled = true` in `src/config.ts`. Loop's price line stays at
+today's model until phase 2 ships.
 
 - Tokens, layout, dictionary component, the three circles drawn.
 - Pages: home, story (with C.), Loop (facts reflecting the coming free model,

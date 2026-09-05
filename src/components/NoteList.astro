@@ -1,0 +1,59 @@
+---
+/** Notes as rows: kicker, title, summary. Newest first, as given. */
+import { KIND_LABEL, notePath, type Note } from '../lib/notes';
+import { formatDateShort, isoDate } from '../lib/format';
+
+interface Props {
+	notes: Note[];
+	/** Show summaries. Off for the compact list on home. */
+	summaries?: boolean;
+}
+const { notes, summaries = true } = Astro.props;
+---
+
+<ul class="rows notes">
+	{
+		notes.map((note) => (
+			<li class="note">
+				<p class="meta note__kicker">
+					<span>{KIND_LABEL[note.data.kind]}</span>
+					{note.data.tool && <span>{'· '}{note.data.tool}</span>}
+					<span>{'· '}<time datetime={isoDate(note.data.pubDate)}>{formatDateShort(note.data.pubDate)}</time></span>
+				</p>
+				<a class="note__title" href={notePath(note)}>{note.data.title}</a>
+				{summaries && <p class="note__summary">{note.data.summary}</p>}
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.note {
+		display: grid;
+		gap: var(--space-2xs);
+	}
+	.note__kicker {
+		display: flex;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+	}
+	.note__title {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-1);
+		line-height: var(--leading-tight);
+		text-decoration: none;
+		text-wrap: balance;
+		width: fit-content;
+	}
+	.note__title:hover {
+		text-decoration: underline;
+		text-decoration-color: var(--hairline-strong);
+		text-underline-offset: 0.18em;
+	}
+	.note__summary {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+		max-width: var(--measure);
+	}
+</style>

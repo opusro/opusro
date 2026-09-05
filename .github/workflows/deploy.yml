@@ -24,16 +24,19 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Type-check
+        run: npm run check
+
+      # Builds, then runs scripts/check-output.mjs: no mention of eratic, no
+      # em dashes, no script from an origin the config did not allow.
       - name: Build
         run: npm run build
-        env:
-          VITE_GOOGLE_SCRIPT_URL: ${{ secrets.VITE_GOOGLE_SCRIPT_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

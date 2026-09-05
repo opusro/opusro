@@ -1,0 +1,40 @@
+---
+/** A plain page: eyebrow, title, optional lede, then the content column. */
+import Base from './Base.astro';
+
+interface Props {
+	title: string;
+	eyebrow?: string;
+	lede?: string;
+	description?: string;
+	path: string;
+	current?: string;
+	noindex?: boolean;
+	extraOrigins?: string[];
+}
+const { title, eyebrow, lede, description, path, current, noindex, extraOrigins } = Astro.props;
+---
+
+<Base title={title} description={description ?? lede} path={path} current={current} noindex={noindex} extraOrigins={extraOrigins}>
+	<div class="wrap wrap--narrow page">
+		<header class="page__head">
+			{eyebrow && <p class="eyebrow">{eyebrow}</p>}
+			<h1 class="voice">{title}</h1>
+			{lede && <p class="lede">{lede}</p>}
+		</header>
+		<slot />
+	</div>
+</Base>
+
+<style>
+	.page {
+		display: grid;
+		gap: var(--space-l);
+	}
+	.page__head {
+		display: grid;
+		gap: var(--space-s);
+		padding-block-end: var(--space-m);
+		border-bottom: 1px solid var(--hairline);
+	}
+</style>

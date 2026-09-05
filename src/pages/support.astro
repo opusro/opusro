@@ -1,0 +1,79 @@
+---
+/**
+ * Patronage. Text first; the provider's button appears at the bottom once the
+ * account exists (SUPPORT in config). Until then the email is the action.
+ */
+import Page from '../layouts/Page.astro';
+import { SITE, SUPPORT } from '../config';
+
+const providerOrigin = SUPPORT.provider === 'patreon' ? 'https://www.patreon.com' : null;
+---
+
+<Page
+	title="Support the studio"
+	eyebrow="Support"
+	lede="Loop is free with one preset. Chéri will be paid for once. Nothing we make will ever ask you for a monthly fee, and that is on purpose."
+	path="/support/"
+	current="support"
+	extraOrigins={providerOrigin ? [providerOrigin] : []}
+>
+	<div class="prose">
+		<p>
+			It also means the studio has to be kept going some other way. That is what your support does: it buys the
+			time to make the next tool this carefully, and to keep caring for the ones that exist.
+		</p>
+		<h2>What you get</h2>
+		<p>
+			Our notes, by email, when there is something to say. Early builds to try when a tool is in the works. A
+			place to talk with us about what we are making. Your name in the thanks, if you want it there. Once a year,
+			a plain account of what came in and what it went to.
+		</p>
+		<h2>What it does not change</h2>
+		<p>
+			The tools. Everyone gets the same Loop and the same Chéri. Supporting the studio is not a way to get more;
+			it is a way to keep this going.
+		</p>
+	</div>
+
+	<section class="support__how">
+		<p class="eyebrow">How</p>
+		{
+			SUPPORT.url ? (
+				<>
+					<p class="support__note">
+						This is where the money goes: {SUPPORT.provider === 'patreon' ? 'Patreon' : SUPPORT.provider}. It is
+						the only page on this site that loads anything from them.
+					</p>
+					<a class="support__button" href={SUPPORT.url}>Support OPUS</a>
+				</>
+			) : (
+				<p class="support__note">
+					The way to support the studio is being set up. Until it is, write to
+					<a href={`mailto:${SITE.email}`}>{SITE.email}</a> and we will tell you when it is ready.
+				</p>
+			)
+		}
+	</section>
+
+	<p class="lede">If one of our tools is already worth something to you, thank you. That is enough.</p>
+</Page>
+
+<style>
+	.support__how {
+		display: grid;
+		gap: var(--space-s);
+		border-top: 1px solid var(--hairline);
+		padding-block-start: var(--space-l);
+	}
+	.support__note {
+		color: var(--ink-2);
+		max-width: var(--measure);
+	}
+	.support__button {
+		width: fit-content;
+		border: 1px solid var(--ink);
+		border-radius: 999px;
+		padding: 0.6rem 1.2rem;
+		text-decoration: none;
+	}
+</style>

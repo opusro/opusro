@@ -1,0 +1,27 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../config';
+---
+
+<Page
+	title="Work with OPUS"
+	eyebrow="Work"
+	lede="We design mobile products for a small number of startups, the same way we make our own: from the person outwards, native to the platform, calm, and honest about money."
+	path="/work/"
+	current="work"
+>
+	<div class="prose">
+		<p>
+			It is not the right fit for every product. It is right for founders who want the people using their product
+			to feel looked after, and who are willing to let that shape the business rather than the other way round.
+		</p>
+		<p>
+			We have designed and built camera apps, wallets and tools people use every day, for companies in the United
+			States and Scandinavia, over nearly two decades.
+		</p>
+		<p>
+			Write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with what you are making and where it is. We
+			reply to everything.
+		</p>
+	</div>
+</Page>

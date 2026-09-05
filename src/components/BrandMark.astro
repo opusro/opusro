@@ -1,0 +1,150 @@
+---
+/**
+ * The home page's opening: the mark with the descriptor beneath. Hover, focus
+ * or tap and it opens into the name and the two dictionary entries. The one
+ * signature motion on the site.
+ *
+ * Without JavaScript the open state is simply shown: both the descriptor and
+ * the entries are visible and nothing needs a click.
+ */
+import Mark from './Mark.astro';
+import Dictionary from './Dictionary.astro';
+import { SITE } from '../config';
+
+const letters = SITE.name.split('');
+---
+
+<div class="brand" data-brand>
+	<button class="brand__button" type="button" aria-expanded="false" aria-controls="brand-definition" data-brand-toggle>
+		<span class="brand__identity">
+			<Mark size={64} class="brand__mark" />
+			<span class="brand__letters" aria-hidden="true">
+				{letters.map((letter, i) => <span class="brand__letter" style={`--i:${i}`}>{letter}</span>)}
+			</span>
+			<span class="visually-hidden">{SITE.name}. Show what the name means.</span>
+		</span>
+	</button>
+	<div class="brand__sub">
+		<p class="brand__descriptor">{SITE.descriptor}</p>
+		<div class="brand__definition" id="brand-definition">
+			<Dictionary size="small" />
+		</div>
+	</div>
+</div>
+
+{/* A file, not an inline script: the CSP allows 'self' and nothing inline.
+    Astro would inline a small hoisted script, so this is is:inline with a src.
+    Hover opens on pointer devices, tap toggles on touch, focus opens for
+    keyboards. Without it the definition is simply visible. */}
+<script is:inline src="/brand.js" defer></script>
+
+<style>
+	.brand {
+		display: grid;
+		gap: var(--space-m);
+		justify-items: center;
+		text-align: center;
+		width: min(22rem, 100%);
+		margin-inline: auto;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.brand__button {
+		display: inline-flex;
+		color: var(--ink);
+		border-radius: var(--radius);
+	}
+	.brand__identity {
+		display: inline-flex;
+		align-items: center;
+		gap: 0;
+	}
+	.brand__mark {
+		flex: 0 0 auto;
+	}
+	.brand__letters {
+		display: inline-flex;
+		overflow: hidden;
+		font-size: 1.75rem;
+		font-weight: 500;
+		letter-spacing: 0.18em;
+		line-height: 1;
+		max-width: 12rem;
+		margin-inline-start: 1rem;
+		transition: max-width var(--duration-slow) var(--ease), margin var(--duration-slow) var(--ease);
+	}
+	.brand__letter {
+		display: inline-block;
+		transition: opacity var(--duration-slow) var(--ease), transform var(--duration-slow) var(--ease);
+		transition-delay: calc(var(--i) * 60ms);
+	}
+	.brand__sub {
+		display: grid;
+		width: 100%;
+	}
+	.brand__descriptor {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ink-2);
+		transition: opacity var(--duration-slow) var(--ease);
+	}
+	.brand__definition {
+		text-align: left;
+		margin-top: var(--space-m);
+		transition: opacity var(--duration-slow) var(--ease), transform var(--duration-slow) var(--ease);
+	}
+
+	/* With JavaScript: closed by default, opened on hover, focus or tap. */
+	.brand.has-js .brand__letters {
+		max-width: 0;
+		margin-inline-start: 0;
+	}
+	.brand.has-js .brand__letter {
+		opacity: 0;
+		transform: translateY(0.15em);
+	}
+	.brand.has-js .brand__definition {
+		display: grid;
+		grid-area: 1 / 1;
+		opacity: 0;
+		transform: translateY(4px);
+		pointer-events: none;
+		margin-top: 0;
+	}
+	.brand.has-js .brand__descriptor {
+		grid-area: 1 / 1;
+	}
+	.brand.has-js .brand__sub {
+		display: grid;
+		grid-template-areas: 'stack';
+		min-height: 5.5rem;
+		align-items: start;
+	}
+	.brand.has-js.is-open .brand__letters {
+		max-width: 12rem;
+		margin-inline-start: 1rem;
+	}
+	.brand.has-js.is-open .brand__letter {
+		opacity: 1;
+		transform: none;
+	}
+	.brand.has-js.is-open .brand__descriptor {
+		opacity: 0;
+	}
+	.brand.has-js.is-open .brand__definition {
+		opacity: 1;
+		transform: none;
+		pointer-events: auto;
+	}
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+</style>

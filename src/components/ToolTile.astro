@@ -1,0 +1,65 @@
+---
+/** A tool in a list: tile, name, one line, status. Links to its page. */
+import { STATUS_LABEL, toolPath, type Tool } from '../lib/notes';
+
+interface Props {
+	tool: Tool;
+}
+const { tool } = Astro.props;
+const { name, oneLine, status, accent, glyph } = tool.data;
+---
+
+<a class="tool" href={toolPath(tool)} style={`--accent:${accent}`}>
+	<span class="tile" aria-hidden="true">
+		{glyph ? <img src={glyph} alt="" width="28" height="28" /> : <span class="tile__initial">{name.charAt(0).toLowerCase()}</span>}
+	</span>
+	<span class="tool__text">
+		<span class="tool__name">{name}</span>
+		<span class="tool__line">{oneLine}</span>
+	</span>
+	<span class="status">{STATUS_LABEL[status]}</span>
+</a>
+
+<style>
+	.tool {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: var(--space-m);
+		padding-block: var(--space-m);
+		text-decoration: none;
+		color: var(--ink);
+		border-bottom: 1px solid var(--hairline);
+	}
+	.tool:first-child {
+		border-top: 1px solid var(--hairline);
+	}
+	.tool__text {
+		display: grid;
+		gap: 0.15rem;
+	}
+	.tool__name {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-1);
+		line-height: var(--leading-tight);
+	}
+	.tool__line {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+	}
+	.tool:hover .tool__name {
+		text-decoration: underline;
+		text-decoration-color: var(--hairline-strong);
+		text-underline-offset: 0.18em;
+	}
+	@media (max-width: 480px) {
+		.tool {
+			grid-template-columns: auto minmax(0, 1fr);
+		}
+		.tool .status {
+			grid-column: 2;
+			justify-self: start;
+		}
+	}
+</style>

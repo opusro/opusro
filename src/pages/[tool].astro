@@ -1,0 +1,157 @@
+---
+/**
+ * A tool page, from the template in docs/03-products.md §5: mark, name, one
+ * line; what it is for; the plain facts; get it; notes about it; privacy and
+ * help. Every tool builds, listed or not; an unlisted one is simply linked
+ * from nowhere and asks crawlers to leave it out.
+ */
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import NoteList from '../components/NoteList.astro';
+import { allTools, notesFor, toolPath, STATUS_LABEL } from '../lib/notes';
+import { SITE } from '../config';
+
+export async function getStaticPaths() {
+	const tools = await allTools();
+	return tools.map((tool) => ({ params: { tool: tool.id }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const { Content } = await render(tool);
+const t = tool.data;
+const notes = await notesFor(tool.id);
+---
+
+<Base
+	title={t.name}
+	description={t.oneLine}
+	path={toolPath(tool)}
+	current="tools"
+	accent={t.accent}
+	noindex={!t.listed}
+>
+	<article class="wrap wrap--narrow tool">
+		<header class="tool__head">
+			<span class="tile" aria-hidden="true">
+				{t.glyph ? <img src={t.glyph} alt="" width="28" height="28" /> : <span class="tile__initial">{t.name.charAt(0).toLowerCase()}</span>}
+			</span>
+			<div class="tool__title">
+				<p class="eyebrow">{t.circle} · <span class="tool__status">{STATUS_LABEL[t.status]}</span></p>
+				<h1 class="voice">{t.name}</h1>
+				<p class="lede">{t.oneLine}</p>
+			</div>
+		</header>
+
+		<section class="tool__section prose">
+			<Content />
+		</section>
+
+		{
+			t.video && (
+				<figure class="tool__media">
+					<video src={t.video} muted loop playsinline controls preload="metadata" width="280"></video>
+					<figcaption class="meta">{t.name}, on an iPhone</figcaption>
+				</figure>
+			)
+		}
+
+		{
+			t.facts.length > 0 && (
+				<section class="tool__section">
+					<p class="eyebrow">The plain facts</p>
+					<ul class="rows facts">
+						{t.facts.map((fact) => <li>{fact}</li>)}
+					</ul>
+				</section>
+			)
+		}
+
+		<section class="tool__section">
+			<p class="eyebrow">Get it</p>
+			<p class="tool__price">{t.price}</p>
+			<p class="tool__links">
+				{t.appStoreUrl && <a href={t.appStoreUrl}>App Store</a>}
+				{t.webUrl && <a href={t.webUrl}>In your browser</a>}
+			</p>
+			{t.platforms.length > 0 && <p class="meta">{t.platforms.join(' · ')}</p>}
+		</section>
+
+		{
+			notes.length > 0 && (
+				<section class="tool__section">
+					<p class="eyebrow">Notes about {t.name}</p>
+					<NoteList notes={notes} />
+				</section>
+			)
+		}
+
+		<section class="tool__section tool__foot">
+			<p class="meta">
+				{t.privacyUrl && <><a href={t.privacyUrl}>privacy</a>{' · '}</>}
+				{t.helpUrl && <><a href={t.helpUrl}>help</a>{' · '}</>}
+				<a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+			</p>
+		</section>
+	</article>
+</Base>
+
+<style>
+	.tool {
+		display: grid;
+		gap: var(--space-xl);
+	}
+	.tool__head {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--space-m);
+		align-items: start;
+	}
+	.tool__title {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.tool__status {
+		color: var(--accent);
+	}
+	.tool__section {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.tool__media video {
+		width: min(280px, 100%);
+		border-radius: 18px;
+		border: 1px solid var(--hairline);
+		background: #000;
+	}
+	.tool__media figcaption {
+		margin-top: var(--space-2xs);
+	}
+	.facts li {
+		color: var(--ink);
+		font-size: var(--step-0);
+	}
+	.tool__price {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-1);
+	}
+	.tool__links {
+		display: flex;
+		gap: var(--space-m);
+	}
+	.tool__links a {
+		border: 1px solid var(--hairline-strong);
+		border-radius: 999px;
+		padding: 0.5rem 1rem;
+		text-decoration: none;
+		font-size: var(--step--1);
+		transition: border-color var(--duration) var(--ease);
+	}
+	.tool__links a:hover {
+		border-color: var(--accent);
+	}
+	.tool__foot {
+		border-top: 1px solid var(--hairline);
+		padding-block-start: var(--space-m);
+	}
+</style>

@@ -1,0 +1,91 @@
+---
+/**
+ * Home. A doorway, not a destination: the mark with the dictionary, the
+ * thesis, one warm paragraph, the tools, the latest notes, the support line.
+ * One scroll on a phone. docs/05-website.md §3.
+ */
+import Base from '../layouts/Base.astro';
+import BrandMark from '../components/BrandMark.astro';
+import ToolTile from '../components/ToolTile.astro';
+import NoteList from '../components/NoteList.astro';
+import { SITE } from '../config';
+import { listedTools, allNotes } from '../lib/notes';
+
+const tools = await listedTools();
+const notes = (await allNotes()).slice(0, 3);
+---
+
+<Base path="/" header={false}>
+	<div class="wrap wrap--narrow home">
+		<BrandMark />
+
+		<section class="home__thesis">
+			<h1 class="voice">{SITE.thesis}</h1>
+			<p class="lede">
+				OPUS is a small studio in Romania. We make a few tools for the parts of life that deserve care: your
+				own quiet, your friends, your city. Each one is made to be complete, to stay out of the way, and to be
+				yours.
+			</p>
+		</section>
+
+		<section class="section" id="tools" aria-labelledby="tools-heading">
+			<p class="eyebrow" id="tools-heading">Tools</p>
+			<div class="home__tools">
+				{tools.map((tool) => <ToolTile tool={tool} />)}
+			</div>
+			<p class="home__more">
+				Two more are in the works: one for your friends, one for your city. <a href="/story/">The story</a> has
+				the shape of it.
+			</p>
+		</section>
+
+		{
+			notes.length > 0 && (
+				<section class="section" aria-labelledby="notes-heading">
+					<p class="eyebrow" id="notes-heading">Notes</p>
+					<NoteList notes={notes} summaries={false} />
+					<p class="home__more">
+						<a href="/notes/">All notes</a>
+					</p>
+				</section>
+			)
+		}
+
+		<section class="section home__support">
+			<p class="lede">
+				OPUS is supported by the people who use what we make. If something here is worth something to you,{' '}
+				<a href="/support/">you can help keep it going</a>.
+			</p>
+		</section>
+	</div>
+</Base>
+
+<style>
+	.home {
+		display: grid;
+		gap: var(--space-l);
+		padding-block-start: var(--space-l);
+	}
+	.home__thesis {
+		display: grid;
+		gap: var(--space-m);
+		padding-block-start: var(--space-xl);
+		text-align: center;
+		justify-items: center;
+	}
+	.home__thesis .lede {
+		max-width: 34rem;
+	}
+	.home__tools {
+		display: grid;
+	}
+	.home__more {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+	}
+	.home__support .lede {
+		font-size: var(--step-0);
+		border-top: 1px solid var(--hairline);
+		padding-block-start: var(--space-l);
+	}
+</style>

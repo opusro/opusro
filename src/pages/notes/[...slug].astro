@@ -1,0 +1,68 @@
+---
+/**
+ * A single note. Ends with the two quiet lines every note carries: where to
+ * talk about it (when there is a place) and how to support the studio.
+ */
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { allNotes, notePath, KIND_LABEL } from '../../lib/notes';
+import { formatDate, isoDate, readingTime } from '../../lib/format';
+
+export async function getStaticPaths() {
+	const notes = await allNotes();
+	return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const d = note.data;
+---
+
+<Base
+	title={d.title}
+	description={d.summary}
+	path={notePath(note)}
+	type="article"
+	publishedTime={d.pubDate}
+	modifiedTime={d.updatedDate}
+	current="notes"
+>
+	<article class="wrap wrap--narrow entry">
+		<header class="entry__head">
+			<p class="meta">
+				{KIND_LABEL[d.kind]}
+				{d.tool && <>{' · '}<a href={`/${d.tool}/`}>{d.tool}</a></>}
+				{' · '}<time datetime={isoDate(d.pubDate)}>{formatDate(d.pubDate)}</time>
+				{' · '}{readingTime(note.body ?? d.summary)}
+			</p>
+			<h1 class="voice">{d.title}</h1>
+			<p class="lede">{d.summary}</p>
+		</header>
+
+		<div class="prose">
+			<Content />
+		</div>
+
+		<footer class="entry__foot">
+			<p class="meta">
+				{d.discussUrl && <><a href={d.discussUrl}>Talk about this</a> · </>}
+				<a href="/support/">Support the studio</a> · <a href="/notes/">All notes</a>
+			</p>
+		</footer>
+	</article>
+</Base>
+
+<style>
+	.entry {
+		display: grid;
+		gap: var(--space-xl);
+	}
+	.entry__head {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.entry__foot {
+		border-top: 1px solid var(--hairline);
+		padding-block-start: var(--space-m);
+	}
+</style>
