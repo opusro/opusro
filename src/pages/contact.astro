@@ -3,7 +3,7 @@ import Page from '../layouts/Page.astro';
 import { SITE, DOORWAYS } from '../config';
 ---
 
-<Page title="Contact" eyebrow="Contact" path="/contact/" description={`Write to OPUS at ${SITE.email}.`}>
+<Page title="Contact" eyebrow="Contact" path="/contact/" tile="contact" description={`Write to OPUS at ${SITE.email}.`}>
 	<div class="prose">
 		<p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
 		<p>We read everything and reply to most of it.</p>

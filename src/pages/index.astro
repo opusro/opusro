@@ -1,91 +1,458 @@
 ---
 /**
- * Home. A doorway, not a destination: the mark with the dictionary, the
- * thesis, one warm paragraph, the tools, the latest notes, the support line.
- * One scroll on a phone. docs/05-website.md §3.
+ * Home: a homescreen.
+ *
+ * The front door reads like the first screen of a phone or a Mac: the brand
+ * mark where the clock would be, a grid of widgets, a dock of apps. Every
+ * piece of content on the site is reachable through the pattern people already
+ * know for that kind of thing: an app icon opens a tool, a Notes widget shows
+ * the latest note, the Story widget is a set of rings you tap to read about.
+ * Nothing here is a dead end and nothing needs explaining.
+ *
+ * Interaction lives in /home.js (served as a file so the CSP allows it) and in
+ * native cross-document view transitions, which need no script at all: the
+ * icon you tap becomes the header of the page you land on.
  */
 import Base from '../layouts/Base.astro';
 import BrandMark from '../components/BrandMark.astro';
-import ToolTile from '../components/ToolTile.astro';
-import NoteList from '../components/NoteList.astro';
+import Circles from '../components/Circles.astro';
 import { SITE } from '../config';
-import { listedTools, allNotes } from '../lib/notes';
+import { allNotes, allTools, listedTools, toolPath, KIND_LABEL } from '../lib/notes';
+import { formatDateShort, isoDate } from '../lib/format';
 
-const tools = await listedTools();
+const tools = await allTools();
+const listed = await listedTools();
 const notes = (await allNotes()).slice(0, 3);
+const [latest, ...rest] = notes;
+
+const loop = tools.find((t) => t.id === 'loop');
+const cheri = tools.find((t) => t.id === 'cheri');
 ---
 
-<Base path="/" header={false}>
-	<div class="wrap wrap--narrow home">
-		<BrandMark />
+<Base path="/" header={false} flush>
+	<div class="screen" data-screen>
+		<div class="screen__grain" aria-hidden="true"></div>
 
-		<section class="home__thesis">
-			<h1 class="voice">{SITE.thesis}</h1>
-			<p class="lede">
-				OPUS is a small studio in Romania. We make a few tools for the parts of life that deserve care: your
-				own quiet, your friends, your city. Each one is made to be complete, to stay out of the way, and to be
-				yours.
-			</p>
+		<header class="screen__top">
+			<BrandMark />
+		</header>
+
+		<section class="grid" aria-label="Widgets">
+			{
+				latest && (
+					<a class="widget widget--wide" href="/notes/" data-tilt>
+						<span class="widget__head">
+							<span class="widget__title">Notes</span>
+							<span class="widget__meta">
+								<time datetime={isoDate(latest.data.pubDate)}>{formatDateShort(latest.data.pubDate)}</time>
+							</span>
+						</span>
+						<span class="notes__latest">{latest.data.title}</span>
+						<span class="notes__summary">{latest.data.summary}</span>
+						{rest.length > 0 && (
+							<span class="notes__more">
+								{rest.map((note) => (
+									<span class="notes__row">
+										<span class="notes__kind">{KIND_LABEL[note.data.kind]}</span>
+										<span class="notes__row-title">{note.data.title}</span>
+									</span>
+								))}
+							</span>
+						)}
+					</a>
+				)
+			}
+
+			<a class="widget widget--square widget--story" href="/story/" data-tilt aria-label="Story: three circles, one for each tool">
+				<Circles
+					compact
+					rings={[
+						{ label: loop?.data.name ?? 'Loop', circle: 'you with yourself', accent: loop?.data.accent },
+						{ label: cheri?.data.name ?? 'Chéri', circle: 'you with your people', accent: cheri?.data.accent },
+						{ label: 'the city', circle: 'you with everyone', dashed: true },
+					]}
+				/>
+				<span class="widget__foot">
+					<span class="widget__title">Story</span>
+					<span class="widget__meta">{SITE.thesis}</span>
+				</span>
+			</a>
+
+			<a class="widget widget--square" href="/story/#circles" data-tilt>
+				<span class="widget__head">
+					<span class="widget__title">In the works</span>
+				</span>
+				<span class="works">
+					<span class="works__row">
+						<span class="tile tile--small" style={`--accent:${cheri?.data.accent ?? '#888'}`} aria-hidden="true">
+							<span class="tile__initial">c</span>
+						</span>
+						<span class="works__text">
+							<span class="works__name">{cheri?.data.name ?? 'Chéri'}</span>
+							<span class="works__circle">for your people</span>
+						</span>
+					</span>
+					<span class="works__row">
+						<span class="tile tile--small tile--dashed" aria-hidden="true"></span>
+						<span class="works__text">
+							<span class="works__name works__name--quiet">a third tool</span>
+							<span class="works__circle">for the city</span>
+						</span>
+					</span>
+				</span>
+			</a>
 		</section>
 
-		<section class="section" id="tools" aria-labelledby="tools-heading">
-			<p class="eyebrow" id="tools-heading">Tools</p>
-			<div class="home__tools">
-				{tools.map((tool) => <ToolTile tool={tool} />)}
+		<nav class="dock" aria-label="Apps">
+			<div class="dock__tray" data-dock>
+				{
+					listed.map((tool) => (
+						<a class="app" href={toolPath(tool)} data-app>
+							<span class="tile app__tile" style={`view-transition-name: tile-${tool.id}`}>
+								{tool.data.glyph ? (
+									<img src={tool.data.glyph} alt="" width="30" height="30" />
+								) : (
+									<span class="tile__initial">{tool.data.name.charAt(0).toLowerCase()}</span>
+								)}
+							</span>
+							<span class="app__label">{tool.data.name}</span>
+						</a>
+					))
+				}
+				<a class="app" href="/work/" data-app>
+					<span class="tile app__tile" style="view-transition-name: tile-work">
+						<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+							<path d="M13.5 6.5l3 3" />
+						</svg>
+					</span>
+					<span class="app__label">Work</span>
+				</a>
+				<a class="app" href="/support/" data-app>
+					<span class="tile app__tile" style="view-transition-name: tile-support">
+						<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+						</svg>
+					</span>
+					<span class="app__label">Support</span>
+				</a>
+				<a class="app" href="/contact/" data-app>
+					<span class="tile app__tile" style="view-transition-name: tile-contact">
+						<span class="app__at" aria-hidden="true">@</span>
+					</span>
+					<span class="app__label">Contact</span>
+				</a>
 			</div>
-			<p class="home__more">
-				Two more are in the works: one for your friends, one for your city. <a href="/story/">The story</a> has
-				the shape of it.
-			</p>
-		</section>
-
-		{
-			notes.length > 0 && (
-				<section class="section" aria-labelledby="notes-heading">
-					<p class="eyebrow" id="notes-heading">Notes</p>
-					<NoteList notes={notes} summaries={false} />
-					<p class="home__more">
-						<a href="/notes/">All notes</a>
-					</p>
-				</section>
-			)
-		}
-
-		<section class="section home__support">
-			<p class="lede">
-				OPUS is supported by the people who use what we make. If something here is worth something to you,{' '}
-				<a href="/support/">you can help keep it going</a>.
-			</p>
-		</section>
+		</nav>
 	</div>
+
+	{/* A file, not an inline script: the CSP allows 'self' and nothing inline. */}
+	<script is:inline src="/home.js" defer></script>
 </Base>
 
 <style>
-	.home {
+	/* -- The screen ------------------------------------------------------- */
+	.screen {
+		position: relative;
+		min-height: 100svh;
 		display: grid;
-		gap: var(--space-l);
-		padding-block-start: var(--space-l);
-	}
-	.home__thesis {
-		display: grid;
-		gap: var(--space-m);
-		padding-block-start: var(--space-xl);
-		text-align: center;
+		grid-template-rows: auto 1fr auto;
 		justify-items: center;
+		padding: max(2rem, env(safe-area-inset-top, 0px) + 1.5rem) var(--gutter) 0;
+		overflow: hidden;
+		background:
+			radial-gradient(140% 120% at 50% 30%, rgba(255, 255, 255, 0.025), transparent 48%),
+			linear-gradient(to bottom, rgba(255, 255, 255, 0.015), transparent 32%);
 	}
-	.home__thesis .lede {
-		max-width: 34rem;
+	.screen__grain {
+		position: absolute;
+		inset: 0;
+		opacity: 0.14;
+		background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+		background-size: 3px 3px;
+		mix-blend-mode: soft-light;
+		pointer-events: none;
 	}
-	.home__tools {
+	.screen__top {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+	}
+
+	/* -- Widget grid -------------------------------------------------------- */
+	.grid {
+		position: relative;
+		z-index: 1;
+		width: min(30rem, 100%);
 		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		align-content: start;
+		/* The bottom clearance is the dock's height plus its margin, so the
+		   last row can always scroll clear of it. */
+		padding-block: var(--space-l) calc(env(safe-area-inset-bottom, 0px) + 9rem);
 	}
-	.home__more {
+	.widget {
+		position: relative;
+		display: grid;
+		gap: var(--space-2xs);
+		padding: 1.1rem 1.2rem;
+		border-radius: 22px;
+		border: 1px solid var(--hairline);
+		background:
+			radial-gradient(120% 100% at var(--hx, 50%) var(--hy, 0%), var(--highlight), transparent 70%),
+			linear-gradient(to bottom, #0e0e0e, #090909);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.04),
+			0 14px 30px rgba(0, 0, 0, 0.45);
+		color: var(--ink);
+		text-decoration: none;
+		transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
+		transform: scale(var(--press, 1));
+		will-change: transform;
+	}
+	.widget:hover {
+		border-color: var(--hairline-strong);
+	}
+	.widget:active {
+		--press: 0.975;
+	}
+	.widget--wide {
+		grid-column: 1 / -1;
+	}
+	.widget--square {
+		aspect-ratio: 1;
+		align-content: space-between;
+	}
+	.widget__head,
+	.widget__foot {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: var(--space-s);
+	}
+	.widget__foot {
+		flex-direction: column;
+		align-items: start;
+		gap: 0.15rem;
+	}
+	.widget__title {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-2);
+	}
+	.widget__meta {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.04em;
+		color: var(--ink-3);
+	}
+	.widget--story .widget__meta {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step--1);
+		letter-spacing: 0;
+		color: var(--ink-2);
+		line-height: 1.3;
+	}
+
+	/* Notes widget */
+	.notes__latest {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-1);
+		line-height: var(--leading-tight);
+		text-wrap: balance;
+		margin-top: 0.2rem;
+	}
+	.notes__summary {
 		color: var(--ink-2);
 		font-size: var(--step--1);
+		line-height: 1.5;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
-	.home__support .lede {
-		font-size: var(--step-0);
+	.notes__more {
+		display: grid;
+		gap: 0.35rem;
+		margin-top: var(--space-xs);
+		padding-top: var(--space-xs);
 		border-top: 1px solid var(--hairline);
-		padding-block-start: var(--space-l);
+	}
+	.notes__row {
+		display: flex;
+		gap: 0.6rem;
+		align-items: baseline;
+		font-size: var(--step--1);
+		min-width: 0;
+	}
+	.notes__kind {
+		font-family: var(--font-mono);
+		font-size: var(--step--2);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-3);
+		flex: 0 0 auto;
+	}
+	.notes__row-title {
+		color: var(--ink-2);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* Story widget: the rings alone, like a set of activity rings. */
+	.widget--story {
+		padding-block-start: 1rem;
+	}
+	.widget--story :global(.circles) {
+		width: 100%;
+		max-width: min(7.5rem, 62%);
+		margin-inline: auto;
+	}
+
+	/* In the works widget */
+	.works {
+		display: grid;
+		gap: var(--space-s);
+	}
+	.works__row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+	.tile--small {
+		width: 40px;
+		height: 40px;
+		flex-basis: 40px;
+	}
+	.tile--small .tile__initial {
+		font-size: 1.2rem;
+	}
+	.tile--dashed {
+		background: none;
+		box-shadow: none;
+		border: 1.5px dashed var(--hairline-strong);
+	}
+	.works__text {
+		display: grid;
+		min-width: 0;
+	}
+	.works__name {
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-size: var(--step-0);
+		line-height: 1.2;
+	}
+	.works__name--quiet {
+		color: var(--ink-2);
+	}
+	.works__circle {
+		font-size: var(--step--2);
+		color: var(--ink-3);
+	}
+
+	/* -- Dock --------------------------------------------------------------- */
+	.dock {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+		display: flex;
+		justify-content: center;
+		pointer-events: none;
+		z-index: 5;
+	}
+	.dock__tray {
+		display: flex;
+		align-items: flex-end;
+		gap: 12px;
+		padding: 10px 14px 12px;
+		border: 1px solid var(--hairline);
+		border-radius: 28px;
+		background: rgba(10, 10, 10, 0.72);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		pointer-events: auto;
+	}
+	.app {
+		width: 72px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 7px;
+		text-decoration: none;
+		color: var(--ink);
+		transform-origin: center bottom;
+		transform: scale(var(--scale, 1));
+		transition: transform 160ms var(--ease);
+		will-change: transform;
+	}
+	.app:active .app__tile {
+		transform: scale(0.94);
+	}
+	.app__tile {
+		width: 58px;
+		height: 58px;
+		flex-basis: 58px;
+		background:
+			radial-gradient(90% 90% at var(--hx, 50%) var(--hy, 50%), var(--highlight), transparent 72%),
+			linear-gradient(to bottom, #0f0f0f, #090909);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.05),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+			0 10px 16px rgba(0, 0, 0, 0.45);
+		transition: transform 120ms var(--ease), border-color var(--duration) var(--ease);
+	}
+	.app:hover .app__tile {
+		border-color: var(--hairline-strong);
+	}
+	.app__tile img,
+	.app__tile svg {
+		width: 30px;
+		height: 30px;
+	}
+	.app__at {
+		font-size: 1.9rem;
+		line-height: 1;
+		font-weight: 400;
+		transform: translateY(-1px);
+	}
+	.app__label {
+		font-size: 11px;
+		line-height: 1;
+		color: var(--ink-2);
+		letter-spacing: 0.01em;
+	}
+
+	@media (max-width: 480px) {
+		.grid {
+			gap: 0.85rem;
+			padding-block: var(--space-m) calc(env(safe-area-inset-bottom, 0px) + 8.5rem);
+		}
+		.widget {
+			padding: 1rem;
+			border-radius: 20px;
+		}
+		.dock__tray {
+			gap: 8px;
+			padding: 10px 12px 12px;
+		}
+		.app {
+			width: 66px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.widget,
+		.app,
+		.app__tile {
+			transition: none;
+		}
 	}
 </style>

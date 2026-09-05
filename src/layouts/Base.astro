@@ -22,9 +22,11 @@ interface Props {
 	header?: boolean;
 	/** A tool page sets its accent on <html>. */
 	accent?: string;
+	/** Home lays itself out edge to edge; no main padding. */
+	flush?: boolean;
 }
 
-const { current, header = true, accent, ...head } = Astro.props;
+const { current, header = true, accent, flush = false, ...head } = Astro.props;
 ---
 
 <!doctype html>
@@ -35,7 +37,7 @@ const { current, header = true, accent, ...head } = Astro.props;
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>
 		{header && <Header current={current} />}
-		<main id="main">
+		<main id="main" class:list={[flush && 'main--flush']}>
 			<slot />
 		</main>
 		<Footer />

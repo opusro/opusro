@@ -102,6 +102,24 @@ a:hover {
 	transform: translateY(0);
 }
 
+/* -- Page transitions ------------------------------------------------------
+ * Native cross-document view transitions: no script. An element that carries
+ * the same view-transition-name on both pages (an app tile in the dock and the
+ * tile at the top of its page, the mark on home and in the header) morphs
+ * between them. Browsers without support simply navigate.
+ */
+@view-transition {
+	navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}
+
 /* -- Layout ------------------------------------------------------------- */
 
 /* The one container. Pages set their own vertical rhythm inside it. */
@@ -117,6 +135,10 @@ a:hover {
 main {
 	flex: 1 0 auto;
 	padding-block: var(--space-xl) var(--space-3xl);
+}
+
+main.main--flush {
+	padding-block: 0;
 }
 
 /* -- Text roles ----------------------------------------------------------- */

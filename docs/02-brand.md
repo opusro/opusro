@@ -148,9 +148,12 @@ stock. Video self-hosted and short.
 
 Restrained, the same law as Chéri's design spec §5: motion explains a state
 change, never decorates; nothing over 350ms; springs over eases; reduced-motion
-gets a plain fade. The brand mark's expansion into the dictionary is the one
-signature motion on the site. The macOS-dock magnification does not earn its
-place.
+gets a plain fade or nothing. On the homescreen (05 · Website §3) the motion
+is the metaphor's own: the mark opening into the dictionary, the dock
+magnifying under a pointer, the light on a tile following the pointer or the
+tilt of the phone, and an icon morphing into the page it opens. Those are the
+behaviours people expect of a homescreen, so they read as familiarity rather
+than decoration. Reading pages animate nothing.
 
 ## 5. What OPUS is not (internal)
 

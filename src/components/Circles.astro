@@ -13,13 +13,15 @@ interface Ring {
 interface Props {
 	rings: [Ring, Ring, Ring];
 	class?: string;
+	/** Widget size: names only, no circle captions. */
+	compact?: boolean;
 }
-const { rings, class: className } = Astro.props;
+const { rings, class: className, compact = false } = Astro.props;
 const [inner, middle, outer] = rings;
 ---
 
 <svg
-	class:list={['circles', className]}
+	class:list={['circles', compact && 'circles--compact', className]}
 	viewBox="0 0 320 320"
 	role="img"
 	aria-label={`Three concentric circles. ${inner.label}: ${inner.circle}. ${middle.label}: ${middle.circle}. ${outer.label}: ${outer.circle}.`}
@@ -59,5 +61,13 @@ const [inner, middle, outer] = rings;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		fill: var(--ink-3);
+	}
+	/* Compact: the rings alone. Names and captions live where there is room. */
+	.circles--compact .circles__circle,
+	.circles--compact .circles__name {
+		display: none;
+	}
+	.circles--compact circle {
+		stroke-width: 2.5;
 	}
 </style>

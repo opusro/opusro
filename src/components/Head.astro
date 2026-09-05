@@ -92,4 +92,14 @@ const csp = [
 <meta name="author" content={SITE.name} />
 <meta name="generator" content={Astro.generator} />
 
-{COUNTER.enabled && <script is:inline defer data-domain={COUNTER.domain} src={COUNTER.scriptSrc}></script>}
+{
+	/* Plausible's snippet is an async script plus an inline init. Inline is
+	   blocked by the CSP, so the init ships as /counter.js from our own origin,
+	   loaded in order right after the script tag, which is the same behaviour. */
+	COUNTER.enabled && (
+		<>
+			<script is:inline async src={COUNTER.scriptSrc}></script>
+			<script is:inline src="/counter.js"></script>
+		</>
+	)
+}

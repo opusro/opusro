@@ -32,7 +32,7 @@ const notes = await notesFor(tool.id);
 >
 	<article class="wrap wrap--narrow tool">
 		<header class="tool__head">
-			<span class="tile" aria-hidden="true">
+			<span class="tile" aria-hidden="true" style={`view-transition-name: tile-${tool.id}`}>
 				{t.glyph ? <img src={t.glyph} alt="" width="28" height="28" /> : <span class="tile__initial">{t.name.charAt(0).toLowerCase()}</span>}
 			</span>
 			<div class="tool__title">

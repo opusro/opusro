@@ -21,11 +21,12 @@ screen and a blog route. Last real change: March 2026.
 | Meta keywords include "cynical", "ass.network" | `index.html` | Retired names, indexed |
 | Single-page app | whole site | No HTML for crawlers or previews without JavaScript; RSS hand-edited |
 | Two deploy configurations; unused `three` and `@react-three/*` dependencies; dead email-signup env var | repo | Confusing weight |
-| The dock | `Dock.jsx`, `DockIcon.jsx` | Hides everything behind clicks, gives crawlers nothing, shows a disabled state on the front page, spends the motion budget on magnification instead of the dictionary |
+| The dock's content | `Dock.jsx`, `DockIcon.jsx` | A disabled icon on the front page; a modal with placeholder text behind another |
 
 **Keep:** the palette, the near-black restraint, the mark expanding into two
 dictionary entries, the thesis line, the rounded tile treatment for tool marks,
-and the Ten Principles post as an archived essay (see §9).
+the homescreen metaphor itself (owner ruling 2026-09-05, D23), and the Ten
+Principles post as an archived essay (see §9).
 
 **Verdict.** Do not patch the SPA. Rebuild on the Astro pattern the owner
 already runs; one session, every line above gone.
@@ -58,10 +59,32 @@ Footer everywhere: legal line, email, feeds, privacy.
 
 ## 3. Pages
 
-**Home.** A doorway. The mark with the dictionary expansion, the thesis line,
-one warm paragraph (not the argument). The tools as tiles: name, one line,
-status word. Three latest notes. The support line. Footer. One scroll on a
-phone. No dock, no modal.
+**Home.** A homescreen (owner ruling 2026-09-05, D23). The front door reads
+like the first screen of a phone or a Mac, as the previous site did: the brand
+mark where the clock would be, opening into the dictionary on hover, focus or
+tap; a grid of widgets; a dock of apps. The default view is simple and clean
+and invites exploring; every piece of content is reached through the pattern
+people already know for that kind of thing:
+
+- **Notes widget** (wide): the latest note with its date and summary, then the
+  next two as one-line rows. Tap: the notes.
+- **Story widget** (square): the three circles as rings, the way an activity
+  widget shows rings, with "Story" and the thesis beneath. Tap: the story.
+- **In the works widget** (square): Chéri and "a third tool, for the city" as
+  two quiet rows. Tap: the circles on the story page. Honest about status,
+  never a date.
+- **Dock:** Loop (and every listed tool), Work, Support, Contact. Tap an app
+  and its icon morphs into the header of its page (native cross-document view
+  transitions, no script). The dock magnifies under a pointer, as a dock does;
+  widgets and icons catch the light where the pointer is, and on a phone the
+  light follows the tilt of the device after the first touch.
+
+Nothing on the screen is a dead end: an unlisted tool has no icon, and "in the
+works" links to the story rather than to a page that does not exist yet. The
+interaction is one small file, `public/home.js`, served from our own origin so
+the Content-Security-Policy allows it; without it the screen is still and still
+works. The footer below the screen carries the legal line, the email and the
+feeds.
 
 **Story.** The copy in §8. Warm, short, no manifesto. The three circles drawn.
 "Who" is one paragraph naming C.

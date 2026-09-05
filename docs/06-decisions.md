@@ -21,18 +21,12 @@ same commit as the change.
 | D18 | **The principles are a current version, not stone**, questioned periodically, bendable when the whole stays sound, and **never stated explicitly in public materials**. |
 | D20 | **The three circles** are the way the line is shown. |
 | D21 | **Loop's web home moves under opus.ro** (page at `/loop`, PWA at `loop.opus.ro`); opusloop.co redirects after the associated-domains release. The PWA gets a polish pass. |
+| D23 | **The home page is a homescreen.** Apps in a dock, content as widgets, the metaphor of a phone or Mac first screen, as the previous site had. Simple and clean by default, interactive enough to invite exploring, every path to content using a pattern people get instantly. A reading-page home was tried and rejected (2026-09-05). |
+| D3a | **Plausible**, account created 2026-09-05; on in `src/config.ts`, named on `/privacy`. |
 
 ## 2. Still open, for the owner
 
 Each with a recommendation and the default that applies if nothing is said.
-
-### D3a · Which counter
-
-- **Recommendation:** Plausible. Hosted in the EU, cookieless, no personal
-  data, no banner needed, one 1 kB script, a dashboard that answers "how many
-  people, from where, to which page". About €9 a month. GoatCounter is the
-  free alternative with a plainer dashboard.
-- **Default:** Plausible.
 
 ### D4 · Patronage provider
 
@@ -106,9 +100,8 @@ Each with a recommendation and the default that applies if nothing is said.
 
 Rebuilt on Astro on the branch `claude/opus-brand-website-strategy-rhza61`;
 deploys through the existing GitHub Pages workflow once merged to `main`.
-Still to do from the owner's side: the counter account (D3a), then
-`COUNTER.enabled = true` in `src/config.ts`. Loop's price line stays at
-today's model until phase 2 ships.
+The counter is on (D3a). Loop's price line stays at today's model until
+phase 2 ships.
 
 - Tokens, layout, dictionary component, the three circles drawn.
 - Pages: home, story (with C.), Loop (facts reflecting the coming free model,

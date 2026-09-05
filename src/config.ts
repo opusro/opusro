@@ -53,10 +53,11 @@ export const SUPPORT: { provider: 'patreon' | null; url: string | null } = {
  * allowance appear together, and /privacy names it.
  */
 export const COUNTER = {
-	enabled: false,
+	enabled: true,
 	provider: 'Plausible',
 	domain: 'opus.ro',
-	scriptSrc: 'https://plausible.io/js/script.js',
+	/** The per-site script Plausible issued for opus.ro. Public by nature. */
+	scriptSrc: 'https://plausible.io/js/pa-kXx6YxtkwLzzZWY-oXqVI.js',
 	origin: 'https://plausible.io',
 } as const;
 
