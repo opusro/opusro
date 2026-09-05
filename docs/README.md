@@ -16,7 +16,8 @@ true, change the document in the same commit as the change that made it false.
 | [03 · Products](03-products.md) | The shared constitution every tool keeps, the line (Loop, Chéri, Agora), naming and status rules, the product page template. |
 | [04 · System](04-system.md) | The map of surfaces and how they relate, the boundaries (especially with eratic.ro), the value exchange (prices, patrons, design work), the operating rhythm, the tooling. |
 | [05 · Website](05-website.md) | Audit of opus.ro as it is today, the specification for what replaces it, and the copy deck. |
-| [06 · Decisions](06-decisions.md) | The decisions only the owner can make, each with a recommendation and a default, and the phased plan. |
+| [06 · Decisions](06-decisions.md) | What the owner has settled, what is still open (each with a recommendation and a default), and the phased plan. |
+| [07 · Working](07-working.md) | How the owner engages with the system day to day: touchpoints, the accounts only they can create, what a normal month, quarter and year look like. |
 
 ## How to use these
 
@@ -29,20 +30,25 @@ true, change the document in the same commit as the change that made it false.
 - **Before touching eratic.ro from here, or here from there:** 04 · System
   §Boundaries. The door opens one way.
 
-## Law hierarchy
+## Precedence
 
 When two of these disagree, the earlier one wins.
 
-1. The product constitution (03 · Products §1). A page, a price or a feature
-   that breaks it is rejected regardless of how much it would help.
-2. The vocabulary law (02 · Brand §Vocabulary law).
-3. The system principles (04 · System §Principles).
+1. The product principles (03 · Products §1). A current version, questioned
+   from time to time and bendable when the whole stays sound, but a page, a
+   price or a feature that breaks one without a recorded reason is rejected.
+2. The voice rule "show, do not state" and the vocabulary (02 · Brand §2, §3).
+3. The system principles (04 · System §1).
 4. Convenience, reach, SEO, and everything else.
+
+None of the above is ever quoted in public materials. The public meets these
+as the feel of the tools and the site, not as rules.
 
 ## Sources
 
 The `_inspiration/` folder holds the 2025 synthesis of the founder's notes.
 It is history, not law: some of it has been superseded (the CyniCal name and
-its sarcastic voice, the paid-upfront Loop, "Make Future" as an umbrella
-brand). Where these documents disagree with `_inspiration/`, these documents
-are current.
+its sarcastic voice, a paid Loop, "Make Future" as an umbrella brand). Where
+these documents disagree with `_inspiration/`, these documents are current.
+The owner's notes of 2026-09-05 are folded in throughout and recorded as
+settled decisions in 06 · Decisions §1.

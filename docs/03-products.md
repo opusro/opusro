@@ -1,56 +1,62 @@
 # 03 · Products
 
-The product line as a coherent whole: the laws every tool keeps, the three
-tools, how they are named and described, and what every tool's public page
-carries.
+The product line as a coherent whole: the principles every tool keeps, the
+three tools, how they are named and described, and what every tool's public
+page carries.
 
 ---
 
-## 1. The constitution
+## 1. Principles (current version)
 
 Every OPUS tool keeps these. They are drawn from what the tools already do
-(Chéri PRD §2, Loop's philosophy, the "Ten Principles" post) and stated once so
-that no tool has to rediscover them. A feature, price or page that breaks one
-is rejected regardless of what it would gain.
+(Chéri PRD §2, Loop's philosophy, the Ten Principles post) and stated once so
+that no tool has to rediscover them.
 
-1. **Person first, model after.** No feature exists to move a metric. The
-   question asked of every addition is whether it makes the person's life a
-   little better or only makes a number look good.
+**Two things the owner has settled about this list.**
+
+- **It is a current version, not stone.** Each principle should be questioned
+  from time to time, and one can be bent when the overall moral and principled
+  standing stays solid. The test is not "does this break rule 4" but "would a
+  thoughtful person who trusted us still trust us after this". Bending is
+  recorded in `DECISIONS.md` of the tool concerned, with the reason, so the
+  bend is a decision and not a drift. The list itself is reread once a year
+  (04 · System §6).
+- **It is internal.** These principles are rarely, if ever, stated explicitly
+  in public materials. They are meant to be obvious through the way the tools
+  are designed and presented end to end. Public copy states facts about a tool
+  (what it costs, what it needs, what leaves the phone) and lets the feeling do
+  the rest. Radical or explicitly stated principles are a risk: they get used
+  against the company by semantics. See 02 · Brand §2.
+
+1. **Person first, model after.** No feature exists to move a metric.
 2. **Works without us.** If OPUS disappeared tomorrow, the tool keeps working.
    No accounts, no server of ours, local data first, the person's own iCloud
-   for sync. Where a platform forces an exception, the exception is stated on
-   the tool's page.
-3. **Honest, once.** One clear price, paid once, or nothing. No subscriptions,
-   no ads, no affiliate links, no commissions, no rent on a tool you already
-   learned. The price is what keeps the tool alive and cared for.
-4. **Calm by default.** The tool lives in the periphery (widgets, Spotlight,
-   complications) and earns the centre of attention only for genuinely useful
-   moments. No badges by default, no streaks, no guilt, no manufactured
-   urgency.
-5. **Your data is yours, legibly.** Full export always. Where it makes sense,
-   a plain-text mirror a person can read without the app.
-6. **Complete without intelligence, complete offline.** AI features enhance
-   capable devices; the tool is whole without them. Every AI surface has a
-   visible manual equivalent. Nothing essential needs a network.
-7. **Native.** Built for the platform with the platform's own materials. It
-   should feel like it belongs on the device, not like it was ported there.
-8. **Personality without manipulation.** A tool may have character. It may
-   never use that character to pressure, shame or flatter.
+   for sync. Where a platform forces an exception, the tool's page states it
+   as a fact.
+3. **Free, or honest once.** No subscriptions, no ads, no affiliate links, no
+   rent on a tool you already learned. Extras, where they exist, are delight
+   (sounds, backgrounds, a way to support the studio), never necessity, and
+   never nagged about.
+4. **Calm by default.** The tool lives in the periphery and earns the centre of
+   attention only for genuinely useful moments. No badges by default, no
+   streaks, no guilt, no manufactured urgency.
+5. **Your data is yours, legibly.** Full export always. A plain-text mirror
+   where it makes sense.
+6. **Complete without intelligence, complete offline.** AI enhances capable
+   devices; the tool is whole without it. Every AI surface has a visible
+   manual equivalent.
+7. **Native.** Built with the platform's own materials. It belongs on the
+   device. (The web versions, Loop's PWA first, keep the same feel.)
+8. **Personality without manipulation.** A tool may have character. It never
+   uses that character to pressure, shame or flatter.
 9. **Fewer things, done fully.** Few features over broken magic (Chéri
    ADR-0030). No mocks, no placeholders, no "coming soon" inside a shipped
    tool.
-10. **Privacy is architecture, and where it is not pure it is stated.** The
-    default is that nothing leaves the device because there is nowhere for it
-    to go. Where a tool does send something (Loop's anonymous usage counts via
-    TelemetryDeck), the tool's page says exactly what, to whom, and why, in
-    one plain paragraph.
-
-Law 10 matters for coherence. The 2025 launch notes for Loop say "no tracking,
-no analytics", and the shipped app uses TelemetryDeck. Both cannot be true. The
-brand is honesty, so the copy changes, not the claim's direction: Loop's page
-says it sends anonymous counts, lists them, and says why. Nobody who reads
-that feels tricked. Someone who reads "no analytics" and later finds
-TelemetryDeck does.
+10. **Privacy is architecture, and where it is not pure it is a stated fact.**
+    The default is that nothing leaves the device because there is nowhere for
+    it to go. Where a tool does send something (Loop's anonymous usage counts
+    via TelemetryDeck), the tool's page says what, to whom, and why, in one
+    plain paragraph. Stated as information, not as a vow.
 
 ## 2. The line
 
@@ -62,11 +68,26 @@ Three circles, widening (01 · Story). Each tool serves one.
   silence, begin.
 - **What it is for:** meditation, prayer, deep work, movement, sleep. A tool,
   not a service: no catalogue, no teacher, no content you did not choose.
-- **Status:** available. iOS 18 and later, watchOS 11 and later. In the App
-  Store since April 2026.
-- **Price:** free with one preset; $4.99 once for as many presets as you like.
-  People who bought the original paid version keep everything.
-- **Home:** opusloop.co (its own site: web player, help, privacy, terms).
+- **Status:** available. iOS 18 and later, watchOS 11 and later, and a web
+  version (PWA) that runs on any device. In the App Store since April 2026.
+- **Price: free.** Owner decision, September 2026. The reasoning, in the
+  owner's words: nobody actually needs a timer app, and Loop should be a
+  gateway into not needing an app for your moments of inner peace or focus.
+  It is hard to sell that and easy to give it away. Once people use it, they
+  can be offered extras (sounds, backgrounds) and a way to support the studio.
+  - **Today** the app is free with one preset and a $4.99 one-time purchase
+    for unlimited presets, with 1.0 buyers unlocked automatically. Going free
+    means: the preset limit goes; the existing purchase stays honoured;
+    everyone who paid (1.0 or the IAP) is thanked in the app and gets every
+    future extra included. Nobody who paid should feel foolish for it.
+  - **Extras** are optional delight: sound packs, background packs. Never a
+    feature that the free tool is worse without. Never a prompt during a
+    session.
+  - **Supporting the studio from inside the app** has to be an in-app purchase
+    (a consumable tip), quietly in Settings. Linking out to a payment page from
+    inside the app is an App Review risk (04 · System §4).
+- **Home:** opusloop.co today, with the web player (PWA), help, privacy,
+  terms. Moving under opus.ro (04 · System §2, D6).
 - **What leaves the phone:** anonymous usage counts via TelemetryDeck (no
   identifiers); Mindful Minutes to Apple Health if turned on; your own files to
   your own iCloud Drive. Nothing to OPUS.
@@ -75,6 +96,8 @@ Three circles, widening (01 · Story). Each tool serves one.
 
 ### Chéri · you with your people
 
+- **Name: final.** Chéri. Trademark filing (EUIPO and USPTO, classes 9 and
+  42) is a to-do, not a condition on using the name.
 - **One line:** Friends, and the things between them. Remember what people
   love, keep gift ideas, share your things without keeping score.
 - **What it is for:** tending friendships through things: what someone loves,
@@ -83,119 +106,99 @@ Three circles, widening (01 · Story). Each tool serves one.
 - **Status:** in the works. Universal app (iPhone, iPad; Mac in the first
   major update), iOS 18 floor, shipping in the iOS 27 window.
 - **Price:** yours once, in the €19 to €29 band (final at listing). Giftable
-  through the App Store, on purpose: a gifting app you can gift.
+  through the App Store on purpose: a gifting app you can gift.
 - **What leaves the phone:** nothing to OPUS; there is no server. Sharing
-  between friends is a file you send yourself, through the system share sheet.
-- **Vocabulary law:** share / with / home. Never lend, borrow, due, overdue,
-  owe. This law is the origin of the studio-wide one (02 · Brand §3).
+  between friends is a file you send through the system share sheet.
+- **Vocabulary:** share / with / home. Never lend, borrow, due, overdue, owe.
+  This is the origin of the studio-wide vocabulary (02 · Brand §3).
 - **Accent:** warm dusty red, final value from the asset catalog.
-- **Name:** trademark clearance pending (EUIPO and USPTO, classes 9 and 42).
-  The name does not appear publicly until clearance. See 06 · Decisions.
 
-### Agora · you with everyone
+### inOras · you with everyone
 
-- **One line (provisional):** The individual and the city.
-- **What it is for (provisional):** the software a citizen cannot refuse, made
+- **Name: inOras is the intended final name.** It cannot go public yet. Until
+  the owner says so, the tool is unnamed on every public surface: "a third
+  tool, about the city". Internally and in these documents it is inOras;
+  "Agora", "civical" and "inoras" (lowercase) are codenames.
+- **One line (working):** The individual and the city.
+- **What it is for (working):** the software a citizen cannot refuse, made
   with the care usually reserved for software that competes for attention.
-- **Status:** in the works, early. An API exists on its own server; nothing
-  about the product is public.
-- **Everything about Agora on this page is an inference** from the codenames
-  and the founder's notes. It is here so the line reads whole. It appears
-  nowhere public until the owner confirms the circle, the name (Agora is a
-  crowded mark), and that there is something real to show.
+- **Status:** in the works, and in a good state. The owner expects a couple of
+  months to public release. An API exists on its own server (agoresti.ro).
+- **Public presence until then:** one sentence on the story page, no name, no
+  page. It gets a page with `listed: false` as soon as the owner wants to draft
+  it; it is listed on the day the name is public.
+- **Accent:** undecided. Chosen when the page is drafted.
 
 ## 3. Naming rules
 
-1. **One public name per tool, for life.** Internal codenames stay in
-   repositories. The public never meets two names for one thing.
-2. **Bare names in prose and on opus.ro.** "Loop", not "OPUS Loop", not "Loop
-   by OPUS". The studio is the context; the page already says OPUS.
-3. **Namespaced only where a store needs it.** App Store display names may
-   carry "OPUS" (Loop already does). Decide per tool at listing time and then
-   never change it.
-4. **A tool's one line is fixed text.** It appears identically on opus.ro, in
-   the App Store subtitle or first sentence, in the app's About screen, and in
-   any post. One source: the product entry in the website's content
-   collection (05 · Website §Content).
-5. **Names are cleared before they are said.** Trademark search in classes 9
-   and 42 before a name appears on any public surface, including a "coming"
-   label.
+1. **One public name per tool, for life.** Codenames stay in repositories.
+   The public never meets two names for one thing.
+2. **Bare names in prose and on opus.ro.** "Loop", not "OPUS Loop". The store
+   display name may carry the namespace (Loop's already does); decide per tool
+   at listing time and never change it.
+3. **A tool's one line is fixed text.** Identical on opus.ro, in the App
+   Store, in the app's About screen and in any post. One source: the product
+   entry in the website's content collection.
+4. **Names are cleared before they are said.** Trademark search in classes 9
+   and 42 before a name appears on any public surface.
+5. **Retired, never to reappear publicly:** CyniCal, 1st°, 1st Degree,
+   ass.network, ASSN, Agora, civical, Minimus.
 
 ## 4. Status vocabulary
 
-Exactly three states, in these words.
+Three states, in these words.
 
 | State | Means | Appears |
 |---|---|---|
-| **available** | In the App Store now. | Full page, card on home, in the tools list. |
-| **in the works** | Being made; something real exists to show (a screenshot, a design note, a TestFlight). | Page with what exists and no more. Card on home. |
-| **imagined** | An idea we intend to make. | One sentence on the story page at most. No page, no card. |
+| **available** | In the App Store (or on the web) now. | Full page, tile on home. |
+| **in the works** | Being made; something real exists to show. | Page with what exists and no more; tile on home. If the name is not yet public, one sentence on the story page instead. |
+| **imagined** | An idea we intend to make. | One sentence on the story page at most. |
 
-Rules, taken from how eratic.ro keeps its unfinished sections:
-
-- **No "coming soon" dead ends.** A tool that has nothing to show has no
-  page. The current site's disabled dock icon reading "Coming April 2026" in
-  September is exactly the failure this prevents.
+- **No "coming soon" dead ends.** A tool with nothing to show has no page.
 - **No dates in public.** "In the works" is as precise as the studio gets.
-  Release notes are written after, never before.
-- **A `listed` flag, not a deletion.** A tool's page can exist in the
-  repository and be built without being linked from anywhere. Flipping one
-  flag lists it. Nothing has to be remembered or undone.
+- **A `listed` flag, not a deletion.** A page can exist and be built without
+  being linked. Flipping one flag lists it.
 
 ## 5. The tool page template
 
-Every tool's page on opus.ro has the same bones, in this order. Same bones is
-what makes the line read as a line.
+Same bones on every tool page, in this order. Warm, factual, unpreachy.
 
-1. **Mark, name, one line.** The dictionary component may open it
-   ("loop, n.").
-2. **What it is for.** Three to five sentences. The need, then the tool. No
-   feature list.
-3. **The promises it keeps.** The constitution made specific to this tool, as
-   short factual lines with the mechanism beside each:
+1. **Mark, name, one line.** The dictionary component may open it.
+2. **What it is for.** Three to five sentences. The need, then the tool.
+3. **The plain facts.** Short lines, each a fact with its mechanism, in the
+   register of a good product label rather than a manifesto:
+   - "Free. Extras are optional."
    - "No account. There is nothing to sign up for."
    - "Works offline. The timer, the sounds and your history live on your
      phone."
-   - "$4.99 once for all presets. Nothing recurs."
    - "What leaves your phone: anonymous usage counts via TelemetryDeck, and
      nothing else. Here is the list."
-4. **Get it.** App Store link, the tool's own site if it has one, platforms,
-   price in plain words.
-5. **Notes about it.** The studio's notes filtered to this tool: release
-   notes, design decisions. Newest first.
-6. **Privacy and help.** Links to the tool's privacy statement and help page
-   (Loop's live on opusloop.co), and the one studio email.
+4. **Get it.** App Store, web version, platforms, price in plain words.
+5. **Notes about it.** The studio's notes filtered to this tool.
+6. **Privacy and help.** Links, and the one studio email.
 
-Screens and recordings sit beside the text, never instead of it. A page must
-read completely with images turned off.
+Screens and recordings sit beside the text, never instead of it. A page reads
+completely with images off.
 
 ## 6. Inside the tools
 
-The tools present the studio the same way, so that someone who owns two of
-them recognises the family.
+- **About screen:** "Made by OPUS in Romania." linking to opus.ro (not to the
+  support page). The tool's one line. The plain fact of what it costs and what
+  it sends, stated as information.
+- **One support address.** `hello@opus.ro` everywhere; `support@opus.ro`
+  stays as an alias. Loop's app string changes at the next release.
+- **Release notes in one voice.** Loop's `CHANGELOG.md` is already honest
+  prose. That is the source for the App Store "What's New", the note on
+  opus.ro, and any post.
 
-- **About screen:** "Made by OPUS in Romania." linking to opus.ro (not to
-  the support page; see 04 · System §Value exchange for the App Review reason).
-  The tool's one line. The promise as a statement: "yours once, forever. No
-  subscription, no ads, no tracking" for Chéri; Loop's equivalent stated as
-  truly ("no account, no subscription, anonymous usage counts only").
-- **One support address.** Loop's app uses `support@opus.ro`; the sites use
-  `hello@opus.ro`. Pick one (recommendation: `hello@opus.ro`, with the other
-  as an alias that keeps working) and use it everywhere.
-- **Release notes in one voice.** Loop's `CHANGELOG.md` is already written as
-  honest prose. That is the source for the App Store "What's New", for the
-  note on opus.ro, and for the post. Written once, shortened as needed.
-
-## 7. Consistency audit (as of 2026-09-05)
-
-Things that currently contradict the above and need a change.
+## 7. Consistency work (as of 2026-09-05)
 
 | Where | What | Fix |
 |---|---|---|
-| opus.ro dock, modal | Tool called "1st°" with Lorem ipsum description and "Launching soon" | Remove until the cleared name and something real exist |
-| opus.ro `index.html` keywords | "cynical", "ass.network" | Remove |
-| opus.ro `index.html` og:image | `/loopIcon.png`, a file that does not exist | Point at a real image (a studio card, not Loop's icon) |
-| `_inspiration/Opus_Loop/LAUNCH_AND_MARKETING.md` | "no tracking, no analytics" | History; the live claim becomes law 10's plain statement |
+| opus.ro dock, modal | "1st°" with Lorem ipsum and "Launching soon" | Remove; Chéri gets a real page in phase 3 |
+| opus.ro `index.html` | Keywords "cynical", "ass.network"; og:image pointing at a missing file | Remove; real image |
+| Loop, App Store Connect | Free with one preset plus $4.99 IAP | Free; preset limit removed; paid users thanked and given future extras (phase 2) |
+| opusloop.co | Copy and design built around "$4.99 once"; hero framed against subscriptions | Rewrite for free plus support; soften the competitor framing; refresh design to the shared tokens (phase 2) |
+| Loop PWA (web player) | Works on any device; needs delight and polish | Design pass; move under opus.ro when the domain plan lands (phase 3) |
 | Loop app vs sites | `support@opus.ro` vs `hello@opus.ro` | One address, one alias |
-| opusloop.co hero | "without a monthly sacrifice" | Fine, but check against the vocabulary law: no competitor-shaped framing beyond the story page. Owner's call; it is on the tool's own site |
-| Loop IAP copy | "unlock unlimited presets" | Prefer "all presets, once" phrasing at the next copy pass; not urgent |
+| Loop IAP copy | "unlock unlimited presets" | Goes away with the free model |
