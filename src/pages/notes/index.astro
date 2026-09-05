@@ -12,6 +12,7 @@ const notes = await allNotes();
 	lede="Releases, decisions, letters and the occasional essay. Written when there is something to say."
 	path="/notes/"
 	current="notes"
+	tile="notes"
 >
 	{notes.length > 0 ? <NoteList notes={notes} /> : <p class="lede">Nothing here yet.</p>}
 	<p class="meta">Subscribe: <a href="/rss.xml">RSS</a> · <a href="/feed.json">JSON Feed</a></p>

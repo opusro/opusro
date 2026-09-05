@@ -1,0 +1,97 @@
+---
+/**
+ * In the works. What is being made, said plainly, with no dates. Tools that
+ * have a public name are named; the one that does not is described by its
+ * circle. Nothing here links to a page that does not exist yet.
+ */
+import Page from '../layouts/Page.astro';
+import Circles from '../components/Circles.astro';
+import { allTools } from '../lib/notes';
+
+const tools = await allTools();
+const loop = tools.find((t) => t.id === 'loop');
+const cheri = tools.find((t) => t.id === 'cheri');
+---
+
+<Page
+	title="In the works"
+	eyebrow="In the works"
+	lede="Two more tools are being made. Here is what they are for. There are no dates; they ship when they are complete."
+	path="/wip/"
+	tile="wip"
+>
+	<ul class="rows wip">
+		<li class="wip__item" style={`--accent:${cheri?.data.accent ?? 'var(--ink)'}`}>
+			<span class="tile" aria-hidden="true"><span class="tile__initial">c</span></span>
+			<div class="wip__text">
+				<p class="eyebrow">you with your people</p>
+				<h2 class="voice">{cheri?.data.name ?? 'Chéri'}</h2>
+				<p>{cheri?.data.oneLine}</p>
+				<p class="wip__extra">
+					No account, no server; nothing leaves your phone. Sharing between friends is a file you send through
+					the share sheet. Everything you put in comes back out as plain text. Paid for once, and giftable.
+				</p>
+			</div>
+		</li>
+		<li class="wip__item">
+			<span class="tile tile--dashed" aria-hidden="true"></span>
+			<div class="wip__text">
+				<p class="eyebrow">you with everyone</p>
+				<h2 class="voice">A third tool, about the city</h2>
+				<p>
+					The software a citizen cannot refuse, made with the care usually reserved for software that competes
+					for attention. It has a name. It is not ready to be said yet.
+				</p>
+			</div>
+		</li>
+	</ul>
+
+	<section class="wip__circles">
+		<Circles
+			rings={[
+				{ label: loop?.data.name ?? 'Loop', circle: 'you with yourself', accent: loop?.data.accent },
+				{ label: cheri?.data.name ?? 'Chéri', circle: 'you with your people', accent: cheri?.data.accent },
+				{ label: 'the city', circle: 'you with everyone', dashed: true },
+			]}
+		/>
+		<p class="wip__caption">
+			Three circles, widening. <a href="/story/">The story</a> has the rest.
+		</p>
+	</section>
+</Page>
+
+<style>
+	.wip__item {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--space-m);
+		align-items: start;
+		padding-block: var(--space-l);
+	}
+	.wip__text {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.wip__text p {
+		color: var(--ink);
+	}
+	.wip__extra {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+	}
+	.tile--dashed {
+		background: none;
+		box-shadow: none;
+		border: 1.5px dashed var(--hairline-strong);
+	}
+	.wip__circles {
+		display: grid;
+		gap: var(--space-m);
+		justify-items: center;
+		padding-block-start: var(--space-l);
+	}
+	.wip__caption {
+		color: var(--ink-2);
+		font-size: var(--step--1);
+	}
+</style>

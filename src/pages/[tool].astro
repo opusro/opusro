@@ -26,7 +26,7 @@ const notes = await notesFor(tool.id);
 	title={t.name}
 	description={t.oneLine}
 	path={toolPath(tool)}
-	current="tools"
+	current={tool.id}
 	accent={t.accent}
 	noindex={!t.listed}
 >

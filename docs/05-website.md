@@ -62,22 +62,23 @@ Footer everywhere: legal line, email, feeds, privacy.
 **Home.** A homescreen (owner ruling 2026-09-05, D23). The front door reads
 like the first screen of a phone or a Mac, as the previous site did: the brand
 mark where the clock would be, opening into the dictionary on hover, focus or
-tap; a grid of widgets; a dock of apps. The default view is simple and clean
-and invites exploring; every piece of content is reached through the pattern
-people already know for that kind of thing:
+tap; two pages you swipe, drag or arrow between, with iOS-style page dots; a
+dock of apps. The default view is simple and clean and invites exploring; every
+piece of content is reached through the pattern people already know for that
+kind of thing:
 
-- **Notes widget** (wide): the latest note with its date and summary, then the
-  next two as one-line rows. Tap: the notes.
-- **Story widget** (square): the three circles as rings, the way an activity
-  widget shows rings, with "Story" and the thesis beneath. Tap: the story.
-- **In the works widget** (square): Chéri and "a third tool, for the city" as
-  two quiet rows. Tap: the circles on the story page. Honest about status,
-  never a date.
-- **Dock:** Loop (and every listed tool), Work, Support, Contact. Tap an app
-  and its icon morphs into the header of its page (native cross-document view
-  transitions, no script). The dock magnifies under a pointer, as a dock does;
-  widgets and icons catch the light where the pointer is, and on a phone the
-  light follows the tilt of the device after the first touch.
+- **Page 1:** the mark, the thesis line, the dots, the dock. Nothing else.
+- **Page 2, the widgets:** Notes (wide: the latest note with date and summary,
+  the next two as rows), Story (square: the three circles as rings, "Story"
+  and the thesis beneath), Support (square: a heart and one line), Work (wide:
+  one line). Each widget is a link to its page.
+- **Dock:** Loop (and every listed tool), In the works, Notes, Contact. "In
+  the works" opens `/wip/`, which names Chéri and describes the third tool by
+  its circle, with no dates. Tap an app and its icon morphs into the header of
+  its page (native cross-document view transitions, no script). The dock
+  magnifies under a pointer, as a dock does; widgets and icons catch the light
+  where the pointer is, and on a phone the light follows the tilt of the
+  device after the first touch.
 
 Nothing on the screen is a dead end: an unlisted tool has no icon, and "in the
 works" links to the story rather than to a page that does not exist yet. The

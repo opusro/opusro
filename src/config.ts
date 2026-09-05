@@ -64,7 +64,6 @@ export const COUNTER = {
 /** Site navigation for every page except home. Lowercase on purpose. */
 export const NAV = [
 	{ label: 'story', href: '/story/' },
-	{ label: 'tools', href: '/#tools' },
 	{ label: 'notes', href: '/notes/' },
 	{ label: 'support', href: '/support/' },
 	{ label: 'work', href: '/work/' },

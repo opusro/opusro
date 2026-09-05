@@ -1,18 +1,127 @@
-// The homescreen's feel: the dock magnifies under the pointer, widgets and
-// icons catch the light where the pointer is, and on a phone the light follows
-// the tilt of the device once the person has touched the screen. Served as a
-// file so the Content-Security-Policy's `script-src 'self'` allows it; without
-// it the screen is still a screen, just still.
+// The homescreen's feel. Served as a file so the Content-Security-Policy's
+// `script-src 'self'` allows it; without it the screen still works: swiping
+// between pages is native scroll snapping, and the dots simply do not move.
+//
+// Here: the page dots, mouse drag between pages, arrow keys, the dock
+// magnifying under the pointer, and the light on tiles following the pointer
+// (or, on a phone, the tilt of the device after the first touch).
 (function () {
 	var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 	var coarse = window.matchMedia('(hover: none), (pointer: coarse)');
 
-	// -- Light: a highlight that sits where the pointer is -------------------
-	var lit = Array.prototype.slice.call(document.querySelectorAll('[data-tilt], [data-app] .app__tile'));
-
 	function clamp(v, lo, hi) {
 		return Math.min(hi, Math.max(lo, v));
 	}
+
+	// -- Pages ------------------------------------------------------------------
+	var pager = document.querySelector('[data-pager]');
+	var dots = Array.prototype.slice.call(document.querySelectorAll('[data-dot]'));
+
+	if (pager) {
+		var pageCount = pager.children.length;
+
+		function pageIndex() {
+			return clamp(Math.round(pager.scrollLeft / pager.clientWidth), 0, pageCount - 1);
+		}
+
+		function goTo(i, instant) {
+			pager.scrollTo({
+				left: clamp(i, 0, pageCount - 1) * pager.clientWidth,
+				behavior: instant || reduce.matches ? 'auto' : 'smooth',
+			});
+		}
+
+		function updateDots() {
+			var i = pageIndex();
+			dots.forEach(function (d, k) {
+				d.setAttribute('aria-current', k === i ? 'true' : 'false');
+			});
+		}
+
+		var raf = 0;
+		pager.addEventListener('scroll', function () {
+			if (raf) return;
+			raf = requestAnimationFrame(function () {
+				raf = 0;
+				updateDots();
+			});
+		});
+		window.addEventListener('resize', function () {
+			goTo(pageIndex(), true);
+		});
+
+		dots.forEach(function (d, k) {
+			d.addEventListener('click', function () {
+				goTo(k);
+			});
+		});
+
+		// Arrow keys move pages when nothing else wants them.
+		document.addEventListener('keydown', function (e) {
+			var t = e.target;
+			if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+			if (e.key === 'ArrowRight') goTo(pageIndex() + 1);
+			else if (e.key === 'ArrowLeft') goTo(pageIndex() - 1);
+		});
+
+		// Mouse drag. Touch already swipes natively through scroll snapping.
+		var dragging = false;
+		var moved = false;
+		var startX = 0;
+		var startLeft = 0;
+
+		pager.addEventListener('pointerdown', function (e) {
+			if (e.pointerType !== 'mouse' || e.button !== 0) return;
+			dragging = true;
+			moved = false;
+			startX = e.clientX;
+			startLeft = pager.scrollLeft;
+			pager.setPointerCapture(e.pointerId);
+		});
+		pager.addEventListener('pointermove', function (e) {
+			if (!dragging) return;
+			var dx = e.clientX - startX;
+			if (!moved && Math.abs(dx) > 6) {
+				moved = true;
+				pager.classList.add('is-dragging');
+			}
+			if (moved) pager.scrollLeft = startLeft - dx;
+		});
+		function endDrag(e) {
+			if (!dragging) return;
+			dragging = false;
+			if (moved) {
+				var dx = e.clientX - startX;
+				var from = Math.round(startLeft / pager.clientWidth);
+				var target = from;
+				// A committed pull of a quarter page, or a quick flick, turns the page.
+				if (dx < -pager.clientWidth * 0.2) target = from + 1;
+				else if (dx > pager.clientWidth * 0.2) target = from - 1;
+				pager.classList.remove('is-dragging');
+				goTo(target);
+				// Swallow the click a drag would otherwise release onto a widget.
+				pager.addEventListener(
+					'click',
+					function stop(ev) {
+						ev.preventDefault();
+						ev.stopPropagation();
+						pager.removeEventListener('click', stop, true);
+					},
+					true,
+				);
+				setTimeout(function () {
+					moved = false;
+				}, 0);
+			}
+		}
+		pager.addEventListener('pointerup', endDrag);
+		pager.addEventListener('pointercancel', endDrag);
+
+		updateDots();
+	}
+
+	// -- Light: a highlight that sits where the pointer is -------------------
+	var lit = Array.prototype.slice.call(document.querySelectorAll('[data-tilt], [data-app] .app__tile'));
 
 	function light(el, x, y) {
 		var r = el.getBoundingClientRect();
@@ -51,8 +160,6 @@
 				var r = app.getBoundingClientRect();
 				var d = Math.abs(e.clientX - (r.left + r.width / 2));
 				var t = clamp(1 - d / REACH, 0, 1);
-				// Ease so the neighbours swell gently and the one under the
-				// pointer swells most.
 				var s = 1 + (MAX - 1) * (t * t * (3 - 2 * t));
 				app.style.setProperty('--scale', s.toFixed(3));
 			});
