@@ -82,30 +82,25 @@ const loop = (await allTools()).find((tool) => tool.id === 'loop');
 		width: min(22rem, 100%);
 	}
 
+	/* No panel: the icon and the words sit on the page itself. */
 	.card {
 		display: flex;
 		align-items: center;
 		gap: 0.9rem;
-		padding: 0.85rem 1.1rem;
-		border: 1px solid var(--hairline);
-		border-radius: 18px;
-		background:
-			radial-gradient(120% 100% at var(--hx, 50%) var(--hy, 0%), var(--highlight), transparent 70%),
-			linear-gradient(to bottom, #0e0e0e, #090909);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.04),
-			0 14px 30px rgba(0, 0, 0, 0.45);
+		padding: 0.35rem 0;
 		text-decoration: none;
 		color: var(--ink);
 		font-style: normal;
-		transition: border-color var(--duration) var(--ease), transform var(--duration) var(--ease);
+		transition: transform var(--duration) var(--ease);
 		width: 100%;
-	}
-	.card--loop:hover {
-		border-color: var(--hairline-strong);
 	}
 	.card--loop:active {
 		transform: scale(0.985);
+	}
+	.card--loop:hover .card__name {
+		text-decoration: underline;
+		text-decoration-color: var(--hairline-strong);
+		text-underline-offset: 0.18em;
 	}
 	.card .tile {
 		width: 46px;
