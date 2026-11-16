@@ -58,10 +58,8 @@ const tools = defineCollection({
 			facts: z.array(plain('facts')).default([]),
 			/** A short screen recording, root-relative. Optional. */
 			video: z.string().optional(),
-			/** The glyph shown on the tile and page, root-relative SVG. */
+			/** The tool's mark, root-relative SVG, white: the tile, the page, the particles. */
 			glyph: z.string().optional(),
-			/** The real app icon, root-relative, square, for the homescreen dock. */
-			icon: z.string().optional(),
 			/**
 			 * The homescreen's story about the tool, opened from its dock icon:
 			 * an App Store "Today" card made of excerpts from the tool's own
@@ -78,8 +76,13 @@ const tools = defineCollection({
 						.default([]),
 					/** Small print under the excerpts: platforms, licence. */
 					fineprint: plain('story.fineprint').optional(),
-					/** The picture at the top. `particles` draws the glyph as particles. */
-					hero: z.enum(['particles', 'peers', 'wordmark']).default('wordmark'),
+					/**
+					 * The picture at the top, always the tool's mark in white
+					 * particles: `mark` draws the glyph, `exchange` draws it and sends
+					 * messages between its two halves (Peers), `wordmark` draws the
+					 * name. Defaults to `mark` when there is a glyph.
+					 */
+					hero: z.enum(['mark', 'exchange', 'wordmark']).optional(),
 				})
 				.optional(),
 		})

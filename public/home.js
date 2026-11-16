@@ -141,67 +141,99 @@
 		);
 	}
 
-	/* ---- Particles: a tool's glyph drawn as drifting points ------------------
+	/* ---- Particles: each tool's mark drawn as drifting points ----------------
 	 *
-	 * Loop's site draws its mandala in green particles; its story here does
-	 * the same, from the same glyph (/loop.svg). The points gather out of a
-	 * loose cloud when the story opens, then breathe and turn very slowly.
-	 * A pointer pushes them aside. Reduced motion draws them still. Nothing
-	 * runs while the story is closed.
+	 * Every story opens on the tool's mark in white points on black: Loop's
+	 * mandala (as loop.opus.ro draws it), Peers' two pears, Chéri's name. The
+	 * points gather out of a loose cloud when the story opens, then breathe
+	 * and turn very slowly; a pointer pushes them aside. With `data-flow`
+	 * (Peers) a message now and then travels straight from one half of the
+	 * mark to the other, phone to phone, nothing in between. Reduced motion
+	 * draws them still. Nothing runs while the story is closed.
 	 */
-	var glyphCache = {};
-	function glyphPaths(url) {
-		if (!glyphCache[url]) {
-			glyphCache[url] = fetch(url)
+	var sourceCache = {};
+	// A mask to sample: a canvas with the mark drawn on it, and how to place it.
+	function markSource(canvas) {
+		var url = canvas.getAttribute('data-particles');
+		var text = canvas.getAttribute('data-text');
+		var key = url || 'text:' + text;
+		if (sourceCache[key]) return sourceCache[key];
+		var made;
+		if (url) {
+			made = fetch(url)
 				.then(function (r) {
 					return r.text();
 				})
-				.then(function (text) {
-					var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+				.then(function (svgText) {
+					var doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
 					var svg = doc.querySelector('svg');
 					var box = (svg.getAttribute('viewBox') || '0 0 120 120').split(/[\s,]+/).map(Number);
-					var paths = Array.prototype.map.call(doc.querySelectorAll('path'), function (el) {
-						return el.getAttribute('d');
+					var S = 360;
+					var c = document.createElement('canvas');
+					c.width = c.height = S;
+					var x = c.getContext('2d');
+					x.scale(S / box[2], S / box[3]);
+					x.translate(-box[0], -box[1]);
+					Array.prototype.forEach.call(doc.querySelectorAll('path'), function (el) {
+						var path = new Path2D(el.getAttribute('d'));
+						var sw = el.getAttribute('stroke-width');
+						if (sw && el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
+							x.lineWidth = Number(sw);
+							x.lineCap = 'round';
+							x.lineJoin = 'round';
+							x.stroke(path);
+						}
+						if (el.getAttribute('fill') !== 'none') x.fill(path);
 					});
-					return { box: box, paths: paths };
+					return { canvas: c, fit: 'square' };
 				});
+		} else {
+			var font = 'italic 400 150px "Source Serif 4 Variable", Georgia, serif';
+			var ready = document.fonts && document.fonts.load ? document.fonts.load(font).catch(function () {}) : Promise.resolve();
+			made = ready.then(function () {
+				var c = document.createElement('canvas');
+				c.width = 600;
+				c.height = 240;
+				var x = c.getContext('2d');
+				x.font = font;
+				x.textAlign = 'center';
+				x.textBaseline = 'middle';
+				x.fillText(text, 300, 128);
+				return { canvas: c, fit: 'wide' };
+			});
 		}
-		return glyphCache[url];
+		sourceCache[key] = made;
+		return made;
 	}
 
-	function samplePoints(glyph, count) {
-		var S = 360;
-		var c = document.createElement('canvas');
-		c.width = c.height = S;
-		var x = c.getContext('2d');
-		x.scale(S / glyph.box[2], S / glyph.box[3]);
-		x.translate(-glyph.box[0], -glyph.box[1]);
-		glyph.paths.forEach(function (d) {
-			x.fill(new Path2D(d));
-		});
-		var data = x.getImageData(0, 0, S, S).data;
+	// Points on the mark, mostly on its outline, in units of its longer side,
+	// centred on 0.
+	function samplePoints(src, count) {
+		var W = src.canvas.width;
+		var H = src.canvas.height;
+		var M = Math.max(W, H);
+		var data = src.canvas.getContext('2d').getImageData(0, 0, W, H).data;
 		function on(px, py) {
-			if (px < 0 || py < 0 || px >= S || py >= S) return false;
-			return data[(py * S + px) * 4 + 3] > 120;
+			if (px < 0 || py < 0 || px >= W || py >= H) return false;
+			return data[(py * W + px) * 4 + 3] > 120;
 		}
 		var edge = [];
 		var fill = [];
-		for (var py = 0; py < S; py++) {
-			for (var px = 0; px < S; px++) {
+		for (var py = 0; py < H; py++) {
+			for (var px = 0; px < W; px++) {
 				if (!on(px, py)) continue;
-				// An edge pixel has empty space right beside it: a fine outline.
 				if (!on(px - 1, py) || !on(px + 1, py) || !on(px, py - 1) || !on(px, py + 1)) edge.push([px, py]);
 				else fill.push([px, py]);
 			}
 		}
+		if (!count) count = Math.max(1400, Math.min(5200, Math.round(edge.length * 0.9)));
 		var out = [];
-		// Mostly outline, as the landing page draws it, with a little fill.
 		var edges = Math.round(count * 0.86);
 		for (var i = 0; i < count; i++) {
-			var src = i < edges ? edge : fill;
-			if (!src.length) src = edge.length ? edge : fill;
-			var p = src[(Math.random() * src.length) | 0];
-			out.push([(p[0] + Math.random() - 0.5) / S - 0.5, (p[1] + Math.random() - 0.5) / S - 0.5]);
+			var list = i < edges ? edge : fill;
+			if (!list.length) list = edge.length ? edge : fill;
+			var p = list[(Math.random() * list.length) | 0];
+			out.push([(p[0] + Math.random() - 0.5 - W / 2) / M, (p[1] + Math.random() - 0.5 - H / 2) / M]);
 		}
 		return out;
 	}
@@ -209,17 +241,19 @@
 	function Particles(canvas) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d');
+		this.flow = canvas.hasAttribute('data-flow');
 		this.running = false;
 		this.frame = 0;
 		this.pointer = null;
-		this.ready = glyphPaths(canvas.getAttribute('data-particles'));
+		this.ready = markSource(canvas);
 		var self = this;
-		canvas.parentNode.parentNode.addEventListener('pointermove', function (e) {
+		var hero = canvas.closest('[data-drag]') || canvas.parentNode;
+		hero.addEventListener('pointermove', function (e) {
 			if (e.pointerType !== 'mouse') return;
 			var r = canvas.getBoundingClientRect();
 			self.pointer = { x: e.clientX - r.left, y: e.clientY - r.top };
 		});
-		canvas.parentNode.parentNode.addEventListener('pointerleave', function () {
+		hero.addEventListener('pointerleave', function () {
 			self.pointer = null;
 		});
 	}
@@ -232,41 +266,49 @@
 		this.canvas.height = Math.round(r.height * dpr);
 		this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 	};
+	Particles.prototype.centre = function () {
+		return { x: this.w / 2, y: this.h * (this.fit === 'wide' ? 0.36 : 0.42) };
+	};
+	Particles.prototype.scale = function () {
+		return this.fit === 'wide' ? Math.min(this.w * 0.76, this.h * 1.7) : Math.min(this.w * 0.86, this.h * 0.8);
+	};
 	Particles.prototype.start = function () {
 		var self = this;
-		this.ready.then(function (glyph) {
+		this.ready.then(function (src) {
+			self.fit = src.fit;
 			self.size();
 			var small = self.w < 500;
-			var n = small ? 3400 : 5200;
-			if (!self.targets || self.targets.length !== n) self.targets = samplePoints(glyph, n);
-			var cx = self.w / 2;
-			var cy = self.h * 0.42;
-			// Gather from a loose cloud around the centre.
-			self.pts = self.targets.map(function (t) {
+			if (!self.targets) self.targets = samplePoints(src);
+			var pts = small ? self.targets.slice(0, Math.round(self.targets.length * 0.7)) : self.targets;
+			var c = self.centre();
+			self.pts = pts.map(function (t) {
 				var a = Math.random() * Math.PI * 2;
 				var rad = (0.2 + Math.random() * 0.8) * Math.max(self.w, self.h) * 0.6;
 				return {
-					x: cx + Math.cos(a) * rad,
-					y: cy + Math.sin(a) * rad,
+					x: c.x + Math.cos(a) * rad,
+					y: c.y + Math.sin(a) * rad,
 					vx: 0,
 					vy: 0,
 					t: t,
 					ph: Math.random() * Math.PI * 2,
-					a: 0.3 + Math.random() * 0.7,
+					a: 0.28 + Math.random() * 0.6,
 					s: Math.random() < 0.1 ? 1.5 : 1,
 				};
 			});
-			// A little dust that never settles.
 			self.dust = [];
-			for (var i = 0; i < (small ? 70 : 120); i++) {
-				self.dust.push({ x: Math.random() * self.w, y: Math.random() * self.h, ph: Math.random() * 6.28, a: 0.08 + Math.random() * 0.2 });
+			for (var i = 0; i < (small ? 60 : 100); i++) {
+				self.dust.push({ x: Math.random() * self.w, y: Math.random() * self.h, ph: Math.random() * 6.28, a: 0.06 + Math.random() * 0.16 });
 			}
+			self.messages = [];
+			self.nextMessage = 1900;
+			self.toRight = true;
 			self.t0 = performance.now();
 			self.running = true;
 			if (reduceMotion.matches) {
+				var sc = self.scale();
 				self.pts.forEach(function (p) {
-					p.x = cx + p.t[0] * self.scale();
-					p.y = cy + p.t[1] * self.scale();
+					p.x = c.x + p.t[0] * sc;
+					p.y = c.y + p.t[1] * sc;
 				});
 				self.draw(0);
 				return;
@@ -274,9 +316,6 @@
 			cancelAnimationFrame(self.frame);
 			self.loop();
 		});
-	};
-	Particles.prototype.scale = function () {
-		return Math.min(this.w * 0.86, this.h * 0.82);
 	};
 	Particles.prototype.stop = function () {
 		this.running = false;
@@ -291,22 +330,25 @@
 			self.loop();
 		});
 	};
-	Particles.prototype.step = function (t) {
-		var cx = this.w / 2;
-		var cy = this.h * 0.42;
+	// Where a point of the mark is on screen at time t.
+	Particles.prototype.place = function (tx, ty, t) {
+		var c = this.centre();
 		var sc = this.scale() * (1 + 0.012 * Math.sin(t / 2600));
-		var rot = t / 90000; // one turn in about nine minutes
-		var cos = Math.cos(rot);
-		var sin = Math.sin(rot);
-		// Strong pull at first, so the shape gathers; soft after, so it breathes.
+		// A full mark turns, about once in nine minutes; a wordmark or a pair
+		// only sways, so it never reads upside down.
+		var rot = this.flow || this.fit === 'wide' ? Math.sin(t / 7000) * 0.025 : t / 90000;
+		var x = tx * sc;
+		var y = ty * sc;
+		return { x: c.x + x * Math.cos(rot) - y * Math.sin(rot), y: c.y + x * Math.sin(rot) + y * Math.cos(rot) };
+	};
+	Particles.prototype.step = function (t) {
 		var k = t < 1600 ? 0.012 + 0.03 * (t / 1600) : 0.042;
 		var ptr = this.pointer;
 		for (var i = 0; i < this.pts.length; i++) {
 			var p = this.pts[i];
-			var tx = p.t[0] * sc;
-			var ty = p.t[1] * sc;
-			var gx = cx + tx * cos - ty * sin + Math.sin(t / 900 + p.ph) * 0.9;
-			var gy = cy + tx * sin + ty * cos + Math.cos(t / 1100 + p.ph) * 0.9;
+			var g = this.place(p.t[0], p.t[1], t);
+			var gx = g.x + Math.sin(t / 900 + p.ph) * 0.9;
+			var gy = g.y + Math.cos(t / 1100 + p.ph) * 0.9;
 			p.vx += (gx - p.x) * k;
 			p.vy += (gy - p.y) * k;
 			if (ptr) {
@@ -325,16 +367,21 @@
 			p.x += p.vx;
 			p.y += p.vy;
 		}
+		// Messages: from the middle of one pear, over the top, into the other.
+		if (this.flow && t > this.nextMessage) {
+			this.messages.push({ start: t, right: this.toRight });
+			this.toRight = Math.random() < 0.7 ? !this.toRight : this.toRight;
+			this.nextMessage = t + 1100 + Math.random() * 1600;
+		}
 	};
 	Particles.prototype.draw = function (t) {
 		var c = this.ctx;
 		c.clearRect(0, 0, this.w, this.h);
 		c.globalCompositeOperation = 'lighter';
-		c.fillStyle = '#14e468';
+		c.fillStyle = '#ffffff';
 		for (var i = 0; i < this.dust.length; i++) {
 			var d = this.dust[i];
 			c.globalAlpha = d.a * (0.6 + 0.4 * Math.sin(t / 1400 + d.ph));
-			// Rising slowly, wrapping at the top.
 			var y = (((d.y - t / 90) % this.h) + this.h) % this.h;
 			c.fillRect(d.x + Math.sin(t / 5000 + d.ph) * 6, y, 1, 1);
 		}
@@ -343,12 +390,55 @@
 			c.globalAlpha = p.a * (0.75 + 0.25 * Math.sin(t / 700 + p.ph));
 			c.fillRect(p.x, p.y, p.s, p.s);
 		}
+		if (this.flow) this.drawMessages(t);
 		c.globalAlpha = 1;
 		c.globalCompositeOperation = 'source-over';
 	};
+	Particles.prototype.drawMessages = function (t) {
+		var c = this.ctx;
+		var DUR = 1100;
+		// The pears' middles, in the mark's own units (public/glyphs/peers.svg:
+		// pears at x 36 and 84, bellies at y 80). The path between them is
+		// nearly straight: phone to phone, nothing in between.
+		var L = [-0.2, 0.19];
+		var R = [0.2, 0.19];
+		var top = 0.1;
+		this.messages = this.messages.filter(function (m) {
+			return t - m.start < DUR + 400;
+		});
+		for (var i = 0; i < this.messages.length; i++) {
+			var m = this.messages[i];
+			var a = m.right ? L : R;
+			var b = m.right ? R : L;
+			// A short train of points, the head brightest.
+			for (var k = 0; k < 14; k++) {
+				var u = (t - m.start - k * 16) / DUR;
+				if (u < 0 || u > 1) continue;
+				var e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+				var mx = (1 - e) * (1 - e) * a[0] + 2 * (1 - e) * e * 0 + e * e * b[0];
+				var my = (1 - e) * (1 - e) * a[1] + 2 * (1 - e) * e * top + e * e * b[1];
+				var q = this.place(mx, my, t);
+				c.globalAlpha = (1 - k / 14) * Math.min(1, Math.sin(Math.PI * u) * 1.6);
+				var s = k === 0 ? 2.4 : 1.5;
+				c.fillRect(q.x - s / 2, q.y - s / 2, s, s);
+			}
+			// The pear that receives it brightens for a moment.
+			var arrive = (t - m.start - DUR) / 400;
+			if (arrive > 0 && arrive < 1) {
+				var at = this.place(b[0], b[1], t);
+				var g = c.createRadialGradient(at.x, at.y, 0, at.x, at.y, this.scale() * 0.16);
+				g.addColorStop(0, 'rgba(255,255,255,' + 0.12 * (1 - arrive) + ')');
+				g.addColorStop(1, 'rgba(255,255,255,0)');
+				c.globalAlpha = 1;
+				c.fillStyle = g;
+				c.fillRect(at.x - this.scale() * 0.16, at.y - this.scale() * 0.16, this.scale() * 0.32, this.scale() * 0.32);
+				c.fillStyle = '#ffffff';
+			}
+		}
+	};
 
 	var particles = {};
-	Array.prototype.forEach.call(home.querySelectorAll('canvas[data-particles]'), function (canvas) {
+	Array.prototype.forEach.call(home.querySelectorAll('canvas.story__canvas'), function (canvas) {
 		var id = canvas.closest('dialog').getAttribute('data-sheet');
 		if (typeof Path2D === 'function') particles[id] = new Particles(canvas);
 	});

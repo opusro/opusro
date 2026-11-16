@@ -15,7 +15,6 @@ webUrl: https://loop.opus.ro/player
 privacyUrl: https://loop.opus.ro/privacy
 helpUrl: https://loop.opus.ro/support
 glyph: /loop.svg
-icon: /apps/loop.png
 facts:
   - No account. There is nothing to sign up for.
   - Works offline. The timer, the sounds and your history live on your phone.
@@ -27,7 +26,7 @@ story:
   eyebrow: Free · iPhone, iPad, Apple Watch
   headline: Your rituals, without a monthly sacrifice.
   lede: A simple timer and sound player for meditation, prayer, or whatever centers you.
-  hero: particles
+  hero: mark
   excerpts:
     - title: A tool, not a service.
       body: Your iPhone can already do everything you need. Loop just makes it nicer, at no extra cost.
