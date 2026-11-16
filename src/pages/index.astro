@@ -1,15 +1,13 @@
 ---
 /**
- * The front door. Which one depends on the build mode (src/config.ts):
- * `holding` is what the public sees while the writing is being done, `full` is
- * the homescreen with everything behind it.
+ * The front door: the homescreen (src/components/Homescreen.astro). It is the
+ * whole public site in a holding build, and the full site's home otherwise;
+ * the full build adds a Notes icon to the dock.
  */
 import Base from '../layouts/Base.astro';
-import Holding from '../components/Holding.astro';
 import Homescreen from '../components/Homescreen.astro';
-import { IS_HOLDING } from '../config';
 ---
 
-<Base path="/" header={false} flush>
-	{IS_HOLDING ? <Holding /> : <Homescreen />}
+<Base path="/" header={false} footer={false} flush>
+	<Homescreen />
 </Base>

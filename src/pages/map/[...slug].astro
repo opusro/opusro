@@ -21,7 +21,7 @@ const tools = await allTools();
 const notes = await allNotes();
 
 const pages = [
-	{ path: '/', name: 'Home', file: 'src/components/Homescreen.astro', note: 'the homescreen; in a public build this is src/components/Holding.astro' },
+	{ path: '/', name: 'Home', file: 'src/components/Homescreen.astro', note: 'the homescreen, public and full; the full build adds Notes to the dock' },
 	{ path: '/story/', name: 'Story', file: 'src/pages/story.astro' },
 	{ path: '/wip/', name: 'In the works', file: 'src/pages/wip.astro' },
 	{ path: '/notes/', name: 'Notes index', file: 'src/pages/notes/index.astro' },
@@ -35,11 +35,11 @@ const pages = [
 const shared = [
 	{ what: 'Name, descriptor, dictionary, email, doorways, the mode switch', file: 'src/config.ts' },
 	{ what: 'The mark opening into the dictionary', file: 'src/components/BrandMark.astro' },
-	{ what: 'The holding page the public sees', file: 'src/components/Holding.astro' },
 	{ what: 'Header and footer', file: 'src/components/Header.astro, Footer.astro' },
 	{ what: 'Colour, type, spacing: every design value', file: 'src/styles/tokens.css' },
 	{ what: 'Reading typography for notes', file: 'src/styles/prose.css' },
-	{ what: 'Homescreen behaviour: dock, pages, light', file: 'public/home.js' },
+	{ what: 'Homescreen behaviour: dock, sheets, light', file: 'public/home.js' },
+	{ what: 'The mark opening and closing', file: 'public/brand.js' },
 	{ what: 'The link-preview card', file: 'scripts/make-og.mjs, then npm run og' },
 ];
 ---

@@ -41,17 +41,17 @@ for (const name of readdirSync(dist)) {
 writeFileSync(join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\n');
 
 // Belt and braces: what must never be in a holding build.
-for (const gone of ['story', 'notes', 'loop', 'cheri', 'wip', 'work', 'support', 'contact', 'privacy', 'blog', 'rss.xml', 'feed.json']) {
+for (const gone of ['story', 'notes', 'loop', 'cheri', 'wip', 'work', 'support', 'contact', 'privacy', 'blog', 'peers', 'rss.xml', 'feed.json']) {
 	if (existsSync(join(dist, gone))) {
 		console.error(`Holding build still contains /${gone} — aborting.`);
 		process.exit(1);
 	}
 }
 
-// And the holding page must actually be the holding page.
+// And the front page must actually be the homescreen.
 const home = readFileSync(join(dist, 'index.html'), 'utf8');
-if (!home.includes('card--contact')) {
-	console.error('index.html is not the holding page — aborting.');
+if (!home.includes('data-home') || !home.includes('sheet-contact')) {
+	console.error('index.html is not the homescreen — aborting.');
 	process.exit(1);
 }
 

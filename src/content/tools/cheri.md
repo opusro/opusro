@@ -3,6 +3,8 @@ name: Chéri
 oneLine: Friends, and the things between them. Remember what people love, keep gift ideas, share your things without keeping score.
 circle: you with your people
 status: in-the-works
+order: 3
+site: https://cheri.opus.ro
 # Built and reachable at /cheri/, linked from nowhere. Flip when there is
 # something real to show (docs/06-decisions.md, phase 3).
 listed: false

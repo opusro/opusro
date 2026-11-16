@@ -3,6 +3,9 @@ name: Loop
 oneLine: A timer for practice. Set a duration, choose a sound or silence, begin.
 circle: you with yourself
 status: available
+order: 1
+subtitle: Meditation & Focus
+site: https://loop.opus.ro
 listed: true
 accent: '#7A9B58'
 platforms: [iOS 18 and later, watchOS 11 and later, any browser]

@@ -24,9 +24,11 @@ interface Props {
 	accent?: string;
 	/** Home lays itself out edge to edge; no main padding. */
 	flush?: boolean;
+	/** Home is one screen; its contact sheet carries what the footer would. */
+	footer?: boolean;
 }
 
-const { current, header = true, accent, flush = false, ...head } = Astro.props;
+const { current, header = true, footer = true, accent, flush = false, ...head } = Astro.props;
 ---
 
 <!doctype html>
@@ -43,6 +45,6 @@ const { current, header = true, accent, flush = false, ...head } = Astro.props;
 		<main id="main" class:list={[flush && 'main--flush']}>
 			<slot />
 		</main>
-		{!IS_HOLDING && <Footer />}
+		{footer && !IS_HOLDING && <Footer />}
 	</body>
 </html>

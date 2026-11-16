@@ -26,9 +26,20 @@ const tools = defineCollection({
 	schema: z
 		.object({
 			name: plain('name'),
-			oneLine: plain('oneLine'),
-			/** Which of the three circles this tool serves. */
-			circle: z.enum(['you with yourself', 'you with your people', 'you with everyone']),
+			/**
+			 * The fixed one line. Optional only so a tool can be announced on the
+			 * homescreen by name before its line is written; a tool without one
+			 * gets no page of its own.
+			 */
+			oneLine: plain('oneLine').optional(),
+			/** Which of the three circles this tool serves. Required for a page. */
+			circle: z.enum(['you with yourself', 'you with your people', 'you with everyone']).optional(),
+			/** Order in the dock, left to right. */
+			order: z.number().int().default(99),
+			/** A few words under the name in the app's sheet, e.g. the App Store subtitle. */
+			subtitle: plain('subtitle').optional(),
+			/** The tool's own website, e.g. https://loop.opus.ro. */
+			site: z.url().optional(),
 			status: z.enum(['available', 'in-the-works', 'imagined']),
 			/**
 			 * false = built and reachable at its URL, but linked from nowhere.
@@ -36,7 +47,7 @@ const tools = defineCollection({
 			 */
 			listed: z.boolean().default(false),
 			/** One colour per tool. Used only on this tool's page and tile. */
-			accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+			accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#ffffff'),
 			platforms: z.array(z.string()).default([]),
 			price: plain('price'),
 			appStoreUrl: z.url().optional(),
@@ -50,8 +61,11 @@ const tools = defineCollection({
 			/** The glyph shown on the tile and page, root-relative SVG. */
 			glyph: z.string().optional(),
 		})
-		.refine((t) => t.status !== 'available' || t.appStoreUrl || t.webUrl, {
-			message: 'An available tool needs an appStoreUrl or a webUrl.',
+		.refine((t) => t.status !== 'available' || t.appStoreUrl || t.webUrl || t.site, {
+			message: 'An available tool needs an appStoreUrl, a webUrl or a site.',
+		})
+		.refine((t) => !t.listed || (t.oneLine && t.circle), {
+			message: 'A listed tool needs a oneLine and a circle.',
 		}),
 });
 

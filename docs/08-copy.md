@@ -23,23 +23,24 @@ half-written in the open.
 
 Mark each one done when the words are yours.
 
-### The holding page (live now)
+### The homescreen (live now)
 
 | What | Where | Done |
 |---|---|---|
 | The descriptor under the mark | `src/config.ts` · `SITE.descriptor` | ☐ |
 | The two dictionary entries | `src/config.ts` · `DICTIONARY` | ☐ |
-| "on the App Store" | `src/components/Holding.astro` | ☐ |
+| Each tool's name, subtitle and one line in its sheet | `src/content/tools/*.md` · `name`, `subtitle`, `oneLine` | ☐ |
+| Peers: a one line (it has none yet; the sheet shows only its name and site) | `src/content/tools/peers.md` · `oneLine` | ☐ |
+| "Coming soon", "Available now", "With ♡ from Romania" | `src/components/Homescreen.astro` | ☐ |
+| Dock labels | `src/content/tools/*.md` and `src/components/Homescreen.astro` | ☐ |
 | The legal line and city | `src/config.ts` · `SITE.legal`, `SITE.city` | ☐ |
 | What a link preview says | `src/config.ts` · `SITE.holdingDescription` | ☐ |
 | The share card image | `scripts/make-og.mjs`, then `npm run og` | ☐ |
 
-### The homescreen
+### Other
 
 | What | Where | Done |
 |---|---|---|
-| Widget labels and one-liners (Story, Support, Work) | `src/components/Homescreen.astro` | ☐ |
-| Dock labels | `src/components/Homescreen.astro` | ☐ |
 | The 404 page | `src/pages/404.astro` | ☐ |
 
 ### The pages

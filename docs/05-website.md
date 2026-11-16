@@ -59,33 +59,35 @@ Footer everywhere: legal line, email, feeds, privacy.
 
 ## 3. Pages
 
-**Home.** A homescreen (owner ruling 2026-09-05, D23). The front door reads
-like the first screen of a phone or a Mac, as the previous site did: the brand
-mark where the clock would be, opening into the dictionary on hover, focus or
-tap; two pages you swipe, drag or arrow between, with iOS-style page dots; a
-dock of apps. The default view is simple and clean and invites exploring; every
-piece of content is reached through the pattern people already know for that
-kind of thing:
+**Home.** The March 2026 homescreen, restored and refined (owner ruling
+2026-11-16, D26; it supersedes the two-page widget version of D23). The first
+screen of a phone or a Mac, and nothing else on it:
 
-- **Page 1:** the mark, the thesis line, the dots, the dock. Nothing else.
-- **Page 2, the widgets:** Notes (wide: the latest note with date and summary,
-  the next two as rows), Story (square: the three circles as rings, "Story"
-  and the thesis beneath), Support (square: a heart and one line), Work (wide:
-  one line). Each widget is a link to its page.
-- **Dock:** Loop (and every listed tool), In the works, Notes, Contact. "In
-  the works" opens `/wip/`, which names Chéri and describes the third tool by
-  its circle, with no dates. Tap an app and its icon morphs into the header of
-  its page (native cross-document view transitions, no script). The dock
-  magnifies under a pointer, as a dock does; widgets and icons catch the light
-  where the pointer is, and on a phone the light follows the tilt of the
-  device after the first touch.
+- **The mark** where the clock would be: the round O alone, centred, with
+  "human experience design" beneath. Hover, focus or tap (on a phone, anywhere
+  on the screen) and the O slides left while O P U S spells out beside it, and
+  the descriptor gives way to the two dictionary entries.
+- **The dock**: every tool that is not merely imagined, in `order` (Loop,
+  Peers, Chéri), then a divider and Contact. A full build adds Notes before
+  Contact. Tools not yet available have a dashed edge and a quieter glyph, and
+  say "coming soon" in their tooltip and sheet.
+- **Sheets**: tap an app and its icon lifts out of the dock into a sheet that
+  says what it is (name, subtitle or "Coming soon", the one line) and where it
+  lives (App Store, its own site). On a desktop the sheet is a card that opens
+  out of the icon, with Loop's recording beside it; on a phone it rises from
+  the bottom edge and can be pulled back down. Each sheet has an address
+  (`opus.ro/#loop`), and back closes it. Contact is a sheet too: the email,
+  Instagram, YouTube, "With ♡ from Romania", the legal line.
+- **A Mac and a phone differ where they should**: on a pointer device the dock
+  magnifies under the cursor and names sit in tooltips above the icons; on a
+  phone the names sit under the icons, the press is felt as a small squeeze,
+  and the light on the icons follows the tilt where the browser allows it
+  without asking (never a permission prompt).
 
-Nothing on the screen is a dead end: an unlisted tool has no icon, and "in the
-works" links to the story rather than to a page that does not exist yet. The
-interaction is one small file, `public/home.js`, served from our own origin so
-the Content-Security-Policy allows it; without it the screen is still and still
-works. The footer below the screen carries the legal line, the email and the
-feeds.
+Every icon is a real link first (the tool's site, the mailto, `/notes/`), so
+with no script the screen still works. The behaviour is two files served from
+our origin for the CSP: `public/brand.js` (the mark) and `public/home.js` (dock
+and sheets). Motion respects reduced-motion settings.
 
 **Story.** The copy in §8. Warm, short, no manifesto. The three circles drawn.
 "Who" is one paragraph naming C.
@@ -211,10 +213,10 @@ PWA needs a delight pass. Order:
 
 The site builds in one of two shapes, chosen by `SITE_MODE` (src/config.ts).
 
-**holding** is what the public gets while the writing is being done: the mark
-with the dictionary, Loop on the App Store, an email and two links, the legal
-line. No story, no notes, no product pages, no claims about anything. Only that
-page is in the build, so there is nothing else to find: `scripts/prune-holding.mjs`
+**holding** is what the public gets while the writing is being done: the
+homescreen (§3) and nothing behind it. The mark with the dictionary, the dock
+of tools with their sheets, the contact sheet. No story, no notes, no product
+pages. Only that page is in the build, so there is nothing else to find: `scripts/prune-holding.mjs`
 deletes every other route from `dist` and refuses to finish if one survives.
 The header, the footer, the feeds and the sitemap are absent too, because in
 that mode there is nowhere for them to point.
@@ -226,7 +228,7 @@ that mode there is nowhere for them to point.
 | `npm run dev` | full | Writing. Everything visible at :4321, drafts included |
 | `npm run build:full` | full | Checking the whole site builds |
 | `npm run build` | holding | What the publish workflow ships |
-| `npm run dev:holding` | holding | Checking the holding page itself |
+| `npm run dev:holding` | holding | Checking the public homescreen itself |
 
 Publishing follows the same switch. A push to `main` publishes the mode named
 by the `SITE_MODE` repository variable, defaulting to holding. Running the
