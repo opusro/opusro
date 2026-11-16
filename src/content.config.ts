@@ -26,17 +26,28 @@ const tools = defineCollection({
 	schema: z
 		.object({
 			name: plain('name'),
-			oneLine: plain('oneLine'),
-			/** Which of the three circles this tool serves. */
-			circle: z.enum(['you with yourself', 'you with your people', 'you with everyone']),
+			/**
+			 * The fixed one line. Optional only so a tool can be announced on the
+			 * homescreen by name before its line is written; a tool without one
+			 * gets no page of its own.
+			 */
+			oneLine: plain('oneLine').optional(),
+			/** Which of the three circles this tool serves. Required for a page. */
+			circle: z.enum(['you with yourself', 'you with your people', 'you with everyone']).optional(),
+			/** Order in the dock, left to right. */
+			order: z.number().int().default(99),
+			/** A few words under the name in the app's sheet, e.g. the App Store subtitle. */
+			subtitle: plain('subtitle').optional(),
+			/** The tool's own website, e.g. https://loop.opus.ro. */
+			site: z.url().optional(),
 			status: z.enum(['available', 'in-the-works', 'imagined']),
 			/**
 			 * false = built and reachable at its URL, but linked from nowhere.
 			 * The honest way to keep a page unfinished. Flip to list it.
 			 */
 			listed: z.boolean().default(false),
-			/** One colour per tool. Used only on this tool's page and tile. */
-			accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+			/** One colour per tool. Used only on its page and inside its homescreen story. */
+			accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#ffffff'),
 			platforms: z.array(z.string()).default([]),
 			price: plain('price'),
 			appStoreUrl: z.url().optional(),
@@ -47,11 +58,39 @@ const tools = defineCollection({
 			facts: z.array(plain('facts')).default([]),
 			/** A short screen recording, root-relative. Optional. */
 			video: z.string().optional(),
-			/** The glyph shown on the tile and page, root-relative SVG. */
+			/** The tool's mark, root-relative SVG, white: the tile, the page, the particles. */
 			glyph: z.string().optional(),
+			/**
+			 * The homescreen's story about the tool, opened from its dock icon:
+			 * an App Store "Today" card made of excerpts from the tool's own
+			 * landing page. Quote the landing page; do not write new claims here.
+			 */
+			story: z
+				.object({
+					/** Above the headline, e.g. "Free · iPhone, iPad, Apple Watch". */
+					eyebrow: plain('story.eyebrow').optional(),
+					headline: plain('story.headline'),
+					lede: plain('story.lede').optional(),
+					excerpts: z
+						.array(z.object({ title: plain('story.excerpts.title'), body: plain('story.excerpts.body') }))
+						.default([]),
+					/** Small print under the excerpts: platforms, licence. */
+					fineprint: plain('story.fineprint').optional(),
+					/**
+					 * The picture at the top: `mark` shows the glyph in the tool's
+					 * accent, `wordmark` its name, `particles` the glyph drawn in
+					 * particles (Loop's alone, as its own site draws it). Defaults to
+					 * `mark` when there is a glyph.
+					 */
+					hero: z.enum(['mark', 'wordmark', 'particles']).optional(),
+				})
+				.optional(),
 		})
-		.refine((t) => t.status !== 'available' || t.appStoreUrl || t.webUrl, {
-			message: 'An available tool needs an appStoreUrl or a webUrl.',
+		.refine((t) => t.status !== 'available' || t.appStoreUrl || t.webUrl || t.site, {
+			message: 'An available tool needs an appStoreUrl, a webUrl or a site.',
+		})
+		.refine((t) => !t.listed || (t.oneLine && t.circle), {
+			message: 'A listed tool needs a oneLine and a circle.',
 		}),
 });
 

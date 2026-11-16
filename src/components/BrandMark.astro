@@ -1,11 +1,14 @@
 ---
 /**
- * The home page's opening: the mark with the descriptor beneath. Hover, focus
- * or tap and it opens into the name and the two dictionary entries. The one
- * signature motion on the site.
+ * The mark, as the March 2026 homescreen had it: the round O alone and
+ * centred, the descriptor beneath. Hover (pointer), focus (keyboard) or tap
+ * (touch, anywhere on the screen) and the O slides left while O P U S spells
+ * out beside it, and the descriptor gives way to the two dictionary entries.
+ * Close and it all runs backwards. The one signature motion on the site.
  *
- * Without JavaScript the open state is simply shown: both the descriptor and
- * the entries are visible and nothing needs a click.
+ * The slide is a transform against the brand's own width (a container query
+ * unit), so nothing reflows while it runs. Without JavaScript the open state
+ * is simply shown: the name, the descriptor and the entries are all visible.
  */
 import Mark from './Mark.astro';
 import Dictionary from './Dictionary.astro';
@@ -17,9 +20,9 @@ const letters = SITE.name.split('');
 <div class="brand" data-brand>
 	<button class="brand__button" type="button" aria-expanded="false" aria-controls="brand-definition" data-brand-toggle>
 		<span class="brand__identity">
-			<Mark size={64} class="brand__mark" />
+			<Mark size={66} class="brand__mark" />
 			<span class="brand__letters" aria-hidden="true">
-				{letters.map((letter, i) => <span class="brand__letter" style={`--i:${i}`}>{letter}</span>)}
+				{letters.map((letter, i) => <span class="brand__letter" style={`--i:${i};--r:${letters.length - 1 - i}`}>{letter}</span>)}
 			</span>
 			<span class="visually-hidden">{SITE.name}. Show what the name means.</span>
 		</span>
@@ -32,111 +35,214 @@ const letters = SITE.name.split('');
 	</div>
 </div>
 
-{/* A file, not an inline script: the CSP allows 'self' and nothing inline.
-    Astro would inline a small hoisted script, so this is is:inline with a src.
-    Hover opens on pointer devices, tap toggles on touch, focus opens for
-    keyboards. Without it the definition is simply visible. */}
+{/* A file, not inline: the CSP allows 'self' and nothing inline. */}
 <script is:inline src="/brand.js" defer></script>
 
 <style>
 	.brand {
-		display: grid;
-		gap: var(--space-m);
-		justify-items: center;
-		text-align: center;
-		width: min(22rem, 100%);
-		margin-inline: auto;
+		--mark: 66px;
+		--slide: 640ms;
+		--ease-slide: cubic-bezier(0.22, 1, 0.36, 1);
+		--ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+		container-type: inline-size;
+		display: flex;
+		flex-direction: column;
+		width: min(350px, 100%);
 		user-select: none;
+		-webkit-user-select: none;
 		-webkit-tap-highlight-color: transparent;
 	}
+	@media (max-width: 768px) {
+		.brand {
+			--mark: 54px;
+		}
+	}
+
 	.brand__button {
+		align-self: flex-start;
 		display: inline-flex;
 		color: var(--ink);
-		border-radius: var(--radius);
+		border-radius: 14px;
+		touch-action: manipulation;
 	}
 	.brand__identity {
 		display: inline-flex;
 		align-items: center;
-		gap: 0;
 	}
-	.brand__mark {
+	.brand__button :global(.brand__mark) {
+		width: var(--mark);
+		height: var(--mark);
 		flex: 0 0 auto;
 	}
+
 	.brand__letters {
 		display: inline-flex;
-		overflow: hidden;
-		font-size: 1.75rem;
+		align-items: center;
+		margin-inline-start: 16px;
+		font-size: 1.8rem;
 		font-weight: 500;
-		letter-spacing: 0.18em;
 		line-height: 1;
-		max-width: 12rem;
-		margin-inline-start: 1rem;
-		transition: max-width var(--duration-slow) var(--ease), margin var(--duration-slow) var(--ease);
+	}
+	@media (max-width: 768px) {
+		.brand__letters {
+			margin-inline-start: 14px;
+			font-size: 1.5rem;
+		}
 	}
 	.brand__letter {
 		display: inline-block;
-		transition: opacity var(--duration-slow) var(--ease), transform var(--duration-slow) var(--ease);
-		transition-delay: calc(var(--i) * 60ms);
+		overflow: hidden;
+		white-space: nowrap;
+		max-width: 1.4em;
+		padding-inline-end: 0.18em;
 	}
+	.brand__letter:last-child {
+		padding-inline-end: 0;
+	}
+
 	.brand__sub {
 		display: grid;
+		gap: var(--space-m);
+		margin-top: 22px;
 		width: 100%;
 	}
+	@media (max-width: 768px) {
+		.brand__sub {
+			margin-top: 18px;
+		}
+	}
 	.brand__descriptor {
-		font-family: var(--font-mono);
-		font-size: var(--step--2);
-		letter-spacing: 0.14em;
+		font-family: var(--font-ui);
+		font-size: 0.78rem;
+		line-height: 1.45;
+		letter-spacing: 0.13em;
 		text-transform: uppercase;
 		color: var(--ink-2);
-		transition: opacity var(--duration-slow) var(--ease);
+		text-align: center;
+	}
+	@media (max-width: 768px) {
+		.brand__descriptor {
+			font-size: 0.72rem;
+		}
 	}
 	.brand__definition {
 		text-align: left;
-		margin-top: var(--space-m);
-		transition: opacity var(--duration-slow) var(--ease), transform var(--duration-slow) var(--ease);
 	}
 
-	/* With JavaScript: closed by default, opened on hover, focus or tap. */
+	/* ---- With JavaScript: closed by default -------------------------------- */
+
+	.brand.has-js .brand__button {
+		/* Centre the O: half the brand's width, less half the mark. */
+		translate: calc(50cqw - var(--mark) / 2) 0;
+		transition: translate var(--slide) var(--ease-slide);
+	}
 	.brand.has-js .brand__letters {
-		max-width: 0;
 		margin-inline-start: 0;
+		transition: margin var(--slide) var(--ease-slide);
 	}
 	.brand.has-js .brand__letter {
+		max-width: 0;
+		padding-inline-end: 0;
 		opacity: 0;
-		transform: translateY(0.15em);
-	}
-	.brand.has-js .brand__definition {
-		display: grid;
-		grid-area: 1 / 1;
-		opacity: 0;
-		transform: translateY(4px);
-		pointer-events: none;
-		margin-top: 0;
-	}
-	.brand.has-js .brand__descriptor {
-		grid-area: 1 / 1;
+		filter: blur(3px);
+		translate: 0 0.12em;
+		/* Closing: the last letter leaves first. */
+		transition:
+			max-width 420ms var(--ease-slide) calc(var(--r) * 45ms),
+			padding 420ms var(--ease-slide) calc(var(--r) * 45ms),
+			opacity 260ms var(--ease-soft) calc(var(--r) * 45ms),
+			filter 260ms var(--ease-soft) calc(var(--r) * 45ms),
+			translate 420ms var(--ease-slide) calc(var(--r) * 45ms);
 	}
 	.brand.has-js .brand__sub {
-		display: grid;
 		grid-template-areas: 'stack';
-		min-height: 4.75rem;
+		gap: 0;
+		/* Room for the entries, so opening never pushes anything. */
+		min-height: 6.5rem;
 		align-items: start;
 	}
+	.brand.has-js .brand__descriptor,
+	.brand.has-js .brand__definition {
+		grid-area: stack;
+		transition:
+			opacity 420ms var(--ease-soft),
+			filter 420ms var(--ease-soft),
+			translate 520ms var(--ease-slide);
+	}
+	.brand.has-js .brand__definition {
+		opacity: 0;
+		filter: blur(2px);
+		translate: 0 6px;
+		pointer-events: none;
+		transition-delay: 0ms;
+	}
+	.brand.has-js .brand__descriptor {
+		transition-delay: 180ms;
+	}
+
+	/* ---- Open --------------------------------------------------------------- */
+
+	.brand.has-js.is-open .brand__button {
+		translate: 0 0;
+	}
 	.brand.has-js.is-open .brand__letters {
-		max-width: 12rem;
-		margin-inline-start: 1rem;
+		margin-inline-start: 16px;
+	}
+	@media (max-width: 768px) {
+		.brand.has-js.is-open .brand__letters {
+			margin-inline-start: 14px;
+		}
 	}
 	.brand.has-js.is-open .brand__letter {
+		max-width: 1.4em;
+		padding-inline-end: 0.18em;
 		opacity: 1;
-		transform: none;
+		filter: none;
+		translate: 0 0;
+		/* Opening: in reading order, once the O has started to move. */
+		transition:
+			max-width 520ms var(--ease-slide) calc(80ms + var(--i) * 70ms),
+			padding 520ms var(--ease-slide) calc(80ms + var(--i) * 70ms),
+			opacity 420ms var(--ease-soft) calc(140ms + var(--i) * 70ms),
+			filter 420ms var(--ease-soft) calc(140ms + var(--i) * 70ms),
+			translate 520ms var(--ease-slide) calc(140ms + var(--i) * 70ms);
+	}
+	.brand.has-js.is-open .brand__letter:last-child {
+		padding-inline-end: 0;
 	}
 	.brand.has-js.is-open .brand__descriptor {
 		opacity: 0;
+		filter: blur(2px);
+		translate: 0 -4px;
+		transition-delay: 0ms;
 	}
 	.brand.has-js.is-open .brand__definition {
 		opacity: 1;
-		transform: none;
+		filter: none;
+		translate: 0 0;
 		pointer-events: auto;
+		transition-delay: 160ms;
+	}
+	/* The entries arrive one after the other. */
+	.brand.has-js .brand__definition :global(.dict__entry) {
+		transition:
+			opacity 420ms var(--ease-soft),
+			translate 520ms var(--ease-slide);
+	}
+	.brand.has-js:not(.is-open) .brand__definition :global(.dict__entry) {
+		opacity: 0;
+		translate: 0 4px;
+	}
+	.brand.has-js.is-open .brand__definition :global(.dict__entry:nth-child(2)) {
+		transition-delay: 110ms;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.brand.has-js *,
+		.brand.has-js .brand__button {
+			transition-duration: 1ms !important;
+			transition-delay: 0ms !important;
+		}
 	}
 
 	.visually-hidden {

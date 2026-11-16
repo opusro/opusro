@@ -35,9 +35,18 @@ export function notePath(note: { id: string }): string {
 }
 
 export async function allTools(): Promise<Tool[]> {
-	const order = ['you with yourself', 'you with your people', 'you with everyone'];
 	const tools = await getCollection('tools');
-	return tools.sort((a, b) => order.indexOf(a.data.circle) - order.indexOf(b.data.circle));
+	return tools.sort((a, b) => a.data.order - b.data.order || a.data.name.localeCompare(b.data.name));
+}
+
+/** Tools that can carry a page of their own: they have a line and a circle. */
+export async function pagedTools(): Promise<Tool[]> {
+	return (await allTools()).filter((tool) => tool.data.oneLine && tool.data.circle);
+}
+
+/** Tools on the homescreen dock: everything but what is only imagined. */
+export async function homeTools(): Promise<Tool[]> {
+	return (await allTools()).filter((tool) => tool.data.status !== 'imagined');
 }
 
 export async function listedTools(): Promise<Tool[]> {

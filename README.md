@@ -7,9 +7,9 @@ requests except the ones named on `/privacy`, fonts served from here.
 
 ## Two modes
 
-**The public site is the holding page**: the mark, the dictionary, Loop on the
-App Store, a contact card. Nothing else is in the build, so nothing else is
-findable.
+**The public site is the homescreen**: the mark that opens into the
+dictionary, and a dock of the tools (Loop, Peers, Chéri) and Contact, each
+opening a sheet. Nothing else is in the build, so nothing else is findable.
 
 **The full site** (homescreen, story, tools, notes) is written locally and goes
 public when the copy is ready. See [`docs/08-copy.md`](docs/08-copy.md) for the
@@ -27,7 +27,7 @@ npm run build:full   # build the full site into dist/
 npm run preview      # look at whatever is in dist/
 
 npm run build        # the HOLDING site, which is what the public gets
-npm run dev:holding  # the holding page at :4321
+npm run dev:holding  # the public homescreen at :4321
 
 npm run check        # type-check
 npm run og           # regenerate the link-preview card after changing its words
@@ -58,8 +58,8 @@ The workflow needs one secret, `IRD_API_KEY`, made with `ird keys create`.
 |---|---|
 | `docs/` | The brand and system reference. **Start with [`docs/README.md`](docs/README.md).** |
 | `src/config.ts` | Identity, the mode switch, the counter, the support provider. Change things here and nowhere else. |
-| `src/components/Holding.astro` | The public holding page. |
-| `src/components/Homescreen.astro` | The full site's front door. |
+| `src/components/Homescreen.astro` | The front door, public and full: the mark, the dock, the sheets. |
+| `public/home.js`, `public/brand.js` | Its behaviour: dock, sheets, light; the mark opening. |
 | `src/content/tools/` | One Markdown file per tool. `listed: false` builds a page without linking it. |
 | `src/content/notes/<year>/` | Notes. Plain Markdown, so the whole note travels in the feeds. |
 | `src/styles/tokens.css` | Every value the design depends on. |

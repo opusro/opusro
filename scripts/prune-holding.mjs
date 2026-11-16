@@ -11,7 +11,7 @@
  * `npm run build:full` never calls it.
  */
 
-import { readdirSync, readFileSync, rmSync, statSync, existsSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, rmSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const dist = process.argv[2] ?? 'dist';
@@ -24,7 +24,8 @@ for (const page of pages) {
 	const path = join(dist, page);
 	if (!existsSync(path)) continue;
 	const html = readFileSync(path, 'utf8');
-	for (const m of html.matchAll(/(?:src|href)="\/([^"]+)"/g)) {
+	// src and href, plus data-particles: the glyph a story draws as particles.
+	for (const m of html.matchAll(/(?:src|href|data-particles)="\/([^"]+)"/g)) {
 		const ref = m[1].split(/[?#]/)[0];
 		if (!ref) continue;
 		keep.add(ref.split('/')[0]);
@@ -41,17 +42,17 @@ for (const name of readdirSync(dist)) {
 writeFileSync(join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\n');
 
 // Belt and braces: what must never be in a holding build.
-for (const gone of ['story', 'notes', 'loop', 'cheri', 'wip', 'work', 'support', 'contact', 'privacy', 'blog', 'rss.xml', 'feed.json']) {
+for (const gone of ['story', 'notes', 'loop', 'cheri', 'wip', 'work', 'support', 'contact', 'privacy', 'blog', 'peers', 'rss.xml', 'feed.json']) {
 	if (existsSync(join(dist, gone))) {
 		console.error(`Holding build still contains /${gone} — aborting.`);
 		process.exit(1);
 	}
 }
 
-// And the holding page must actually be the holding page.
+// And the front page must actually be the homescreen.
 const home = readFileSync(join(dist, 'index.html'), 'utf8');
-if (!home.includes('card--contact')) {
-	console.error('index.html is not the holding page — aborting.');
+if (!home.includes('data-home') || !home.includes('sheet-contact')) {
+	console.error('index.html is not the homescreen — aborting.');
 	process.exit(1);
 }
 
