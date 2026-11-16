@@ -16,7 +16,7 @@ story:
   eyebrow: Coming soon · iPhone and Mac
   headline: Just between us.
   lede: Messages, calls and memes, straight from your phone to your friends’. No account, no number, no one else.
-  hero: exchange
+  hero: mark
   excerpts:
     - title: What happens in the chat stays in the chat.
       body: On your phone and theirs. Not on a server, not in an account, not in anyone’s ad profile. Signing up takes one field.

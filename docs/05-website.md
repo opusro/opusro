@@ -72,21 +72,21 @@ screen of a phone or a Mac, and nothing else on it:
   Contact. Tools not yet available carry a small grey dot before their name,
   as iOS marks a new app, and say "coming soon" in their tooltip and story.
 - **Stories**: tap an app and its icon lifts out of the dock into its story,
-  shaped like an App Store "Today" card: the app's mark drawn in white
-  particles, its own headline, the app row with Get (or Soon), three or four
-  excerpts quoted from its landing page, then Download on the App Store (or
-  Coming soon) and Find out more. The marks: Loop's mandala (as loop.opus.ro
-  draws it, in white here), Peers' two pears with a message now and then going
-  straight from one to the other, Chéri's name until it has a glyph. Every line
-  lives in the tool's `story` in `src/content/tools/`, quoted from the landing
-  page, not written for here. On a desktop the story is a card that opens out
-  of the icon; on a phone it stands almost to the top and is pulled down by its
-  picture. Each has an address (`opus.ro/#loop`), and back closes it. Contact
-  is a short sheet: the email, Instagram, YouTube, "With ♡ from Romania", the
-  legal line.
-- **Colour**: none. The homescreen stays black, white and greys; the tools'
-  own colours and icons live on their own sites. Each tool is a white glyph on
-  a dark tile (`glyph`), or its initial until it has one.
+  shaped like an App Store "Today" card: the app's mark in its one colour, its
+  own headline, the app row with Get (or Soon), three or four excerpts quoted
+  from its landing page, then Download on the App Store (or Coming soon) and
+  Find out more. Loop's mark is drawn in green particles, as loop.opus.ro draws
+  it; particles are Loop's alone. Peers shows its two pears plainly, Chéri its
+  name, each in its accent on black. Every line lives in the tool's `story` in
+  `src/content/tools/`, quoted from the landing page, not written for here. On
+  a desktop the story is a card that opens out of the icon; on a phone it
+  stands almost to the top and is pulled down by its picture. Each has an
+  address (`opus.ro/#loop`), and back closes it. Contact is a short sheet: the
+  email, Instagram, YouTube, "With ♡ from Romania", the legal line.
+- **Colour**: the homescreen itself is black, white and greys; each tool is a
+  white glyph on a dark tile (`glyph`), or its initial until it has one. A
+  tool's one colour (`accent`) appears only inside its story: the mark, a faint
+  glow behind it, the line above the headline.
 - **A Mac and a phone differ where they should**: on a pointer device the dock
   magnifies under the cursor and names sit in tooltips above the icons; on a
   phone the names sit under the icons, the press is felt as a small squeeze,

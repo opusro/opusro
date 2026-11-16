@@ -26,7 +26,7 @@ story:
   eyebrow: Free · iPhone, iPad, Apple Watch
   headline: Your rituals, without a monthly sacrifice.
   lede: A simple timer and sound player for meditation, prayer, or whatever centers you.
-  hero: mark
+  hero: particles
   excerpts:
     - title: A tool, not a service.
       body: Your iPhone can already do everything you need. Loop just makes it nicer, at no extra cost.

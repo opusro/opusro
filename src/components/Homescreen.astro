@@ -5,12 +5,13 @@
  * The first screen of a phone or a Mac. The mark where the clock would be, and
  * a dock of apps at the bottom. Nothing else. Tap an app and its icon lifts
  * out of the dock into its story, the way an App Store "Today" card opens: the
- * app's mark drawn in white particles, the app's own headline, the app row with Get, a few excerpts from
+ * app's mark in its one colour (Loop's in particles, as its site draws it), the
+ * app's own headline, the app row with Get, a few excerpts from
  * its landing page, then Download on the App Store (or Coming soon) and Find
  * out more. A card on a desktop, a tall sheet from the bottom on a phone. The
- * words come from each tool's `story` in src/content/tools/. Black, white and
- * greys only, as the rest of the screen: the tools' own colours stay on their
- * own sites. Contact is the
+ * words come from each tool's `story` in src/content/tools/. The screen itself
+ * stays black and white; a tool's one colour (`accent`) appears only inside its
+ * story. Contact is the
  * last icon, behind a divider, as folders sit on a Mac's dock.
  *
  * The same page is the public site (holding) and the full site's home; the
@@ -106,7 +107,7 @@ const youtube = DOORWAYS.find((d) => d.label === 'YouTube');
 			const story = t.story;
 			const hero = story?.hero ?? (t.glyph ? 'mark' : 'wordmark');
 			return (
-				<dialog class="sheet sheet--story" id={`sheet-${tool.id}`} data-sheet={tool.id} aria-label={t.name}>
+				<dialog class="sheet sheet--story" id={`sheet-${tool.id}`} data-sheet={tool.id} aria-label={t.name} style={`--accent:${t.accent}`}>
 					<div class="sheet__scrim" data-scrim aria-hidden="true" />
 					<div class="sheet__panel story" data-panel>
 						<button class="sheet__close" type="button" data-close aria-label="Close">
@@ -117,12 +118,9 @@ const youtube = DOORWAYS.find((d) => d.label === 'YouTube');
 						<div class="story__scroll" data-scroll>
 							<div class:list={['story__hero', `story__hero--${hero}`]} data-drag>
 								<div class="story__art" data-art aria-hidden="true">
-									<canvas
-										class="story__canvas"
-										data-particles={hero !== 'wordmark' ? t.glyph : undefined}
-										data-text={hero === 'wordmark' || !t.glyph ? t.name : undefined}
-										data-flow={hero === 'exchange' ? '' : undefined}
-									/>
+									{hero === 'particles' && t.glyph && <canvas class="story__canvas" data-particles={t.glyph} data-color={t.accent} />}
+									{hero === 'mark' && t.glyph && <span class="story__mark" style={`--glyph:url(${t.glyph})`} />}
+									{(hero === 'wordmark' || !t.glyph) && <span class="story__wordmark">{t.name}</span>}
 								</div>
 								<span class="sheet__grabber" aria-hidden="true" />
 								<div class="story__overlay" data-reveal>
@@ -821,7 +819,7 @@ const youtube = DOORWAYS.find((d) => d.label === 'YouTube');
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--ink-2);
+		color: var(--accent, var(--ink-2));
 	}
 	.story__headline {
 		font-family: var(--font-ui);
@@ -834,9 +832,11 @@ const youtube = DOORWAYS.find((d) => d.label === 'YouTube');
 		max-width: 16ch;
 	}
 
-	/* The tool's mark in white points on black. */
+	/* The tool's mark, in its one colour, alone on black. */
 	.story__hero {
-		background: radial-gradient(70% 60% at 50% 38%, rgba(255, 255, 255, 0.045), transparent 70%), #000;
+		background:
+			radial-gradient(55% 50% at 50% 40%, color-mix(in srgb, var(--accent, #fff) 13%, transparent), transparent 72%),
+			#000;
 	}
 	.story__hero::after {
 		content: '';
@@ -849,6 +849,45 @@ const youtube = DOORWAYS.find((d) => d.label === 'YouTube');
 	.story__canvas {
 		width: 100%;
 		height: 100%;
+	}
+	.story__mark {
+		position: absolute;
+		left: 50%;
+		top: 40%;
+		width: 132px;
+		height: 132px;
+		translate: -50% -50%;
+		background: var(--accent, #fff);
+		-webkit-mask: var(--glyph) center / contain no-repeat;
+		mask: var(--glyph) center / contain no-repeat;
+		animation: drift 7s ease-in-out infinite;
+	}
+	.story__wordmark {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 40%;
+		translate: 0 -55%;
+		text-align: center;
+		font-family: var(--font-voice);
+		font-optical-sizing: auto;
+		font-style: italic;
+		font-size: clamp(4rem, 3rem + 5vw, 5.75rem);
+		line-height: 1;
+		letter-spacing: -0.02em;
+		color: var(--accent, #fff);
+		animation: drift 7s ease-in-out infinite;
+	}
+	@keyframes drift {
+		50% {
+			transform: translateY(-5px);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.story__mark,
+		.story__wordmark {
+			animation: none;
+		}
 	}
 
 	/* The app row, as under every App Store story. */

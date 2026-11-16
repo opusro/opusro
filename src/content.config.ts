@@ -46,7 +46,7 @@ const tools = defineCollection({
 			 * The honest way to keep a page unfinished. Flip to list it.
 			 */
 			listed: z.boolean().default(false),
-			/** One colour per tool. Used only on this tool's page and tile. */
+			/** One colour per tool. Used only on its page and inside its homescreen story. */
 			accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#ffffff'),
 			platforms: z.array(z.string()).default([]),
 			price: plain('price'),
@@ -77,12 +77,12 @@ const tools = defineCollection({
 					/** Small print under the excerpts: platforms, licence. */
 					fineprint: plain('story.fineprint').optional(),
 					/**
-					 * The picture at the top, always the tool's mark in white
-					 * particles: `mark` draws the glyph, `exchange` draws it and sends
-					 * messages between its two halves (Peers), `wordmark` draws the
-					 * name. Defaults to `mark` when there is a glyph.
+					 * The picture at the top: `mark` shows the glyph in the tool's
+					 * accent, `wordmark` its name, `particles` the glyph drawn in
+					 * particles (Loop's alone, as its own site draws it). Defaults to
+					 * `mark` when there is a glyph.
 					 */
-					hero: z.enum(['mark', 'exchange', 'wordmark']).optional(),
+					hero: z.enum(['mark', 'wordmark', 'particles']).optional(),
 				})
 				.optional(),
 		})

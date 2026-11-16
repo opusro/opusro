@@ -141,67 +141,48 @@
 		);
 	}
 
-	/* ---- Particles: each tool's mark drawn as drifting points ----------------
+	/* ---- Particles: Loop's mandala drawn as drifting points ----------------
 	 *
-	 * Every story opens on the tool's mark in white points on black: Loop's
-	 * mandala (as loop.opus.ro draws it), Peers' two pears, Chéri's name. The
-	 * points gather out of a loose cloud when the story opens, then breathe
-	 * and turn very slowly; a pointer pushes them aside. With `data-flow`
-	 * (Peers) a message now and then travels straight from one half of the
-	 * mark to the other, phone to phone, nothing in between. Reduced motion
-	 * draws them still. Nothing runs while the story is closed.
+	 * Loop's own site draws its mandala in particles, so its story does too, in
+	 * its green, from its glyph (/loop.svg). Particles are Loop's alone; the
+	 * other stories show their mark plainly. The points gather out of a loose
+	 * cloud when the story opens, then breathe and turn very slowly; a pointer
+	 * pushes them aside. Reduced motion draws them still. Nothing runs while
+	 * the story is closed.
 	 */
 	var sourceCache = {};
-	// A mask to sample: a canvas with the mark drawn on it, and how to place it.
+	// A mask to sample: a canvas with the glyph drawn on it.
 	function markSource(canvas) {
 		var url = canvas.getAttribute('data-particles');
-		var text = canvas.getAttribute('data-text');
-		var key = url || 'text:' + text;
+		var key = url;
 		if (sourceCache[key]) return sourceCache[key];
-		var made;
-		if (url) {
-			made = fetch(url)
-				.then(function (r) {
-					return r.text();
-				})
-				.then(function (svgText) {
-					var doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
-					var svg = doc.querySelector('svg');
-					var box = (svg.getAttribute('viewBox') || '0 0 120 120').split(/[\s,]+/).map(Number);
-					var S = 360;
-					var c = document.createElement('canvas');
-					c.width = c.height = S;
-					var x = c.getContext('2d');
-					x.scale(S / box[2], S / box[3]);
-					x.translate(-box[0], -box[1]);
-					Array.prototype.forEach.call(doc.querySelectorAll('path'), function (el) {
-						var path = new Path2D(el.getAttribute('d'));
-						var sw = el.getAttribute('stroke-width');
-						if (sw && el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
-							x.lineWidth = Number(sw);
-							x.lineCap = 'round';
-							x.lineJoin = 'round';
-							x.stroke(path);
-						}
-						if (el.getAttribute('fill') !== 'none') x.fill(path);
-					});
-					return { canvas: c, fit: 'square' };
-				});
-		} else {
-			var font = 'italic 400 150px "Source Serif 4 Variable", Georgia, serif';
-			var ready = document.fonts && document.fonts.load ? document.fonts.load(font).catch(function () {}) : Promise.resolve();
-			made = ready.then(function () {
+		var made = fetch(url)
+			.then(function (r) {
+				return r.text();
+			})
+			.then(function (svgText) {
+				var doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+				var svg = doc.querySelector('svg');
+				var box = (svg.getAttribute('viewBox') || '0 0 120 120').split(/[\s,]+/).map(Number);
+				var S = 360;
 				var c = document.createElement('canvas');
-				c.width = 600;
-				c.height = 240;
+				c.width = c.height = S;
 				var x = c.getContext('2d');
-				x.font = font;
-				x.textAlign = 'center';
-				x.textBaseline = 'middle';
-				x.fillText(text, 300, 128);
-				return { canvas: c, fit: 'wide' };
+				x.scale(S / box[2], S / box[3]);
+				x.translate(-box[0], -box[1]);
+				Array.prototype.forEach.call(doc.querySelectorAll('path'), function (el) {
+					var path = new Path2D(el.getAttribute('d'));
+					var sw = el.getAttribute('stroke-width');
+					if (sw && el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
+						x.lineWidth = Number(sw);
+						x.lineCap = 'round';
+						x.lineJoin = 'round';
+						x.stroke(path);
+					}
+					if (el.getAttribute('fill') !== 'none') x.fill(path);
+				});
+				return { canvas: c };
 			});
-		}
 		sourceCache[key] = made;
 		return made;
 	}
@@ -241,7 +222,7 @@
 	function Particles(canvas) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d');
-		this.flow = canvas.hasAttribute('data-flow');
+		this.color = canvas.getAttribute('data-color') || '#ffffff';
 		this.running = false;
 		this.frame = 0;
 		this.pointer = null;
@@ -267,15 +248,14 @@
 		this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 	};
 	Particles.prototype.centre = function () {
-		return { x: this.w / 2, y: this.h * (this.fit === 'wide' ? 0.36 : 0.42) };
+		return { x: this.w / 2, y: this.h * 0.42 };
 	};
 	Particles.prototype.scale = function () {
-		return this.fit === 'wide' ? Math.min(this.w * 0.76, this.h * 1.7) : Math.min(this.w * 0.86, this.h * 0.8);
+		return Math.min(this.w * 0.86, this.h * 0.8);
 	};
 	Particles.prototype.start = function () {
 		var self = this;
 		this.ready.then(function (src) {
-			self.fit = src.fit;
 			self.size();
 			var small = self.w < 500;
 			if (!self.targets) self.targets = samplePoints(src);
@@ -299,9 +279,6 @@
 			for (var i = 0; i < (small ? 60 : 100); i++) {
 				self.dust.push({ x: Math.random() * self.w, y: Math.random() * self.h, ph: Math.random() * 6.28, a: 0.06 + Math.random() * 0.16 });
 			}
-			self.messages = [];
-			self.nextMessage = 1900;
-			self.toRight = true;
 			self.t0 = performance.now();
 			self.running = true;
 			if (reduceMotion.matches) {
@@ -334,9 +311,8 @@
 	Particles.prototype.place = function (tx, ty, t) {
 		var c = this.centre();
 		var sc = this.scale() * (1 + 0.012 * Math.sin(t / 2600));
-		// A full mark turns, about once in nine minutes; a wordmark or a pair
-		// only sways, so it never reads upside down.
-		var rot = this.flow || this.fit === 'wide' ? Math.sin(t / 7000) * 0.025 : t / 90000;
+		// One turn in about nine minutes.
+		var rot = t / 90000;
 		var x = tx * sc;
 		var y = ty * sc;
 		return { x: c.x + x * Math.cos(rot) - y * Math.sin(rot), y: c.y + x * Math.sin(rot) + y * Math.cos(rot) };
@@ -367,18 +343,12 @@
 			p.x += p.vx;
 			p.y += p.vy;
 		}
-		// Messages: from the middle of one pear, over the top, into the other.
-		if (this.flow && t > this.nextMessage) {
-			this.messages.push({ start: t, right: this.toRight });
-			this.toRight = Math.random() < 0.7 ? !this.toRight : this.toRight;
-			this.nextMessage = t + 1100 + Math.random() * 1600;
-		}
 	};
 	Particles.prototype.draw = function (t) {
 		var c = this.ctx;
 		c.clearRect(0, 0, this.w, this.h);
 		c.globalCompositeOperation = 'lighter';
-		c.fillStyle = '#ffffff';
+		c.fillStyle = this.color;
 		for (var i = 0; i < this.dust.length; i++) {
 			var d = this.dust[i];
 			c.globalAlpha = d.a * (0.6 + 0.4 * Math.sin(t / 1400 + d.ph));
@@ -390,51 +360,8 @@
 			c.globalAlpha = p.a * (0.75 + 0.25 * Math.sin(t / 700 + p.ph));
 			c.fillRect(p.x, p.y, p.s, p.s);
 		}
-		if (this.flow) this.drawMessages(t);
 		c.globalAlpha = 1;
 		c.globalCompositeOperation = 'source-over';
-	};
-	Particles.prototype.drawMessages = function (t) {
-		var c = this.ctx;
-		var DUR = 1100;
-		// The pears' middles, in the mark's own units (public/glyphs/peers.svg:
-		// pears at x 36 and 84, bellies at y 80). The path between them is
-		// nearly straight: phone to phone, nothing in between.
-		var L = [-0.2, 0.19];
-		var R = [0.2, 0.19];
-		var top = 0.1;
-		this.messages = this.messages.filter(function (m) {
-			return t - m.start < DUR + 400;
-		});
-		for (var i = 0; i < this.messages.length; i++) {
-			var m = this.messages[i];
-			var a = m.right ? L : R;
-			var b = m.right ? R : L;
-			// A short train of points, the head brightest.
-			for (var k = 0; k < 14; k++) {
-				var u = (t - m.start - k * 16) / DUR;
-				if (u < 0 || u > 1) continue;
-				var e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
-				var mx = (1 - e) * (1 - e) * a[0] + 2 * (1 - e) * e * 0 + e * e * b[0];
-				var my = (1 - e) * (1 - e) * a[1] + 2 * (1 - e) * e * top + e * e * b[1];
-				var q = this.place(mx, my, t);
-				c.globalAlpha = (1 - k / 14) * Math.min(1, Math.sin(Math.PI * u) * 1.6);
-				var s = k === 0 ? 2.4 : 1.5;
-				c.fillRect(q.x - s / 2, q.y - s / 2, s, s);
-			}
-			// The pear that receives it brightens for a moment.
-			var arrive = (t - m.start - DUR) / 400;
-			if (arrive > 0 && arrive < 1) {
-				var at = this.place(b[0], b[1], t);
-				var g = c.createRadialGradient(at.x, at.y, 0, at.x, at.y, this.scale() * 0.16);
-				g.addColorStop(0, 'rgba(255,255,255,' + 0.12 * (1 - arrive) + ')');
-				g.addColorStop(1, 'rgba(255,255,255,0)');
-				c.globalAlpha = 1;
-				c.fillStyle = g;
-				c.fillRect(at.x - this.scale() * 0.16, at.y - this.scale() * 0.16, this.scale() * 0.32, this.scale() * 0.32);
-				c.fillStyle = '#ffffff';
-			}
-		}
 	};
 
 	var particles = {};
