@@ -29,9 +29,9 @@ Mark each one done when the words are yours.
 |---|---|---|
 | The descriptor under the mark | `src/config.ts` · `SITE.descriptor` | ☐ |
 | The two dictionary entries | `src/config.ts` · `DICTIONARY` | ☐ |
-| Each tool's name, subtitle and one line in its sheet | `src/content/tools/*.md` · `name`, `subtitle`, `oneLine` | ☐ |
-| Peers: a one line (it has none yet; the sheet shows only its name and site) | `src/content/tools/peers.md` · `oneLine` | ☐ |
-| "Coming soon", "Available now", "With ♡ from Romania" | `src/components/Homescreen.astro` | ☐ |
+| Each tool's story: eyebrow, headline, lede, excerpts, small print (quoted from its landing page; keep in step with it) | `src/content/tools/*.md` · `story` | ☐ |
+| Chéri's story, from cheri.opus.ro once it is up (today it is the one line split in two) | `src/content/tools/cheri.md` · `story` | ☐ |
+| "Get", "Soon", "Download on the App Store", "Coming soon", "Find out more", "With ♡ from Romania" | `src/components/Homescreen.astro` | ☐ |
 | Dock labels | `src/content/tools/*.md` and `src/components/Homescreen.astro` | ☐ |
 | The legal line and city | `src/config.ts` · `SITE.legal`, `SITE.city` | ☐ |
 | What a link preview says | `src/config.ts` · `SITE.holdingDescription` | ☐ |

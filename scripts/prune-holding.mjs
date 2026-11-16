@@ -11,7 +11,7 @@
  * `npm run build:full` never calls it.
  */
 
-import { readdirSync, readFileSync, rmSync, statSync, existsSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, rmSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const dist = process.argv[2] ?? 'dist';
@@ -24,7 +24,8 @@ for (const page of pages) {
 	const path = join(dist, page);
 	if (!existsSync(path)) continue;
 	const html = readFileSync(path, 'utf8');
-	for (const m of html.matchAll(/(?:src|href)="\/([^"]+)"/g)) {
+	// src and href, plus data-particles: the glyph a story draws as particles.
+	for (const m of html.matchAll(/(?:src|href|data-particles)="\/([^"]+)"/g)) {
 		const ref = m[1].split(/[?#]/)[0];
 		if (!ref) continue;
 		keep.add(ref.split('/')[0]);

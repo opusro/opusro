@@ -141,6 +141,223 @@
 		);
 	}
 
+	/* ---- Particles: a tool's glyph drawn as drifting points ------------------
+	 *
+	 * Loop's site draws its mandala in green particles; its story here does
+	 * the same, from the same glyph (/loop.svg). The points gather out of a
+	 * loose cloud when the story opens, then breathe and turn very slowly.
+	 * A pointer pushes them aside. Reduced motion draws them still. Nothing
+	 * runs while the story is closed.
+	 */
+	var glyphCache = {};
+	function glyphPaths(url) {
+		if (!glyphCache[url]) {
+			glyphCache[url] = fetch(url)
+				.then(function (r) {
+					return r.text();
+				})
+				.then(function (text) {
+					var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+					var svg = doc.querySelector('svg');
+					var box = (svg.getAttribute('viewBox') || '0 0 120 120').split(/[\s,]+/).map(Number);
+					var paths = Array.prototype.map.call(doc.querySelectorAll('path'), function (el) {
+						return el.getAttribute('d');
+					});
+					return { box: box, paths: paths };
+				});
+		}
+		return glyphCache[url];
+	}
+
+	function samplePoints(glyph, count) {
+		var S = 360;
+		var c = document.createElement('canvas');
+		c.width = c.height = S;
+		var x = c.getContext('2d');
+		x.scale(S / glyph.box[2], S / glyph.box[3]);
+		x.translate(-glyph.box[0], -glyph.box[1]);
+		glyph.paths.forEach(function (d) {
+			x.fill(new Path2D(d));
+		});
+		var data = x.getImageData(0, 0, S, S).data;
+		function on(px, py) {
+			if (px < 0 || py < 0 || px >= S || py >= S) return false;
+			return data[(py * S + px) * 4 + 3] > 120;
+		}
+		var edge = [];
+		var fill = [];
+		for (var py = 0; py < S; py++) {
+			for (var px = 0; px < S; px++) {
+				if (!on(px, py)) continue;
+				// An edge pixel has empty space right beside it: a fine outline.
+				if (!on(px - 1, py) || !on(px + 1, py) || !on(px, py - 1) || !on(px, py + 1)) edge.push([px, py]);
+				else fill.push([px, py]);
+			}
+		}
+		var out = [];
+		// Mostly outline, as the landing page draws it, with a little fill.
+		var edges = Math.round(count * 0.86);
+		for (var i = 0; i < count; i++) {
+			var src = i < edges ? edge : fill;
+			if (!src.length) src = edge.length ? edge : fill;
+			var p = src[(Math.random() * src.length) | 0];
+			out.push([(p[0] + Math.random() - 0.5) / S - 0.5, (p[1] + Math.random() - 0.5) / S - 0.5]);
+		}
+		return out;
+	}
+
+	function Particles(canvas) {
+		this.canvas = canvas;
+		this.ctx = canvas.getContext('2d');
+		this.running = false;
+		this.frame = 0;
+		this.pointer = null;
+		this.ready = glyphPaths(canvas.getAttribute('data-particles'));
+		var self = this;
+		canvas.parentNode.parentNode.addEventListener('pointermove', function (e) {
+			if (e.pointerType !== 'mouse') return;
+			var r = canvas.getBoundingClientRect();
+			self.pointer = { x: e.clientX - r.left, y: e.clientY - r.top };
+		});
+		canvas.parentNode.parentNode.addEventListener('pointerleave', function () {
+			self.pointer = null;
+		});
+	}
+	Particles.prototype.size = function () {
+		var r = this.canvas.getBoundingClientRect();
+		var dpr = Math.min(window.devicePixelRatio || 1, 2);
+		this.w = r.width;
+		this.h = r.height;
+		this.canvas.width = Math.round(r.width * dpr);
+		this.canvas.height = Math.round(r.height * dpr);
+		this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+	};
+	Particles.prototype.start = function () {
+		var self = this;
+		this.ready.then(function (glyph) {
+			self.size();
+			var small = self.w < 500;
+			var n = small ? 3400 : 5200;
+			if (!self.targets || self.targets.length !== n) self.targets = samplePoints(glyph, n);
+			var cx = self.w / 2;
+			var cy = self.h * 0.42;
+			// Gather from a loose cloud around the centre.
+			self.pts = self.targets.map(function (t) {
+				var a = Math.random() * Math.PI * 2;
+				var rad = (0.2 + Math.random() * 0.8) * Math.max(self.w, self.h) * 0.6;
+				return {
+					x: cx + Math.cos(a) * rad,
+					y: cy + Math.sin(a) * rad,
+					vx: 0,
+					vy: 0,
+					t: t,
+					ph: Math.random() * Math.PI * 2,
+					a: 0.3 + Math.random() * 0.7,
+					s: Math.random() < 0.1 ? 1.5 : 1,
+				};
+			});
+			// A little dust that never settles.
+			self.dust = [];
+			for (var i = 0; i < (small ? 70 : 120); i++) {
+				self.dust.push({ x: Math.random() * self.w, y: Math.random() * self.h, ph: Math.random() * 6.28, a: 0.08 + Math.random() * 0.2 });
+			}
+			self.t0 = performance.now();
+			self.running = true;
+			if (reduceMotion.matches) {
+				self.pts.forEach(function (p) {
+					p.x = cx + p.t[0] * self.scale();
+					p.y = cy + p.t[1] * self.scale();
+				});
+				self.draw(0);
+				return;
+			}
+			cancelAnimationFrame(self.frame);
+			self.loop();
+		});
+	};
+	Particles.prototype.scale = function () {
+		return Math.min(this.w * 0.86, this.h * 0.82);
+	};
+	Particles.prototype.stop = function () {
+		this.running = false;
+		cancelAnimationFrame(this.frame);
+	};
+	Particles.prototype.loop = function () {
+		var self = this;
+		this.frame = requestAnimationFrame(function (now) {
+			if (!self.running) return;
+			self.step(now - self.t0);
+			self.draw(now - self.t0);
+			self.loop();
+		});
+	};
+	Particles.prototype.step = function (t) {
+		var cx = this.w / 2;
+		var cy = this.h * 0.42;
+		var sc = this.scale() * (1 + 0.012 * Math.sin(t / 2600));
+		var rot = t / 90000; // one turn in about nine minutes
+		var cos = Math.cos(rot);
+		var sin = Math.sin(rot);
+		// Strong pull at first, so the shape gathers; soft after, so it breathes.
+		var k = t < 1600 ? 0.012 + 0.03 * (t / 1600) : 0.042;
+		var ptr = this.pointer;
+		for (var i = 0; i < this.pts.length; i++) {
+			var p = this.pts[i];
+			var tx = p.t[0] * sc;
+			var ty = p.t[1] * sc;
+			var gx = cx + tx * cos - ty * sin + Math.sin(t / 900 + p.ph) * 0.9;
+			var gy = cy + tx * sin + ty * cos + Math.cos(t / 1100 + p.ph) * 0.9;
+			p.vx += (gx - p.x) * k;
+			p.vy += (gy - p.y) * k;
+			if (ptr) {
+				var dx = p.x - ptr.x;
+				var dy = p.y - ptr.y;
+				var d2 = dx * dx + dy * dy;
+				if (d2 < 3600) {
+					var f = (1 - d2 / 3600) * 2.2;
+					var d = Math.sqrt(d2) || 1;
+					p.vx += (dx / d) * f;
+					p.vy += (dy / d) * f;
+				}
+			}
+			p.vx *= 0.82;
+			p.vy *= 0.82;
+			p.x += p.vx;
+			p.y += p.vy;
+		}
+	};
+	Particles.prototype.draw = function (t) {
+		var c = this.ctx;
+		c.clearRect(0, 0, this.w, this.h);
+		c.globalCompositeOperation = 'lighter';
+		c.fillStyle = '#14e468';
+		for (var i = 0; i < this.dust.length; i++) {
+			var d = this.dust[i];
+			c.globalAlpha = d.a * (0.6 + 0.4 * Math.sin(t / 1400 + d.ph));
+			// Rising slowly, wrapping at the top.
+			var y = (((d.y - t / 90) % this.h) + this.h) % this.h;
+			c.fillRect(d.x + Math.sin(t / 5000 + d.ph) * 6, y, 1, 1);
+		}
+		for (var j = 0; j < this.pts.length; j++) {
+			var p = this.pts[j];
+			c.globalAlpha = p.a * (0.75 + 0.25 * Math.sin(t / 700 + p.ph));
+			c.fillRect(p.x, p.y, p.s, p.s);
+		}
+		c.globalAlpha = 1;
+		c.globalCompositeOperation = 'source-over';
+	};
+
+	var particles = {};
+	Array.prototype.forEach.call(home.querySelectorAll('canvas[data-particles]'), function (canvas) {
+		var id = canvas.closest('dialog').getAttribute('data-sheet');
+		if (typeof Path2D === 'function') particles[id] = new Particles(canvas);
+	});
+	document.addEventListener('visibilitychange', function () {
+		if (!current || !particles[current.id]) return;
+		if (document.hidden) particles[current.id].stop();
+		else particles[current.id].start();
+	});
+
 	/* ---- Sheets ------------------------------------------------------------ */
 
 	var sheets = {};
@@ -158,7 +375,8 @@
 			panel: sheet.querySelector('[data-panel]'),
 			icon: sheet.querySelector('[data-sheet-icon]'),
 			reveal: sheet.querySelectorAll('[data-reveal]'),
-			video: sheet.querySelector('[data-video]'),
+			scroll: sheet.querySelector('[data-scroll]') || sheet.querySelector('[data-panel]'),
+			art: sheet.querySelector('[data-art]'),
 		};
 	}
 
@@ -218,10 +436,8 @@
 
 		current = { id: id, sheet: sheet, source: source };
 		if (opts.push !== false) history.pushState({ sheet: id }, '', '#' + id);
-		if (p.video && getComputedStyle(p.video.parentNode).display !== 'none') {
-			p.video.play().catch(function () {});
-		}
-		p.panel.style.touchAction = phone.matches && p.panel.scrollHeight <= p.panel.clientHeight ? 'none' : '';
+		p.scroll.scrollTop = 0;
+		if (particles[id]) particles[id].start();
 
 		var anims = [];
 		anims.push(p.scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' }));
@@ -274,6 +490,15 @@
 			}
 			if (source) source.style.visibility = 'hidden';
 
+			if (p.art) {
+				// The picture settles into place, as an opened story's does.
+				anims.push(
+					p.art.animate([{ transform: 'scale(1.08)', opacity: 0.4 }, { transform: 'none', opacity: 1 }], {
+						duration: 900,
+						easing: EASE_OUT,
+					}),
+				);
+			}
 			Array.prototype.forEach.call(p.reveal, function (el, i) {
 				if (el.contains(p.icon)) {
 					// The header's words, not the icon, fade in.
@@ -287,7 +512,7 @@
 							{ opacity: 0, transform: 'translateY(8px)' },
 							{ opacity: 1, transform: 'none' },
 						],
-						{ duration: 460, delay: 200 + i * 55, easing: EASE_OUT, fill: 'backwards' },
+						{ duration: 460, delay: 200 + Math.min(i, 8) * 50, easing: EASE_OUT, fill: 'backwards' },
 					),
 				);
 			});
@@ -324,6 +549,11 @@
 			var to = p.icon.getBoundingClientRect();
 			var visible = source && source.offsetParent;
 			var from = visible ? source.getBoundingClientRect() : null;
+			// Scrolled so far that the icon has left the panel: there is
+			// nothing to fly home, so the panel simply goes.
+			var box = p.panel.getBoundingClientRect();
+			var iconShown = to.top >= box.top - 1 && to.bottom <= box.bottom + 1;
+			if (!iconShown) from = null;
 
 			if (phone.matches) {
 				var drop = p.panel.getBoundingClientRect().height + 24;
@@ -340,22 +570,34 @@
 				}
 			} else {
 				var pr = p.panel.getBoundingClientRect();
-				var inset =
-					'inset(' +
-					(to.top - pr.top) + 'px ' +
-					(pr.right - to.right) + 'px ' +
-					(pr.bottom - to.bottom) + 'px ' +
-					(to.left - pr.left) + 'px round 15px)';
-				anims.push(
-					p.panel.animate(
-						[
-							{ clipPath: 'inset(0px 0px 0px 0px round 24px)', opacity: 1 },
-							{ clipPath: inset, opacity: 1, offset: 0.8 },
-							{ clipPath: inset, opacity: 0 },
-						],
-						{ duration: 340, easing: EASE_IN, fill: 'forwards' },
-					),
-				);
+				if (iconShown) {
+					var inset =
+						'inset(' +
+						(to.top - pr.top) + 'px ' +
+						(pr.right - to.right) + 'px ' +
+						(pr.bottom - to.bottom) + 'px ' +
+						(to.left - pr.left) + 'px round 15px)';
+					anims.push(
+						p.panel.animate(
+							[
+								{ clipPath: 'inset(0px 0px 0px 0px round 24px)', opacity: 1 },
+								{ clipPath: inset, opacity: 1, offset: 0.8 },
+								{ clipPath: inset, opacity: 0 },
+							],
+							{ duration: 340, easing: EASE_IN, fill: 'forwards' },
+						),
+					);
+				} else {
+					anims.push(
+						p.panel.animate(
+							[
+								{ transform: 'none', opacity: 1 },
+								{ transform: 'scale(0.96)', opacity: 0 },
+							],
+							{ duration: 260, easing: EASE_IN, fill: 'forwards' },
+						),
+					);
+				}
 				if (from) {
 					anims.push(fly(sheet, p.icon, to, to, from, { duration: 480, easing: EASE_OUT, fill: 'forwards' }));
 				}
@@ -370,7 +612,7 @@
 			p.panel.style.transform = '';
 			p.scrim.style.opacity = '';
 			p.icon.style.visibility = '';
-			if (p.video) p.video.pause();
+			if (particles[current.id]) particles[current.id].stop();
 			if (source) {
 				source.style.visibility = '';
 				// The icon lands with a small settle, as it does on a phone.
@@ -416,6 +658,19 @@
 		var sheet = sheets[id];
 		var p = parts(sheet);
 
+		// Once the picture has scrolled away, the app row holds the top, as
+		// in an App Store story, and makes room for the close button.
+		var hero = sheet.querySelector('[data-drag]');
+		if (hero && p.scroll !== p.panel) {
+			p.scroll.addEventListener(
+				'scroll',
+				function () {
+					p.panel.classList.toggle('is-stuck', p.scroll.scrollTop >= hero.offsetHeight - 1);
+				},
+				{ passive: true },
+			);
+		}
+
 		sheet.addEventListener('cancel', function (e) {
 			e.preventDefault();
 			requestClose();
@@ -433,7 +688,10 @@
 		p.panel.addEventListener('pointerdown', function (e) {
 			if (!phone.matches || busy || e.pointerType === 'mouse') return;
 			if (e.target.closest('a, button')) return;
-			if (p.panel.scrollTop > 0) return;
+			// A story scrolls; it is pulled down by its picture. A short sheet
+			// can be pulled from anywhere.
+			if (p.scroll !== p.panel && !e.target.closest('[data-drag]')) return;
+			if (p.scroll.scrollTop > 0) return;
 			dragging = true;
 			startY = e.clientY;
 			startT = performance.now();

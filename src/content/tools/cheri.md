@@ -11,6 +11,12 @@ listed: false
 accent: '#C97D69'
 platforms: [iPhone, iPad, Mac to follow]
 price: Yours once. Give it to someone, if you like.
+# The homescreen story, until cheri.opus.ro is up to quote from.
+story:
+  eyebrow: Coming soon · iPhone and iPad
+  headline: Friends, and the things between them.
+  lede: Remember what people love, keep gift ideas, share your things without keeping score.
+  hero: wordmark
 facts:
   - No account, no server. Nothing leaves your phone.
   - Sharing between friends is a file you send through the share sheet.

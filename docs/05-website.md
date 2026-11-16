@@ -69,15 +69,22 @@ screen of a phone or a Mac, and nothing else on it:
   the descriptor gives way to the two dictionary entries.
 - **The dock**: every tool that is not merely imagined, in `order` (Loop,
   Peers, Chéri), then a divider and Contact. A full build adds Notes before
-  Contact. Tools not yet available have a dashed edge and a quieter glyph, and
-  say "coming soon" in their tooltip and sheet.
-- **Sheets**: tap an app and its icon lifts out of the dock into a sheet that
-  says what it is (name, subtitle or "Coming soon", the one line) and where it
-  lives (App Store, its own site). On a desktop the sheet is a card that opens
-  out of the icon, with Loop's recording beside it; on a phone it rises from
-  the bottom edge and can be pulled back down. Each sheet has an address
-  (`opus.ro/#loop`), and back closes it. Contact is a sheet too: the email,
-  Instagram, YouTube, "With ♡ from Romania", the legal line.
+  Contact. Tools show their real app icon (`icon`) where they have one. Tools
+  not yet available carry a small dot before their name, as iOS marks a new
+  app, and say "coming soon" in their tooltip and story.
+- **Stories**: tap an app and its icon lifts out of the dock into its story,
+  shaped like an App Store "Today" card: a picture, the app's own headline,
+  the app row with Get (or Soon), three or four excerpts quoted from its
+  landing page, then Download on the App Store (or Coming soon) and Find out
+  more. Loop's picture is its mandala drawn in green particles, as loop.opus.ro
+  draws it; Peers' is its cream page with the icon and two messages from its
+  site; a tool without a picture yet shows its name in its colour. Every line
+  lives in the tool's `story` in `src/content/tools/`, and is quoted from the
+  landing page, not written for here. On a desktop the story is a card that
+  opens out of the icon; on a phone it stands almost to the top and is pulled
+  down by its picture. Each has an address (`opus.ro/#loop`), and back closes
+  it. Contact is a short sheet: the email, Instagram, YouTube, "With ♡ from
+  Romania", the legal line.
 - **A Mac and a phone differ where they should**: on a pointer device the dock
   magnifies under the cursor and names sit in tooltips above the icons; on a
   phone the names sit under the icons, the press is felt as a small squeeze,

@@ -60,6 +60,28 @@ const tools = defineCollection({
 			video: z.string().optional(),
 			/** The glyph shown on the tile and page, root-relative SVG. */
 			glyph: z.string().optional(),
+			/** The real app icon, root-relative, square, for the homescreen dock. */
+			icon: z.string().optional(),
+			/**
+			 * The homescreen's story about the tool, opened from its dock icon:
+			 * an App Store "Today" card made of excerpts from the tool's own
+			 * landing page. Quote the landing page; do not write new claims here.
+			 */
+			story: z
+				.object({
+					/** Above the headline, e.g. "Free · iPhone, iPad, Apple Watch". */
+					eyebrow: plain('story.eyebrow').optional(),
+					headline: plain('story.headline'),
+					lede: plain('story.lede').optional(),
+					excerpts: z
+						.array(z.object({ title: plain('story.excerpts.title'), body: plain('story.excerpts.body') }))
+						.default([]),
+					/** Small print under the excerpts: platforms, licence. */
+					fineprint: plain('story.fineprint').optional(),
+					/** The picture at the top. `particles` draws the glyph as particles. */
+					hero: z.enum(['particles', 'peers', 'wordmark']).default('wordmark'),
+				})
+				.optional(),
 		})
 		.refine((t) => t.status !== 'available' || t.appStoreUrl || t.webUrl || t.site, {
 			message: 'An available tool needs an appStoreUrl, a webUrl or a site.',

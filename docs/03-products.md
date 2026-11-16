@@ -86,12 +86,12 @@ Three circles, widening (01 · Story). Each tool serves one.
   - **Supporting the studio from inside the app** has to be an in-app purchase
     (a consumable tip), quietly in Settings. Linking out to a payment page from
     inside the app is an App Review risk (04 · System §4).
-- **Home:** opusloop.co today, with the web player (PWA), help, privacy,
-  terms. Moving under opus.ro (04 · System §2, D6).
+- **Home:** loop.opus.ro, with the web player (PWA) at /player, support,
+  privacy, terms. opusloop.co serves the same site.
 - **What leaves the phone:** anonymous usage counts via TelemetryDeck (no
   identifiers); Mindful Minutes to Apple Health if turned on; your own files to
   your own iCloud Drive. Nothing to OPUS.
-- **Accent:** green `#7A9B58`.
+- **Accent:** green `#14E468`, the green of the app icon and loop.opus.ro (was `#7A9B58`).
 - **App Store name:** OPUS Loop. Subtitle today: "Meditation & Focus".
 
 ### Chéri · you with your people
